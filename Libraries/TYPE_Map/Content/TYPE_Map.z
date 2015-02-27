@@ -1,11 +1,11 @@
 /******************************************************************************/
 /*!
-@file       TYPE_Map.z
-@version    Map v 0.1.0
 @brief      An iteratable HashMap container
+@version    Map v 0.1.0
 @date       02/26/2015
-@author     Johannes Peter
-@par        email: j.peter\@digipen.edu.
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
 @details
     As of Zero Build 10681, HashMaps cannot be iterated over directly. This 'Map' class
     attempts to implement such a container.
@@ -38,7 +38,7 @@
 
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
-    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+    All content Â© 2015 DigiPen (USA) Corporation, all rights reserved
 */
 /******************************************************************************/
 
