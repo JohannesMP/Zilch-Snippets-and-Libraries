@@ -1,14 +1,13 @@
 /******************************************************************************/
 /*!
-@file       ArcTest.z
 @brief      A quick exploration in realistically pre-simulating ballistic arcs
 @date       02/26/2015
-@author     Johannes Peter
-@par        email: j.peter\@digipen.edu.
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
 
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
-    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+    All content Â© 2015 DigiPen (USA) Corporation, all rights reserved
 */
 /******************************************************************************/
 
