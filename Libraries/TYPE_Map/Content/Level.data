@@ -170,11 +170,7 @@ Level =
 			TextPositionMode Position = UpperLeft,
 			string FontName = "4e7bac697bec55c5:Verdana",
 			uint FontSize = 44,
-			string Text = "There is nothing to see here!
-
-Open the console(tilde) to see the what the 'MapTest' script
-(which you can find on LevelSettings) is printing out when
-you run the game",
+			string Text = "",
 			bool OnTop = false,
 			Vec2 Size = [0, 0],
 			TextAlign Align = Left,
@@ -183,7 +179,7 @@ you run the game",
 		},
 		SpriteTextBlock = 
 		{
-			string TextBlock = "4f122516b2da6f17:DefaultTextBlock",
+			string TextBlock = "54d5af195a2107a8:MapTextBlock",
 		},
 	},
 },

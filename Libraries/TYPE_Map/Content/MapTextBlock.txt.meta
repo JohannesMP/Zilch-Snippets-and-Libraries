@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "MapTextBlock",
+		uint64 ResourceId = 54d5af195a2107a8,
+	},
+},
