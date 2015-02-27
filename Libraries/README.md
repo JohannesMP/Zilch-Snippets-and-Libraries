@@ -23,6 +23,8 @@ For example, you can use the `Map` type like this:
 
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Libraries/UI_StateManager>UI: State Manager</a>
 
+<img width=300 src=http://i.imgur.com/trA26PH.png />
+
 - An initial attempt to create an abstraction layer to correctly handle UI interactions and events for individual elements. The component allows the user to track several UI 'states', such as visible, active, selected, as well as mouse-related states such as hover and being held by any number of mouse buttons.
 - It also handles sending a UI click event when a true 'click' occurred, accounting for edge cases that simply listening to `Events.MouseUp` or `Events.MouseUpdate` would miss, while providing additional meta information such as what mouse button was released during the mouseUp.
 
