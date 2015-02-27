@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "ArcPredict",
+	uint64 LibraryId = 54f8811a9c572dbf,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

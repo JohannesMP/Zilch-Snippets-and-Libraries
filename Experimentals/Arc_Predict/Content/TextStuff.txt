@@ -1,0 +1,22 @@
+ArcPrediction Demo
+------------------
+
+This demo draws various arcs showing the balistics path
+of the provided object in 3d space.
+
+1. Run the editor (F5)
+2. Enable In-game Editor (F9) to allow you to
+   rotate your camera (Alt+right click)
+
+The cube's path is Predicted by the center Arc.
+
+Controls:
+
+   1 / 2  : The length of the arc that is simulated.
+   [ / ]  : The number of alternate arcs simulated (rotated about the z axis)
+   - / =  : Change gravity (will not affect the cube's position)
+   , / .  : Change drag    (will not affect the cube's position)
+   ; / '  : Change arc resolution (how many line segments are drawn)
+       T  : Toggle Arc Vertex (highest point) indicator
+       P  : Pause Cube
+       R  : Restart Cube Path

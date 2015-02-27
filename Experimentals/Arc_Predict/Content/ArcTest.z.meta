@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ArcTest",
+		uint64 ResourceId = 54f88148e60ac3de,
+	},
+},

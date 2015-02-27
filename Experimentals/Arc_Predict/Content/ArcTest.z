@@ -1,0 +1,253 @@
+/******************************************************************************/
+/*!
+@file       ArcTest.z
+@brief      A quick exploration in realistically pre-simulating ballistic arcs
+@date       02/26/2015
+@author     Johannes Peter
+@par        email: j.peter\@digipen.edu.
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+class ArcTest : ZilchComponent
+{
+    var Drag : Real
+    {
+        get { return this.LevelSettings.DragEffect.Drag; }
+        set
+        {
+            this.LevelSettings.DragEffect.Drag = value;
+            this.ResetCube();
+        }
+    }
+    
+    var Gravity : Real3
+    {
+        get { return this.LevelSettings.GravityEffect.Direction * this.LevelSettings.GravityEffect.Strength; }
+        set
+        {
+            this.LevelSettings.GravityEffect.Direction = Math.Normalize(value);
+            this.LevelSettings.GravityEffect.Strength = Math.Length(value);
+            this.ResetCube();
+        }
+    }
+    
+    var Iterations : Integer = 100;
+    var ArcSimulations : Real = Math.Pi/16;
+    
+    var DrawRez   : Real = 1;
+    var MarkerTime : Real = 0.1;
+
+    var StartPos : Real3 = Real3();
+    
+    var JumpVelocity : Real3;
+    var JumpSpeed : Real;
+    
+    var DrawMaximum : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+        this.JumpVelocity = this.Owner.RigidBody.Velocity;
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        //JDebug("=====================");
+        
+        var lines = 0;
+        var increase = Math.Pi/34;
+        for(var i = 0.0; i <= this.ArcSimulations; i += increase)
+        {
+            var startVelUp   = Math.RotateVector(Math.Normalize(this.JumpVelocity ), Real3(0,0,-1), i) * Math.Length(this.JumpVelocity);
+            var startVelDown = Math.RotateVector(Math.Normalize(this.JumpVelocity ), Real3(0,0,-1), -i) * Math.Length(this.JumpVelocity);
+            
+            //JDebug(startVel, this);
+            
+            var alpha = 0.035;
+            if(lines % 5 == 0 || i + increase > this.ArcSimulations)
+            {
+                alpha = 0.4;
+            }
+            
+            JDebug(i);
+            
+            if(Math.Abs(i) < 0.01)
+            {
+                alpha = 0.8;
+            }
+            
+            this.ArcPredict(this.StartPos, startVelUp, this.Iterations, event.Dt, alpha);
+            this.ArcPredict(this.StartPos, startVelDown, this.Iterations, event.Dt, alpha);
+            
+            ++lines;
+        }
+        
+        
+        // Iterations per arc
+        if(Zero.Keyboard.KeyIsDown(Keys.NumPad1) || Zero.Keyboard.KeyIsDown(Keys.One))
+        {
+            this.Iterations += 1;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.NumPad2) || Zero.Keyboard.KeyIsDown(Keys.Two))
+        {
+            this.Iterations = Math.Max(this.Iterations-1, 0);
+        }
+        
+        
+        // Number of individual arc simulations
+        if(Zero.Keyboard.KeyIsDown(Keys.RightBracket))
+        {
+            this.ArcSimulations += Math.Pi/64;
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.LeftBracket))
+        {
+            this.ArcSimulations = Math.Max(this.ArcSimulations - Math.Pi/64, 0);
+        }
+        
+        
+        // The Gravity in the space
+        if(Zero.Keyboard.KeyIsDown(Keys.Minus) || Zero.Keyboard.KeyIsDown(Keys.Subtract))
+        {
+            var magnitude = Math.Length(this.Gravity);
+            magnitude -= 0.2;
+            this.Gravity = Math.Normalize(this.Gravity) * magnitude;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.Equal) || Zero.Keyboard.KeyIsDown(Keys.Add))
+        {
+            var magnitude = Math.Length(this.Gravity);
+            magnitude += 0.2;
+            this.Gravity = Math.Normalize(this.Gravity) * magnitude;
+        }
+        
+        
+        // The Drag in the space
+        if(Zero.Keyboard.KeyIsDown(Keys.Comma))
+        {
+            this.Drag += 0.1;
+            this.ResetCube();
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.Period))
+        {
+            this.Drag -= 0.1;
+            this.ResetCube();
+        }
+        
+        
+        // The draw resolution of each arc
+        if(Zero.Keyboard.KeyIsDown(Keys.Semicolon))
+        {
+            this.DrawRez += 0.1;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.Apostrophe))
+        {
+            this.DrawRez = Math.Max(this.DrawRez - 0.1, 0);
+        }
+        
+        
+        // Toggle vertex indicator
+        if(Zero.Keyboard.KeyIsPressed(Keys.T))
+        {
+            this.DrawMaximum = !this.DrawMaximum;
+        }
+        
+        
+        // Toggle Level Pause State
+        if(Zero.Keyboard.KeyIsPressed(Keys.P))
+        {
+            this.Space.TimeSpace.TogglePause();
+        }
+        
+        
+        // Restart Cube Path
+        if(Zero.Keyboard.KeyIsPressed(Keys.R))
+        {
+            this.ResetCube();
+        }
+        
+        
+    }
+
+    function ResetCube()
+    {
+        this.Owner.Transform.WorldTranslation = this.StartPos;
+        this.Owner.RigidBody.Velocity = this.JumpVelocity;
+    }
+
+    function ArcPredict(startPos : Real3, startVel : Real3, iterations : Integer, dt : Real, lineAlpha : Real)
+    {
+        
+        var curPos  : Real3 = startPos;
+        var lastPos : Real3 = startPos;
+        
+        var lastDrawPos : Real3 = this.StartPos;
+        
+        var curVel  : Real3 = startVel;
+        var lastVel : Real3 = startVel;
+
+        var curDrawDist = 0.0;
+        var curMarkerTime = 0.0;
+
+        for(var i = 0; i < this.Iterations; ++i)
+        {
+            var isLastIteration : Boolean = (i+1 >= this.Iterations);
+            
+            var curForces = this.Gravity - lastVel * this.Drag;
+            
+            curVel = lastVel + curForces * dt;
+            curPos = curPos + (curVel) * dt ;
+            
+            var distance = Math.Length(curPos - lastPos);
+            
+            curDrawDist += distance;
+            curMarkerTime += dt;
+            
+            if(curDrawDist >= this.DrawRez || isLastIteration)
+            {
+                curDrawDist = 0;
+                JDebug.Line(lastDrawPos, curPos, Real4(1,1,1,lineAlpha));
+                lastDrawPos = curPos;
+            }
+            
+            if(curMarkerTime >= this.MarkerTime)
+            {
+                curMarkerTime = curMarkerTime - this.MarkerTime;
+                
+                // calculating alpha of the marker points
+                var alpha = lineAlpha;
+                
+                var fractions = 3;
+                
+                if(i > (fractions-1) * this.Iterations/fractions)
+                {
+                    //alpha = Math.Clamp(i*fractions/this.Iterations, 0, 1);
+                }
+                
+                JDebug.Point(curPos, 0.1, Real4(0,1,0, alpha));
+            }
+            
+            // Last Point
+            if(i+1 >= this.Iterations)
+            {
+                JDebug.Point(curPos, 0.1, Real4(1,0,0,1));
+            }
+            
+            // the maximum position
+            if(this.DrawMaximum && lastVel.Y >= 0 && curVel.Y < 0)
+            {
+                var total = Math.Abs(lastVel.Y) + Math.Abs(curVel.Y);
+                var pos = curPos * (Math.Abs(lastVel.Y)/total) + lastPos * (Math.Abs(curVel.Y)/total);
+                
+                DebugSphere().Position(pos).Radius(0.1).Float4Color(Real4(1,1,0,1)).Draw();
+            }
+            
+            lastVel = curVel;
+            lastPos = curPos;
+        }
+
+    }
+}
