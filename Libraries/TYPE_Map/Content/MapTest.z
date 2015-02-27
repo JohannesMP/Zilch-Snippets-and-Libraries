@@ -1,0 +1,70 @@
+/******************************************************************************/
+/*!
+@file       MapTest.z
+@brief      Demonstrating the use of the Map Type
+@date       02/26/2015
+@author     Johannes Peter
+@par        email: j.peter\@digipen.edu.
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+class MapTest : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        // the print format
+        var format   = "\t[ %5s -> %s ]\n";
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 1. Creating a map and initializing it.
+        var map = new Map[String, Real3]()[ ["foo",   Real3(1,1,1) ],
+                                            ["derp",  Real3(3,3,3) ],
+                                            ["bar",   Real3(2,2,2) ],
+                                            ["glork", Real3(4,4,4) ] ];
+                                            // This syntax just calls .Add(key, value) on the map
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 2. Printing the map's contents via foreach
+        Console.Write("\nMap with `map.Count` elements:\n[\n");
+        foreach(var pair in map)
+        {
+            Console.Write(String.FormatC(format, pair.Key, pair.Value));
+        }
+        Console.Write("]\n");
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 3. Modifying the Map (outside of the foreach loop
+        Console.Write("\nRemoving 'derp', 'glork', and adding 'blarg'...\n");
+        map.Remove("derp");
+        map.Remove("glork");
+        map.Add("blarg", Real3(1,2,3));
+
+
+        /////////////////////////////////////////////////////////////
+        // 4. Iteration validation via ModID
+        Console.Write("\nMap with `map.Count` elements:\n[\n");
+        foreach(var pair in map)
+        {
+            // Uncomment the following to check ModID validation:
+            
+            // removal invalidates the iteration:
+            // map.Remove("foo");
+            
+            // addition invalidates the iteration
+            // map.Add("foob", Real3(1,2,3));
+            
+            // changing a key's value does not invalidate the iteration
+            map.Set("bar", Real3(0,0,0));
+            
+            Console.Write(String.FormatC(format, pair.Key, pair.Value));
+        }
+        Console.Write("]\n\n");
+    }
+}

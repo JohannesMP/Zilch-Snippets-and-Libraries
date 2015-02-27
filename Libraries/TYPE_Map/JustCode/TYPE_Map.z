@@ -1,0 +1,165 @@
+/******************************************************************************/
+/*!
+@file       TYPE_Map.z
+@version    Map v 0.1.0
+@brief      An iteratable HashMap container
+@date       02/26/2015
+@author     Johannes Peter
+@par        email: j.peter\@digipen.edu.
+@details
+    As of Zero Build 10681, HashMaps cannot be iterated over directly. This 'Map' class
+    attempts to implement such a container.
+    
+    Specifically it defines 3 classes:
+        Map[KEY, VALUE]      - A wrapper for a HashMap[KEY, VALUE]
+        MapRange[KEY, VALUE] - The range used when iterating via foreach
+        MapPair[KEY, VALUE]  - Contains the current key and value inside of
+                               a foreach loop
+    
+    Instance Properties:
+        map.Count            - (Read Only) the number of unique key/value pairs
+        map.Default          - The default return value (can be set in constructor)
+    
+    Instance Methods:
+        map.Contains(key)    - Returns true if the key exists in the map
+        map.Set(key, value)  - Sets an existing key to a new value, or
+                               creates it if it does not already exist.
+        map.Add(key, value)  - Adds key/value pair, throwing exception of
+                               key already exists
+        map.Get(key, value)  - If the given key is defined, returns its value,
+                               otherwise returns the value held by 'Default'
+        map.Remove(key)      - Tries to remove a given key and its value. If
+                               Successful will return true. if key does not exist
+                               will return false
+    
+@todo
+    As of Zero Build 10681, the [Hidden] tag is not implemented yet.
+    The next build should have it, at which point the H_ prefix will be removed from the 
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+class Map[KEY, VALUE]
+{
+    // Private Data that shold not be touched
+    [Hidden] var H_Hash  : HashMap[KEY, VALUE] = new HashMap[KEY, VALUE](); // holds our data
+    [Hidden] var H_Array : Array[KEY] = new Array[KEY](); // used to iterate the data
+    [Hidden] var H_ModID : Integer = 0; //see IncrementModID:
+    [Hidden] function IncrementModID() { ++this.H_ModID; }
+    
+    // Used by ForEach
+    var All : MapRange[KEY, VALUE] { get { return new MapRange[KEY, VALUE](this); } }
+    
+    // The total number of elements in the map
+    var Count : Integer { get { return this.H_Array.Count; } }
+    
+    var Default : VALUE;
+    
+    constructor() { }
+    constructor(defaultVal : VALUE) { this.Default = defaultVal; }
+    
+    // If the map contains a value for the given key
+    function Contains(key : KEY) : Boolean
+    {
+        return this.H_Hash.Contains(key);
+    }
+    
+    // Setting the value corresponding to a given key. if the key is new, increment modID.
+    function Set(key : KEY, val : VALUE)
+    {
+        if(!this.Contains(key))
+        {
+            this.H_Array.Add(key);
+            this.IncrementModID();
+        }
+        this.H_Hash.SetOrOverwrite(key, val);
+    }
+    
+    function Add(key : KEY, val : VALUE)
+    {
+        if(this.Contains(key))
+        {
+            throw new Exception("Map already contains key '`key`'!");
+        }
+        this.Set(key, val);
+    }
+    
+    // Getting the value corresponding to a given key
+    function Get(key : KEY) : VALUE
+    {
+        var returnVal = this.Default;
+        
+        if(this.Contains(key))
+        {
+            returnVal = this.H_Hash.GetOrError(key);
+        }
+        
+        return returnVal;
+    }
+    
+    // remove a key (and associated value) from the map. If it succeeds, ModID is incremented.
+    function Remove(key : KEY) : Boolean
+    {
+        if(this.Contains(key) && this.H_Array.RemoveAll(key) > 0)
+        {
+            this.H_Hash.RemoveOrError(key);
+            this.IncrementModID();
+            return true;
+        }
+        return false;
+    }
+}
+
+// The corresponding Range class for the Map class
+class MapRange[KEY, VALUE]
+{
+    // Hidden Properties that shold not be touched
+    [Hidden]
+    var H_Map      : Map[KEY, VALUE];
+    [Hidden]
+    var H_Range    : ArrayRange[KEY];
+    [Hidden]
+    var H_CurModID : Integer;
+    
+    constructor(map : Map[KEY, VALUE])
+    {
+        this.H_Map      = map;
+        this.H_Range    = map.H_Array.All;
+        this.H_CurModID = map.H_ModID;
+        this.Reset();
+    }
+    
+    var IsModSafe : Boolean { get { return this.H_CurModID == this.H_Map.H_ModID; } }
+    
+    // Properties and Functions used by foreach
+    
+    var All     : MapRange[KEY, VALUE] { get { return this; } }
+    var Current : MapPair[KEY, VALUE]
+    {
+        get
+        {
+            // If you land here it means that the map that this MapRange points to was modified since the range was created.
+            // For example if you try to edit a map while inside of a foreach loop iterating over it.
+            if(!this.IsModSafe) { throw new Exception("Map was modified during iteration!"); }
+            return new MapPair[KEY, VALUE](this.H_Range.Current, this.H_Map.Get(this.H_Range.Current));
+        }
+    }
+    var      IsEmpty    : Boolean { get { return this.H_Range.IsEmpty; } }
+    var      IsNotEmpty : Boolean { get { return this.H_Range.IsNotEmpty; } }
+    function MoveNext() { this.H_Range.MoveNext(); }
+    function Reset() { this.H_Range.Reset(); }
+}
+
+class MapPair[KEY, VALUE]
+{
+    var Key   : KEY;
+    var Value : VALUE;
+    constructor(key : KEY, val : VALUE)
+    {
+        this.Key = key;
+        this.Value = val;
+    }
+}

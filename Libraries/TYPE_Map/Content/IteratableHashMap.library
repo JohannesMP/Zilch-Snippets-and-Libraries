@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "IteratableHashMap",
+	uint64 LibraryId = 54d4aaa0642f3cf9,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

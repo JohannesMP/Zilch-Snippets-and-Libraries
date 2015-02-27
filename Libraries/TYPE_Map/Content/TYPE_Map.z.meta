@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TYPE_Map",
+		uint64 ResourceId = 54cb13e028afc968,
+	},
+},
