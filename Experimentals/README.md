@@ -13,6 +13,12 @@ Experimentals were last tested with **Zero Build 10681**.
 
 This was a fun exploration of properly pre-predicting physics for debug purposes. Special thanks to Rob for his physics insights and getting the simulated arc physics to exactly match up with those of the actual engine.
 
+- The basic idea is to take a given point, its current velocity and the forces it is experiencing, then run the same calculation that the engine would do to arrive at a new point, with its own new velocity.
+- In a for loop, run this calculation for X number of iterations, each time taking the point/velocity of the previous iteration as the starting point for the current one.
+- The critical point to realize is that while calculating lots of physics is (relatively) fast, drawing lines between every single point is not. Therefore if you plan on drawing the arc in the game space, use some metric to only draw a line every X number of points
+- In the case here I kept a running total of the distances between all the points, and only drew a new line connecting two points once a minimum distance was reached. This ensures that the endpoints between lines are always about the same distance apart.
+- The best solution would be to look at the slope of the line and only draw a new line once a certain change in slope has been reached, which would allow long straight parts of the line to only consist of very few line segments.
+
 I may expand on this later with a general library that takes delegates as an argument, allowing you to do fun things like accurately draw the path a particle would take through a gravity/vector field.
 
 
