@@ -1,7 +1,7 @@
 # Zilch Snippets and Libraries
-Contains code snippets, libraries and example projects, shared here as a resource for other DigiPen students.
+Contains code snippets, libraries and example projects, shared here as a resource for other DigiPen students. Most Notably it contains my JDebug Debug Library.
 
-Most of the code is designed to be used with DigiPen's *<a href=zero.digipen.edu>Zero Engine</a>* and will be written in <a href=http://zero.digipen.edu/Zilch.html>Zilch</a> (Zero's scripting language).
+Most of the code is designed to be used with DigiPen's *<a href=zero.digipen.edu>Zero Engine</a>* and was written in <a href=http://zero.digipen.edu/Zilch.html>Zilch</a> (Zero's scripting language).
 
 As of this writing, Zero is only available to DigiPen students.
 
