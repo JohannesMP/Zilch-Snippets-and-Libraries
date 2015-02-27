@@ -1,0 +1,56 @@
+class CameraMovement : ZilchComponent
+{
+    [Property]
+    var MoveAcceleration : Real = 10;
+    
+    [Property]
+    var MaxMoveVelocity : Real = 5;
+    
+    var MoveVelocity : Real3;
+    
+    var CameraPos : Real3
+    {
+        get
+        {
+            return this.LevelSettings.CameraViewport.Camera.Transform.WorldTranslation;
+        }
+        set
+        {
+            this.LevelSettings.CameraViewport.Camera.Transform.WorldTranslation = value;
+        }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(JKeys.Up || JKeys.W)
+        {
+            this.MoveVelocity += Real3(0,1,0) * this.MoveAcceleration * event.Dt;
+        }
+        if(JKeys.Down || JKeys.S)
+        {
+            this.MoveVelocity -= Real3(0,1,0) * this.MoveAcceleration * event.Dt;
+        }
+        if(JKeys.Left || JKeys.A)
+        {
+            this.MoveVelocity -= Real3(1,0,0) * this.MoveAcceleration * event.Dt;
+        }
+        if(JKeys.Right || JKeys.D)
+        {
+            this.MoveVelocity += Real3(1,0,0) * this.MoveAcceleration * event.Dt;
+        }
+    
+        var drag = 0.2;
+    
+        this.MoveVelocity *= 1-drag;
+    
+        var magnitude = Math.Length(this.MoveVelocity);
+        var vel = Math.Normalize(this.MoveVelocity) * Math.Clamp(magnitude, 0 , this.MaxMoveVelocity);
+        
+        this.CameraPos += vel;
+    }
+}

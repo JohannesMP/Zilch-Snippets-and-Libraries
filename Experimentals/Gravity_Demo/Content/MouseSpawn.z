@@ -1,0 +1,30 @@
+class MouseSpawn : ZilchComponent
+{
+    [Property]
+    var Satelite : Archetype;
+    var LeftDown : Boolean = false;
+    [Dependency]
+    var MousePos : MousePos;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        JDebug(this.LeftDown, this);
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) )
+        {
+            if(!this.LeftDown)
+            {
+                this.LeftDown = true;
+                this.Space.CreateAtPosition(this.Satelite, this.MousePos.WorldPos);
+            }
+        }
+        else
+        {
+            this.LeftDown = false;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+class MousePos : ZilchComponent
+{
+    [Dependency]
+    var Viewport : CameraViewport;
+    
+    var ScreenPos : Real2 { get { return Zero.Mouse.ScreenPosition; } }
+    var WorldPos  : Real3 { get { return this.Viewport.ScreenToWorldZPlane(this.ScreenPos,0); } }
+}

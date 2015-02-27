@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SateliteController",
+		uint64 ResourceId = 544fa0c4f6b17cb8,
+	},
+},

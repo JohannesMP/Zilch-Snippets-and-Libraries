@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SNIPPET_CameraBounds",
+		uint64 ResourceId = 5404c97224529596,
+	},
+},

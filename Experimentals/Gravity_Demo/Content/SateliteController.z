@@ -1,0 +1,34 @@
+class SateliteController : ZilchComponent
+{
+    [Dependency]
+    var Transform : Transform;
+    var Position : Real3
+    {
+        get { return this.Transform.WorldTranslation; }
+        set { this.Transform.WorldTranslation = value; }
+    }
+    
+    [Dependency]
+    var Collider : Collider;
+    var Velocity : Real3
+    {
+        get { return this.RigidBody.Velocity; }
+        set { this.RigidBody.Velocity = value; }
+    }
+    [Dependency]
+    var RigidBody : RigidBody;
+    
+    var GravityField : GravityField;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.GravityField = this.Space.FindObjectByName("Scripts").GravityField;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var grav = this.GravityField.GetGravity(this.Position);
+        this.Velocity += grav * event.Dt;
+    }
+}

@@ -1,0 +1,98 @@
+class GravityField : ZilchComponent
+{
+    [Property]
+    var SunPath : CogPath;
+    [Property]
+    var ShowVectorField : Boolean =  false;
+    [Property]
+    var VectorColorMin : Real4;
+    [Property]
+    var VectorColorMax : Real4;
+    [Property]
+    var VectorMaxFactor : Real = 1;
+    [Property]
+    var VectorFieldDensity : Real = 2;
+    
+    var Sun : Cog
+    {
+        get
+        {
+            if(this.SunPath.Cog != null && this.SunPath.Cog.SunController != null)
+            {
+                return this.SunPath.Cog;
+            }
+            throw new Exception("HEY DUMMY, MAKE SURE TO SELECT A SUN WITH A SUN CONTROLLER!");
+        }
+    }
+    
+    var SunPosition : Real3
+    {
+        get { return this.Sun.Transform.WorldTranslation; }
+        set { this.Sun.Transform.WorldTranslation = value; }
+    }
+    
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var mousePosition = this.LevelSettings.MousePos.WorldPos;
+        var gravity = this.GetGravity(mousePosition);
+        JDebug(Math.Length(gravity));
+        //JDebug.Vector(mousePosition, mousePosition+gravity);
+    }
+    
+    function GetGravity(position : Real3) : Real3
+    {
+        var diff = this.SunPosition - position;
+        var lengthsq = Math.LengthSq(diff);
+        
+        var magnitude = 0.0;
+        if(lengthsq != 0)
+        {
+            magnitude = 1.0/Math.LengthSq(diff);
+        }
+        return Math.Normalize(diff) * magnitude * this.Sun.SunController.Volume;
+    }
+    
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        if(this.ShowVectorField)
+        {
+            this.DrawVectorField();
+        }
+    }
+    
+    function DrawVectorField()
+    {
+        var bounds = this.LevelSettings.CameraBounds;
+        for(var x = bounds.UpLeft.X; x < bounds.UpRight.X; x+= this.VectorFieldDensity)
+        {
+            for(var y = bounds.DownLeft.Y; y < bounds.UpLeft.Y; y+= this.VectorFieldDensity)
+            {
+                    // The current point on the grid
+                var point = Real3(x,y,0);
+                    // The gravity of that point
+                var gravity = this.GetGravity(point);
+                var gravityMag = Math.Length(gravity);
+                
+                var lengthFactor = Math.Min(gravityMag, this.VectorMaxFactor);
+                var colorFactor  = Math.Min(gravityMag/5, this.VectorMaxFactor);
+                
+                var lengthWeight = lengthFactor/this.VectorMaxFactor;
+                var colorWeight = colorFactor/this.VectorMaxFactor;
+                
+                var vector = Math.Normalize(gravity) * lengthWeight;
+                var color = (this.VectorColorMax * colorWeight) + (this.VectorColorMin * (1-colorWeight));
+                
+                
+                JDebug.Vector(point, point + vector, color, 0.08);
+            }
+        }
+    }
+    
+}

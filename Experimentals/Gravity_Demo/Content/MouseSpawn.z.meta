@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MouseSpawn",
+		uint64 ResourceId = 544fb9c246142900,
+	},
+},

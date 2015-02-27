@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "GravityDemo",
+	uint64 LibraryId = 54d48b3ec2328b30,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

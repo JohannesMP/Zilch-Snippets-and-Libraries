@@ -1,0 +1,91 @@
+class SunController : ZilchComponent
+{
+    [Property]
+    var ScaleChangeSpeed : Real = 10;
+    [Property]
+    var Density : Real = 0.1;
+    
+    [Property]
+    var ColorMin : Real4;
+    [Property]
+    var ColorMax : Real4;
+    
+    var MaxColorRadius : Real = 10;
+
+    
+    [Dependency]
+    var Transform : Transform;
+    
+    
+    [Dependency]
+    var Sprite : Sprite;
+    
+    var Scale : Real3
+    {
+        get { return this.Transform.WorldScale; }
+        set { this.Transform.WorldScale = value; }
+    }
+    
+    var Radius : Real
+    {
+        get { return Math.Length(this.Scale); }
+        set
+        {
+            this.Scale = Math.Normalize(this.Scale) * value;
+        }
+    }
+    
+    var Volume : Real
+    {
+        get
+        {
+            return this.Density * Math.Pi * (4.0/3) * this.Radius * this.Radius * this.Radius;
+        }
+        set
+        {
+            var radCubed = (value/this.Density) / (Math.Pi * (4.0/3.0));
+            var radius = Math.Pow(radCubed, (1.0/3.0));
+            this.Radius = Math.Max(radius, 0);
+        }
+    }
+
+    
+    
+    var Color : Real4
+    {
+        get { return this.Sprite.Color; }
+        set { this.Sprite.Color = value; }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.UpdateColor();
+        
+        if(JKeys.EQUAL)
+        {
+            this.Radius += this.ScaleChangeSpeed * event.Dt;
+        }
+        if(JKeys.MINUS)
+        {
+            this.Radius -= this.ScaleChangeSpeed * event.Dt;
+        }
+    }
+    
+    function UpdateColor()
+    {
+        var colorWeight = Math.Min(this.Radius, this.MaxColorRadius)/this.MaxColorRadius;
+        this.Color = this.ColorMax * colorWeight + this.ColorMin * (1-colorWeight);
+    }
+    
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        JDebug.Point(this.LevelSettings.MousePos.WorldPos);
+        //JDebug(this.Volume, this);
+    }
+}

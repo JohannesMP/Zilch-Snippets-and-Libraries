@@ -1,0 +1,229 @@
+/*
+ * Version:     JDebug v 0.1.3 (01/29/2015)
+ * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * License:     Free for use by all DigiPen Students
+ * ===============================================
+ * Utility functions for Debugging:
+ *
+ *  --- Console Utilities ---
+ * JDebug               - Alias for Console.WriteLine (with ability to display timestamp and caller)
+ * JDebug.Dump          - Alias for Console.DumpValue (with ability to display timestamp and caller)
+ *
+ *  --- DebugDraw Utilities ---
+ *      NOTE: Do NOT use in LogicUpdate! Use FrameUpdate Instead!
+ *            That way they will still show up when you pause the game.
+ * JDebug.Print         - Prints Debug String to screen (PLACEHOLDER! not yet implemented by Zero)
+ * JDebug.Point         - Debug Draws a Point
+ * JDebug.Vector        - Debug Draws a Vector between two points
+ * JDebug.Line          - Debug Draws a Line between two points
+ * JDebug.Circle        - Debug Draws a Circle
+ * JDebug.Box           - Debug Draws a Box
+ *
+ *  --- String Utilities ---
+ * JDebug.GetTimeString - Generate a nicely formatted string of current game time from a provided ZilchComponent
+ */
+
+class JDebug
+{
+    /*
+     * Configuration Variables.
+     * - Until Static Variables are supported by zero We have to use read-only properties
+     * - Basically this is to keep all variables you might want to change in one place, not scattered throughout the file.
+     */
+    [Static] var Config_TimePrecision   : Integer   { get { return 2; } }
+    [Static] var Config_DrawSpace       : Integer   { get { return 0; } }
+    [Static] var Config_Duration        : Real      { get { return 0; } } 
+    [Static] var Config_LineWidth       : Real      { get { return 1; } } // NOTE : Not currently implemented by Zero
+    [Static] var Config_VectorHead      : Real      { get { return 0.3; } }
+    [Static] var Config_ColorText       : Real4     { get { return Real4(1,1,1,1); } }
+    [Static] var Config_ColorPoint      : Real4     { get { return Real4(1,1,1,1); } }
+    [Static] var Config_ColorVector     : Real4     { get { return Real4(1,0,0,1); } }
+    [Static] var Config_ColorLine       : Real4     { get { return Real4(1,0,0,1); } }
+    [Static] var Config_ColorCircle     : Real4     { get { return Real4(1,1,0,1); } }
+    [Static] var Config_ColorBox        : Real4     { get { return Real4(1,1,0,1); } }
+
+    /*
+     * Alias for Console.WriteLine(...)
+     *
+     * Usage: JDebug(123);      // prints "123" to the Console.
+     * Usage: JDebug(123, this) // prints "TIME|ObjectName> : 123" to the Console
+     */
+    constructor(a : any) { Console.WriteLine(a); }
+    constructor(a : any, z : ZilchComponent)
+    {
+        var timeString = "`JDebug.GetTimeString(z)`|`z.Owner.Name`: `a` ";
+        if(z.Space.TimeSpace.GloballyPaused) { timeString = String.Concatenate("P",timeString); }
+        JDebug(timeString);
+    }
+    
+    /*
+     * Alias for Console.DumpValue(...)
+     *
+     * Like with JDebug(...), including a ZilchComponent
+     */
+    [Static] function Dump(a : any) { JDebug.Dump(a, 1); }
+    [Static] function Dump(a : any, depth : Integer) { Console.DumpValue(a, depth); }
+    [Static] function Dump(a : any, z : ZilchComponent) { JDebug.Dump(a, 1, z); }
+    [Static] function Dump(a : any, depth : Integer, z : ZilchComponent)
+    {
+        JDebug("\n========", z);
+        JDebug.Dump(a, depth);
+    }
+    
+    /*
+     * Utility functions for Debug Drawing Text to screen.
+     *
+     * ====== PLACEHOLDER!! DebugText IS NOT CURRENTLY IMPLEMENTED BY ZERO!! ======
+     */
+    [Static] function Print(a : any)
+    {
+        var text = DebugText();
+        text.OnTop(true);
+        text.SpaceId(JDebug.Config_DrawSpace);
+        text.DisplayText("`a`");
+        text.Float4Color(JDebug.Config_ColorText);
+        text.Draw();
+    }
+
+    /*
+     * Utility Functions for Debug Drawing Points
+     *
+     * Usage: JDebug.Point(Point)                // Draws a visual indicator at the given point
+     * Usage: JDebug.Point(Point, Real4(1,0,0,1) // Draws a red visual indicator at the given point
+     */
+    [Static] function Point(pos : Real3) : DebugCircle { return JDebug.Point(pos, JDebug.Config_ColorPoint); }
+    [Static] function Point(pos : Real3, color : Real4) : DebugCircle 
+    {
+        var line1 = DebugLine();
+        line1.OnTop(true);
+        line1.SpaceId(JDebug.Config_DrawSpace);
+        line1.Start(pos+Real3(0,0.3,0));
+        line1.End(pos+Real3(0,-0.3,0));
+        line1.Float4Color(color);
+        line1.Duration(JDebug.Config_Duration);
+        line1.Width(JDebug.Config_LineWidth);   // Not currently implemented by Zero
+        
+        line1.Draw();
+        
+        var line2 = DebugLine();
+        line2.OnTop(true);
+        line1.SpaceId(JDebug.Config_DrawSpace);
+        line2.Start(pos+Real3(0.3,0,0));
+        line2.End(pos+Real3(-0.3,0,0));
+        line2.Float4Color(color);
+        line1.Duration(JDebug.Config_Duration);
+        line2.Width(JDebug.Config_LineWidth);   // Not currently implemented by Zero
+        
+        line2.Draw();
+        
+        var vectorVisual = DebugCircle();
+        vectorVisual.OnTop(true);
+        line1.SpaceId(JDebug.Config_DrawSpace);
+        vectorVisual.Axis(Real3(0,0,1));
+        vectorVisual.Position(pos);
+        vectorVisual.Radius(0.07);
+        vectorVisual.Float4Color(color);
+        vectorVisual.Duration(JDebug.Config_Duration);
+        vectorVisual.Width(JDebug.Config_LineWidth);   // Not currently implemented by Zero
+        
+        vectorVisual.Draw();
+        
+        return vectorVisual;
+    }
+
+    /*
+     * Utility Functions for Debug Drawing Vectors
+     *
+     * Usage: JDebug.Vector(Point1, Point2)                // Draws an arrow between two points
+     * Usage: JDebug.Vector(Point1, Point2, Real4(1,0,0,1) // Draws a red arrow between two points
+     */
+    [Static] function Vector(start : Real3, end : Real3): DebugLine { return JDebug.Vector(start, end, JDebug.Config_ColorVector); }
+    [Static] function Vector(start : Real3, end : Real3, color : Real4): DebugLine { return JDebug.Vector(start, end, color, JDebug.Config_VectorHead); }
+    [Static] function Vector(start : Real3, end : Real3, headSize : Real): DebugLine { return JDebug.Vector(start, end, JDebug.Config_ColorVector, headSize); }
+    [Static] function Vector(start : Real3, end : Real3, color : Real4, headSize : Real): DebugLine
+    {
+        var vectorVisual = DebugLine();
+        vectorVisual.OnTop(true);
+        vectorVisual.SpaceId(JDebug.Config_DrawSpace);
+        vectorVisual.HeadSize(headSize);
+        vectorVisual.Start(start);
+        vectorVisual.End(end);
+        vectorVisual.Float4Color(color);
+        vectorVisual.Duration(JDebug.Config_Duration);
+        vectorVisual.Width(JDebug.Config_LineWidth);   // Not currently implemented by Zero
+        
+        vectorVisual.Draw();
+        
+        return vectorVisual;
+    }
+    
+    /*
+     * Utility Functions for Debug Drawing Lines
+     *
+     * Usage: JDebug.Line(Point1, Point2)                // Draws a line between two points
+     * Usage: JDebug.Line(Point1, Point2, Real4(1,0,0,1) // Draws a red line between two points
+     */
+    [Static] function Line(start : Real3, end : Real3) : DebugLine { return JDebug.Line(start, end, JDebug.Config_ColorLine); }
+    [Static] function Line(start : Real3, end : Real3, color : Real4) : DebugLine { return JDebug.Vector(start, end, color, 0); }
+    
+    /*
+     * Utility functions for Debug Drawing Circles
+     *
+     * Usage: JDebug.Circle(Real3(1,2,3), 1.0);                 // Draws a debug circle at point 1,2,3 with radius 1.0
+     * Usage: JDebug.Circle(Real3(1,2,3), 2.0, Real4(1,0,0,1)); // Draws a red debug circle
+     */
+    [Static] function Circle(pos : Real3, radius : Real) : DebugCircle { return JDebug.Circle(pos, radius, JDebug.Config_ColorCircle); }
+    [Static] function Circle(pos : Real3, radius : Real, color : Real4) : DebugCircle
+    {
+        var vectorVisual = DebugCircle();
+        vectorVisual.OnTop(true);
+        vectorVisual.SpaceId(JDebug.Config_DrawSpace);
+        vectorVisual.Axis(Real3(0,0,1));
+        vectorVisual.Position(pos);
+        vectorVisual.Radius(radius);
+        vectorVisual.Float4Color(color);
+        vectorVisual.Duration(JDebug.Config_Duration);
+        vectorVisual.Width(JDebug.Config_LineWidth);   // Not currently implemented by Zero
+        
+        vectorVisual.Draw();
+        
+        return vectorVisual;
+    }
+    
+    /*
+     * Utility functions for Debug Drawing Boxes
+     *
+     * Usage: JDebug.Box(Real3(1,2,3), Real3(1,1,1))       // Draws a 1x1x1 box at point 1,2,3
+     * Usage  JDebug.Box(Real3(1,2,3), Real3(1,1,1), true) // Draws the corners of a 1x1x1 box at point 1,2,3
+     */
+    [Static] function Box(pos : Real3, size : Real3) : DebugBox { return JDebug.Box(pos, size, false); }
+    [Static] function Box(pos : Real3, size : Real3, corner : Boolean) : DebugBox
+    {
+        var vectorVisual = DebugBox();
+        vectorVisual.OnTop(true);
+        vectorVisual.SpaceId(JDebug.Config_DrawSpace);
+        vectorVisual.Position(pos);
+        vectorVisual.Size(size);
+        vectorVisual.Float4Color(JDebug.Config_ColorBox);
+        vectorVisual.Duration(JDebug.Config_Duration);
+        vectorVisual.Width(JDebug.Config_LineWidth);   // Not currently implemented by Zero
+        vectorVisual.Corners(corner);
+        
+        vectorVisual.Draw();
+        
+        return vectorVisual;
+    }
+    
+    /*
+     * Utility Function for getting a nicely formatted printout of the current time from a provided ZilchComponent
+     * 
+     * Usage: JDebug.GetTimeString(this)     // Returns: "4.57"   at time 4.56789...
+     * Usage: JDebug.GetTimeString(this, 4)  // Returns: "4.5679" at time 4.56789...
+     */
+    [Static] function GetTimeString(z : ZilchComponent) : String { return JDebug.GetTimeString(z, JDebug.Config_TimePrecision); }
+    [Static] function GetTimeString(z : ZilchComponent, precision : Integer) : String
+    {
+        return String.FormatC("%.`precision`f", z.Space.TimeSpace.RealTimePassed);
+    }
+}
