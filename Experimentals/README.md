@@ -25,7 +25,7 @@ I may expand on this later with a general library that takes delegates as an arg
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Follow_Target>Follow Target</a>
 <img width=300 src=http://i.imgur.com/9If3seo.png />
 
-A small example script that shows how getters and setters can be used to create complex behavior with very little code. The core code is in FollowTarget.z, and the interesting part is first few lines before initialize that define TargetDist and targetDiff. 
+A small example script that shows how getters and setters can be used to create complex behavior with very little code. The core code is in <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/blob/master/Experimentals/Follow_Target/Content/FollowTarget.z>`FollowTarget.z`</a>, and the interesting part is first few lines before initialize that define TargetDist and targetDiff. 
 
 You can move the objects on the screen with the arrow keys. Notice how the objects appear as if they have a physics simulation with joints, etc governing their behavior. It's actually far simpler than that.
 
