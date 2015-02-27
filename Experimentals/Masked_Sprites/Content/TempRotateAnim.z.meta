@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TempRotateAnim",
+		uint64 ResourceId = 54f8ad40b12c1939,
+	},
+},

@@ -1,0 +1,21 @@
+class MaskLogic : ZilchComponent
+{
+    [Dependency]
+    var Transform : Transform;
+    
+    var Position : Real3
+    {
+        get { return this.Transform.WorldTranslation; }
+        set { this.Transform.WorldTranslation = value; }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Position = this.LevelSettings.MousePos.WorldPos;
+    }
+}

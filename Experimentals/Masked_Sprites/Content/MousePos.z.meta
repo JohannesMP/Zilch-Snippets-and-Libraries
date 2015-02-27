@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MousePos",
+		uint64 ResourceId = 54ff41b263872e05,
+	},
+},

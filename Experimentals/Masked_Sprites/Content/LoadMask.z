@@ -1,0 +1,8 @@
+class LoadMask : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        var space = this.GameSession.CreateNamedSpace("MaskSpace", Archetype.Find("Space"));
+        space.LoadLevel(Level.Find("MaskLevel"));
+    }
+}

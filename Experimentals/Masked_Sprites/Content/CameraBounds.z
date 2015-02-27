@@ -1,0 +1,26 @@
+class CameraInfo : ZilchComponent
+{
+    [Dependency]
+    var Viewport : CameraViewport;
+    
+    var UpLeft    : Real3 { get { return this.ConvertScreenToWorld( Real2(0, 0) ); } }
+    var UpRight   : Real3 { get { return this.ConvertScreenToWorld( Real2(1, 0) ); } }
+    var DownLeft  : Real3 { get { return this.ConvertScreenToWorld( Real2(0, 1) ); } }
+    var DownRight : Real3 { get { return this.ConvertScreenToWorld( Real2(1, 1) ); } }
+    
+    var Up    : Real { get { return this.UpLeft.Y; } }
+    var Down  : Real { get { return this.DownLeft.Y; } }
+    var Left  : Real { get { return this.UpLeft.X; } }
+    var Right : Real { get { return this.UpRight.X; } }
+    
+    var Width : Real { get { return this.Right - this.Left; } }
+    var Height : Real { get { return this.Up - this.Down; } }
+    
+    var Center : Real3 { get { return this.ConvertScreenToWorld( Real2(0.5, 0.5) ); } }
+    
+    function ConvertScreenToWorld(screenpos : Real2) : Real3
+    {
+        var screenPos = this.Viewport.ViewportToScreen(this.Viewport.ViewportResolution * screenpos);
+        return this.Viewport.ScreenToWorldZPlane(screenPos, 0.0);
+    }
+}

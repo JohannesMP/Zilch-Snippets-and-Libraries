@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "MaskText",
+		uint64 ResourceId = 54ff5016c4d3288e,
+	},
+},

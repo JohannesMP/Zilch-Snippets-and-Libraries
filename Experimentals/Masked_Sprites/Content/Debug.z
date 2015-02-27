@@ -1,0 +1,14 @@
+
+// a Quick and dirty debug script. basically just an alias for Console.WriteLine
+class Debug
+{
+    constructor(a : any)
+    {
+        Console.WriteLine(a);
+    }
+    
+    constructor(a : any, z : ZilchComponent)
+    {
+        Console.WriteLine("`z.Owner.Name` : `a`");
+    }
+}

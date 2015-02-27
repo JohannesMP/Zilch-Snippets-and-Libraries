@@ -1,0 +1,18 @@
+class TempRotateAnim : ZilchComponent
+{
+    [Dependency]
+    var Transform : Transform;
+    
+    [Property]
+    var Rotation : Real = 1;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Transform.RotateAnglesWorld(Real3(0,0,this.Rotation)*event.Dt);
+    }
+}

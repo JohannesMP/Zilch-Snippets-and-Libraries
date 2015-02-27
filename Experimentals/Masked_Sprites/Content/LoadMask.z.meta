@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LoadMask",
+		uint64 ResourceId = 54ff42aa26ea68b7,
+	},
+},

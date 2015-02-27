@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MaskLogic",
+		uint64 ResourceId = 54ff41d36881753e,
+	},
+},

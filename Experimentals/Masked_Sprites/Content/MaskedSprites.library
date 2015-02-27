@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "MaskedSprites",
+	uint64 LibraryId = 54cb58cd7e908161,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

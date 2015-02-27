@@ -1,0 +1,25 @@
+class ScaleToScreen : ZilchComponent
+{
+    [Dependency]
+    var Area : Area;
+    [Dependency]
+    var Transform : Transform;
+    var Position : Real3
+    {
+        get { return this.Transform.WorldTranslation; }
+        set { this.Transform.WorldTranslation = value; }
+    }
+    
+    var CameraInfo : CameraInfo { get { return this.LevelSettings.CameraInfo; } }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Area.Size = Real2(this.CameraInfo.Width, this.CameraInfo.Height);
+        this.Position = this.CameraInfo.Center;
+    }
+}
