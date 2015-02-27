@@ -8,6 +8,8 @@ Libraries were last tested with **Zero Build 10681**
 
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Libraries/TYPE_Map>Type: Map</a>
 
+<img width=300 src=http://i.imgur.com/7L9Vy8E.png/>
+
 - Currently you cannot iterate over <a href=http://zero.digipen.edu/Zilch/ZilchTypes/HashMap.html>hashmaps</a> in Zilch.
 - This custom container combines a hashmap and an <a href=http://zero.digipen.edu/Zilch/ZilchTypes/Array.html>array</a> to allow you to iterate over it, while still being able to use it like a hashmap.
 
