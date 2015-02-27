@@ -1,7 +1,11 @@
 # Zilch Snippets and Libraries
-This repository contains Code Snippets, Libraries and Example projects created by me (Johannes Peter) with DigiPen's Proprietary *<a href=zero.digipen.edu>Zero Engine</a>*.
+This repository contains code snippets, libraries and example projects, shared here as a resource for other DigiPen students.
 
-Most of the code will be written in <a href=http://zero.digipen.edu/Zilch.html>Zilch</a> (Zero's scripting language).
+Most of the code is designed to be used with DigiPen's *<a href=zero.digipen.edu>Zero Engine</a>* Zero engine and will be written in <a href=http://zero.digipen.edu/Zilch.html>Zilch</a> (Zero's scripting language).
+
+As of this writing, Zero is only available to DigiPen students.
+
+
 
 ## Contents
 * **<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals>Experimentals</a>**
