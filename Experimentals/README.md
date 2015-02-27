@@ -25,18 +25,18 @@ I may expand on this later with a general library that takes delegates as an arg
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Follow_Target>Follow Target</a>
 <img width=300 src=http://i.imgur.com/9If3seo.png />
 
-A small example script that shows how getters and setters can be used to create complex behavior with very little code. The core code is in <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/blob/master/Experimentals/Follow_Target/Content/FollowTarget.z>`FollowTarget.z`</a>, and the interesting part is first few lines before initialize that define TargetDist and targetDiff. 
+A small example script that shows how getters and setters can be used to create complex behavior with very little code. The core code is in <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/blob/master/Experimentals/Follow_Target/Content/FollowTarget.z>`FollowTarget.z`</a>, and the interesting part is first few lines before initialize that define `TargetDist` and `TargetDiff`. 
 
 You can move the objects on the screen with the arrow keys. Notice how the objects appear as if they have a physics simulation with joints, etc governing their behavior. It's actually far simpler than that.
 
 
-* On a given object you can set its target via the TargetPath property. 
+* On a given object you can set its target via the `TargetPath` property. 
 * By simply setting TargetDist equal to a given value, the getters/setters correctly resolve the position of the object relative to its target.
-* Then all you have to do is create a bunch of objects and chain them together with their respective targetpaths, and you get behavior that appears far more complex than it actually is.
+* Then all you have to do is create a bunch of objects and chain them together with their respective TargetPaths, and you get behavior that appears far more complex than it actually is.
 * Here are some examples of behaviors you can achieve:
     * Replace the contents of `OnLogicUpdate` with `this.TargetDist = 1.0;`
     * Replace the contents of `OnLogicUpdate` with `this.TargetDist *= 0.95;`
-       * now parent the camera to one of the objects in the chain (making sure to set its relative X and Y coordinates to 0)
+       * now parent the camera to one of the objects in the chain (making sure to set its relative `X` and `Y` coordinates to 0)
 
 
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Masked_Sprites>Masked Sprites</a>
