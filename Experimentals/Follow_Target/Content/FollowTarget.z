@@ -1,7 +1,7 @@
 /*
  * File:        FollowTarget.z
  * Author:      Johannes Peter (j.peter@digipen.edu)
- * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * Copyright:   Â©2014-15 DigiPen Institute of Technology | All Rights Reserved
  * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
  * ===============================================
  */
@@ -73,8 +73,6 @@ class FollowTarget : ZilchComponent
     
     function OnLogicUpdate(event : UpdateEvent)
     {
-        
-       // if(this.Target.FollowTarget)
         
         /* 1. Figure out your position relative to the target */
         
