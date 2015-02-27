@@ -1,0 +1,12 @@
+This demo illustrates the useage of the UIStateManager Component
+
+   - When left clicking and holding the object, it gains the 'held' state.
+        - the 'held' state is represented by a yellow color.
+
+   - When right clicking the object loses its 'active' state
+        - when inactive, the object no longer responds to input.
+
+   - When left clicked successfully, the object's 'selected' status toggles.
+        - When 'selected' the object is a circle, otherwise it is a square.
+
+Notice how when clicking and dragging on the object, and letting go outside of it the selected status does not register, since it was not considered a valid click.

@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "UI_StateManager",
+	uint64 LibraryId = 54d4b1995cd42c45,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

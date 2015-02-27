@@ -1,0 +1,307 @@
+/******************************************************************************/
+/*!
+@date       02/07/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+
+@brief
+    Handling UI state changes on a given UI object.
+    
+    The following state flags are available for the user to set manually via AddState(), RemoveState() and ToggleState():
+        - UIState.Visible
+        - UIState.Active
+        - UIState.Selected
+        - UIState.Focused
+    What they represent is up to the user's implementation.
+        
+    The following state flags are set by this component and should NOT be modified by the user:
+        - UIState.Hover
+        - UIState.Held_Left
+        - UIState.Held_Right
+        - UIState.Held_Middle
+        
+    The user can view all state flags via GetStates(<UIState>).
+    The user can for individual state flags via HaveState(<UIState>).
+    
+    When a state is added, the event is sent to all of its children
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+
+// Shold be used to return the new complete set of UIState flags of the caller
+class UIStateEvent : ZilchEvent
+{
+    var State  : UIState;
+    var Sender : Cog; // The root sender of this event chain
+    
+    constructor(state : UIState) : base()
+    {
+        this.State = state;
+    }
+    
+    constructor(state : UIState, sender : Cog ) : base()
+    {
+        this.State = state;
+        this.Sender = sender;
+    }
+    
+    function HaveState(state : UIState) : Boolean
+    {
+        return (this.State & state) != 0;
+    }
+}
+
+// Should be used to indicate the UIState flags added, not the whole set
+class UIStateAddedEvent : UIStateEvent
+{
+    constructor(state : UIState) : base(state) {}
+    constructor(state : UIState, sender : Cog) : base(state, sender) {}
+}
+
+// Should be used to indicate the UIState flags removed, not the whole set
+class UIStateRemovedEvent : UIStateEvent
+{
+    constructor(state : UIState) : base(state) {}
+    constructor(state : UIState, sender : Cog) : base(state, sender) {}
+
+}
+
+// When a valid Mouse Up event has been detected on this object.
+// Effectively this event is only sent if the 'Held' flagis removed while the 'Hover' flag is set.
+class UIClickedEvent : ViewportMouseEvent
+{
+    var MouseState : MouseState;
+    var WasActive : Boolean;
+    
+    var Sender : Cog; // The latest sender in this event chain
+    
+    constructor(mouseState : MouseState) : base()
+    {
+        this.MouseState = mouseState;
+    }
+    constructor(mouseState : MouseState, sender : Cog) : base()
+    {
+        this.MouseState = mouseState;
+        this.Sender = sender;
+    }
+}
+
+// Used to be able to include what mouse button was associated with mouse down and, more importantly, mouse up events
+class MouseState
+{
+    var Left   : Boolean = false;
+    var Middle : Boolean = false;
+    var Right  : Boolean = false;
+}
+
+// Storing and tracking the UI state of a given object.
+class UIStateManager : ZilchComponent
+{
+    // Dispatch State Events to Children
+    [Property] var DispatchStateEvents : Boolean = true;
+    // Dispatch Click Events to Parents
+    [Property] var DispatchClickEvents : Boolean = true;
+    
+    [Dependency]
+    var Reactive : Reactive;
+    
+    sends UIStateChanged   : UIStateEvent;
+    sends UIStateAdded     : UIStateAddedEvent;
+    sends UIStateRemoved   : UIStateRemovedEvent;
+    sends UIClicked        : UIClickedEvent;
+    
+    // Used for tracking the last mouse state, so we know what button it was that was let go during a mouse up event.
+    var LastMouseState : MouseState = new MouseState();
+    
+    // Used for tracking the offset between the mouse and the object, which can be used during dragging to retain a correct offset
+    var MouseClickPointOffset : Real3;
+    
+    var StateContainer : UIStateContainer = UIStateContainer();
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit,  this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown,  this.OnMouseDown);
+        // We only listen to mouseup globally when we received a mouse down event. See OnMouseDown
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        this.AddState(UIState.Hover);
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        this.RemoveState(UIState.Hover);
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        // Calculate the relative position of the mouse click to our own position
+        this.MouseClickPointOffset = event.HitObject.Transform.WorldTranslation - event.HitPosition;
+        
+        // Track mouse button changes:
+        
+        // Left Mouse Button was not down, but is now
+        var left = event.Mouse.IsButtonDown(MouseButtons.Left);
+        
+        if(left && !this.LastMouseState.Left)
+        {
+            this.LastMouseState.Left = true;
+            this.AddState(UIState.Held_Left);
+        }
+        
+        // Right Mouse Button was not down, but is now
+        var right = event.Mouse.IsButtonDown(MouseButtons.Right);
+        
+        if(right && !this.LastMouseState.Right)
+        {
+            this.LastMouseState.Right = event.Mouse.IsButtonDown(MouseButtons.Right);
+            this.AddState(UIState.Held_Right);
+        }
+        
+        // Middle Mouse Button was not down, but is now
+        var middle = event.Mouse.IsButtonDown(MouseButtons.Middle);
+        
+        if(middle && !this.LastMouseState.Middle)
+        {
+            this.LastMouseState.Middle = event.Mouse.IsButtonDown(MouseButtons.Middle);
+            this.AddState(UIState.Held_Middle);
+        }
+        
+        // To be able to know when we are being held while the mouse is outside of us we need to listen for a global mouseup
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+    }
+    
+    function OnMouseUp(event : ViewportMouseEvent)
+    {
+        // We want to include which button changed
+        var mouseReleased = new MouseState();
+              
+        // Track mouse button changes:
+              
+        //Left Mouse Button was down and has been released
+        var left = event.Mouse.IsButtonDown(MouseButtons.Left);
+        
+        if(!left && this.LastMouseState.Left) {
+            mouseReleased.Left = true;
+            this.LastMouseState.Left = false;
+            this.RemoveState(UIState.Held_Left);
+        }
+        
+        //Right Mouse Button was down and has been released
+        var right = event.Mouse.IsButtonDown(MouseButtons.Right);
+        
+        if(!right && this.LastMouseState.Right) {
+            mouseReleased.Right  = true; 
+            this.LastMouseState.Right = false;
+            this.RemoveState(UIState.Held_Right);
+        }
+        
+        //Middle Mouse Button was down and has been released
+        var middle = event.Mouse.IsButtonDown(MouseButtons.Middle);
+        
+        if(!middle && this.LastMouseState.Middle) {
+            mouseReleased.Middle = true;
+            this.LastMouseState.Middle = false;
+            this.RemoveState(UIState.Held_Middle);
+        }
+        
+        // We only count clicks if we are the target AND we actually received a valid mousedown beforehand for the given button
+        var validClick = mouseReleased.Left || mouseReleased.Middle || mouseReleased.Right;
+        
+        if(event.HitObject == this.Owner && validClick)
+        {
+            this.Owner.DispatchEvent(Events.UIClicked, new UIClickedEvent(mouseReleased, this.Owner));
+            if(this.DispatchClickEvents)
+            {
+                this.Owner.DispatchUp(Events.UIClicked, new UIClickedEvent(mouseReleased, this.Owner));
+            }
+        }
+        
+        // Stop listening for mouse up events if we no longer have any mouse buttons held
+        if(event.Mouse.IsButtonDown(MouseButtons.None))
+        {
+            Zero.Disconnect(this.Space, Events.MouseUp, this);
+        }
+    }
+    
+    function HaveState(state : UIState) : Boolean { return this.StateContainer.Have(state); }
+    
+    // Note: Do not manually set Mouse-related state flags such as Hover, Held_Left, Held_Right and Held_Middle
+    function SetState(state : UIState, doAdd : Boolean) : Boolean
+    {
+        if(this.StateContainer.Set(state, doAdd))
+        {
+            // Regardless of if a state was added or removed, we send a statechanged event
+            var newEvent = new UIStateEvent(this.GetStates(), this.Owner);
+            
+            this.Owner.DispatchEvent(Events.UIStateChanged, newEvent);
+            if(this.DispatchStateEvents)
+            {
+                this.Owner.DispatchEvent(Events.UIStateChanged, newEvent);
+            }
+            
+            
+            // Then we also send an event if removed or added. This redundancy is purely for convenience of the user
+            
+            if(doAdd)
+            {
+                newEvent = new UIStateAddedEvent(state, this.Owner);
+                
+                this.Owner.DispatchEvent(Events.UIStateAdded, newEvent);
+                if(this.DispatchStateEvents)
+                {
+                    this.Owner.DispatchDown(Events.UIStateAdded, newEvent);
+                }
+            }
+            else
+            {
+                newEvent = new UIStateRemovedEvent(state, this.Owner);
+                
+                this.Owner.DispatchEvent(Events.UIStateRemoved, newEvent);
+                if(this.DispatchStateEvents)
+                {
+                    this.Owner.DispatchDown(Events.UIStateRemoved, newEvent);
+                }
+            }
+            // State change was successful
+            return true;
+        }
+        // State change failed (like trying to add a state that already exists, or removing a state that does not)
+        return false;
+    }
+    // Note: Do not manually set Mouse-related state flags such as Hover, Held_Left, Held_Right and Held_Middle
+    function AddState(state : UIState) : Boolean { return this.SetState(state, true); }
+    // Note: Do not manually set Mouse-related state flags such as Hover, Held_Left, Held_Right and Held_Middle
+    function RemoveState(state : UIState) : Boolean { return this.SetState(state, false); }
+    // Note: Do not manually set Mouse-related state flags such as Hover, Held_Left, Held_Right and Held_Middle
+    function ToggleState(state : UIState) : Boolean
+    {
+        if(this.HaveState(state))
+        {
+            return this.RemoveState(state);
+        }
+        else
+        {
+            return this.AddState(state);
+        }
+    }
+    
+    // Replaces the current states with the ones defined. Calls the appropriate setStates as needed.
+    function ReplaceStates(states : UIState)
+    {
+        this.StateContainer.Replace(states, this.SetState);
+    }
+    
+    function GetStates() : UIState
+    {
+        return this.StateContainer.GetStates();
+    }
+}

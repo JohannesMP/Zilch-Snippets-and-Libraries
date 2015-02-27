@@ -1,0 +1,138 @@
+/******************************************************************************/
+/*!
+@date       02/10/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+
+@brief
+   Used to illustrate some of the potential uses of UIStateContainer
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+
+class UIStateDemo : ZilchComponent
+{
+    [Dependency]
+    var UIStateManager : UIStateManager;
+    
+    var IsVisible : Boolean { get { return this.UIStateManager.HaveState(UIState.Visible); } }
+    var IsActive  : Boolean { get { return this.UIStateManager.HaveState(UIState.Active); } }
+    
+    [Dependency]
+    var Sprite : Sprite;
+    var Color : Real4
+    {
+        get { return this.Sprite.Color; }
+        set { this.Sprite.Color = value; }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.UIStateChanged, this.OnUIStateChange);
+        Zero.Connect(this.Owner, Events.UIStateAdded, this.OnUIStateAdded);
+        Zero.Connect(this.Owner, Events.UIStateRemoved, this.OnUIStateRemoved);
+        
+        Zero.Connect(this.Owner, Events.UIClicked, this.OnUIClicked);
+        
+        this.UIStateManager.AddState(UIState.Visible);
+        this.UIStateManager.AddState(UIState.Active);
+    }
+
+    function OnUIStateChange(event : UIStateEvent)
+    {
+        Console.WriteLine("`this.Owner.Name` : NEW STATE: `this.UIStateManager.GetStates()`");
+        
+        // Note: the following conditionals could also be handled in OnUIStateAdded and ONUIStateRemoved.
+        
+        // Hide ourselves if we are hidden
+        if(!this.IsVisible)
+        {
+            this.Sprite.Visible = false;
+            return;
+        }
+        else
+        {
+            this.Sprite.Visible = true;
+        }
+        
+        
+        // Disable ourselves if we are no longer active
+        if(!this.IsActive)
+        {
+            this.Color = Real4(0.2,0.2,0.2,0.7);
+            return;
+        }
+        
+        
+        // Change Color to Yellow when held with the left mouse button
+        if(this.UIStateManager.HaveState(UIState.Held_Left))
+        {
+            this.Color = Real4(1,1,0,this.Color.W);
+        }
+        else
+        {
+            this.Color = Real4(1,1,1,this.Color.W);
+        }
+        
+        
+        // Change Opacity to full when mouse over, or 75% when not
+        if(this.UIStateManager.HaveState(UIState.Hover))
+        {
+            this.Color = Real4(this.Color.X, this.Color.Y, this.Color.Z, 1);
+        }
+        else
+        {
+            this.Color = Real4(this.Color.X, this.Color.Y, this.Color.Z, 0.75);
+        }
+        
+        
+        //Change Shape to Circle when selected
+        if(this.UIStateManager.HaveState(UIState.Selected))
+        {
+            this.Sprite.SpriteSource = SpriteSource.Find("Circle");
+        }
+        else
+        {
+            this.Sprite.SpriteSource = SpriteSource.Find("Square");
+        }
+    }
+    
+    function OnUIStateAdded(event : UIStateAddedEvent)
+    {
+        //Console.WriteLine("- ADDED STATE: `event.State`");
+    }
+    
+    function OnUIStateRemoved(event : UIStateRemovedEvent)
+    {
+        //Console.WriteLine("- REMOVED STATE: `event.State`");
+    }
+    
+    function OnUIClicked(event : UIClickedEvent)
+    {
+        Console.WriteLine("`this.Owner.Name` : CLICKED!");
+                    
+        if(event.MouseState.Right)
+        {
+            this.UIStateManager.ToggleState(UIState.Active);
+        }
+        
+        // don't even bother handling other input if we're not active
+        if(!this.IsActive) { return; }
+        
+        if(event.MouseState.Left)
+        {
+            this.UIStateManager.ToggleState(UIState.Selected);
+        }
+        
+        if(event.MouseState.Middle)
+        {
+            this.UIStateManager.ToggleState(UIState.Selected);
+        }
+    }
+}
+

@@ -1,0 +1,122 @@
+/******************************************************************************/
+/*!
+@date       02/08/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+
+@brief
+    A data storage class for storing the state of a given UI element.
+    Any sort of event handling is done by UIStateManager which relies on this class
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+
+flags UIState {
+    Visible,        // If the UI element is even visible or not
+    Active,         // If the UI element can be interacted with
+    Selected,       // If the UI element is selected
+    Focused,        // If the UI element is in focus
+    Hover,          // If the mouse is hovering over the element        - This is modified by the UIStateManager
+    Held_Left,      // If the left   mouse button is held on the object - This is modified by the UIStateManager
+    Held_Right,     // If the right  mouse button is held on the object - This is modified by the UIStateManager
+    Held_Middle,    // If the middle mouse button is held on the object - This is modified by the UIStateManager
+    FLAG_LENGTH     // for keeping track of how many flags there are. if you add more states, make that this remains the last one!
+}
+
+
+class UIStateContainer
+{
+    var PRIVATE_State : UIState = 0 as UIState;
+    
+        // Used to ensure that we never have flag overflow. Returns if assignment was successful
+    function Set(state : UIState, doSet : Boolean) : Boolean
+    {
+        var stateChanged : Boolean = false;
+        
+        // we don't have it and want to add it
+        if(!this.Have(state) && doSet)
+        {
+            this.PRIVATE_State += state;
+            stateChanged = true;
+        }
+        // we have it and want to remove it
+        else if(this.Have(state) && !doSet)
+        {
+            this.PRIVATE_State -= state;
+            stateChanged = true;
+        }
+        
+        return stateChanged;
+    }
+    
+    // Attempt to add a given state
+    function Add(state : UIState)    : Boolean { return this.Set(state, true); }
+    
+    // Attempt to remove a given state
+    function Remove(state : UIState) : Boolean { return this.Set(state, false); }
+    
+    function Toggle(state : UIState)
+    {
+        if(this.Have(state))
+        {
+            this.Remove(state);
+        }
+        else
+        {
+            this.Add(state);
+        }
+    }
+    
+    // Checks if we have the given state
+    function Have(state : UIState) : Boolean
+    {
+        return (this.PRIVATE_State & state) != 0;
+    }
+    
+    // returns the state flags.
+    function GetStates() : UIState
+    {
+        return this.PRIVATE_State;
+    }
+    
+    // returns the max state flags
+    function GetStatesFull() : UIState
+    {
+        return (UIState.FLAG_LENGTH - 1) as UIState;
+    }
+
+    // replaces the current states with the given state
+    function Replace(states : UIState)
+    {
+        this.PRIVATE_State = states;
+    }
+    
+    // intended to be used with SetState in UIStateManager. Instead of replacing states directly it calls a provided function for each remove/add needed to change the current state into the requested state.
+    function Replace(states : UIState, func : delegate(state : UIState, doAdd : Boolean) : Boolean)
+    {
+        var fullStates = this.GetStatesFull();
+        
+        // calculate the states that would need to be added
+        var addStates = (fullStates - this.PRIVATE_State) & states;
+        // calculate the states that would need to be removed
+        var delStates = this.PRIVATE_State & (fullStates - states);
+
+        for(var i = 1; i < fullStates; i *= 2)
+        {
+            if ((addStates & i) != 0)
+            {
+                func(i as UIState, true);
+            }
+            
+            if ((delStates & i) != 0)
+            {
+                func(i as UIState, false);
+            }
+        }
+    }
+}

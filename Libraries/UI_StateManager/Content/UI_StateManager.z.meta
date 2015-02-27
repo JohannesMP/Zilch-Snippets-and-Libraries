@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UI_StateManager",
+		uint64 ResourceId = 54c22296b332c6bf,
+	},
+},
