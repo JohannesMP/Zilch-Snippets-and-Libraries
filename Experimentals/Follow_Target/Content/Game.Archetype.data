@@ -1,0 +1,12 @@
+GameSession = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	DefaultGameSetup = 
+	{
+		string StartingSpaceName = "4faa6050b86884ec:DefaultArchetype",
+		string StartingLevelName = "4faa6050b86892a8:DefaultLevel",
+	},
+},

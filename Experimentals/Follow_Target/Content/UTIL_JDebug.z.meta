@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UTIL_JDebug",
+		uint64 ResourceId = 54c0b363ee677397,
+	},
+},

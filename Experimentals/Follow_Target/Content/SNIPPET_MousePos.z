@@ -1,0 +1,16 @@
+/*
+ * File:        MousePos.z
+ * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+ * ===============================================
+ */
+
+class MousePos : ZilchComponent
+{
+    [Dependency]
+    var Viewport : CameraViewport;
+    
+    var ScreenPos : Real2 { get { return Zero.Mouse.ScreenPosition; } }
+    var WorldPos  : Real3 { get { return this.Viewport.ScreenToWorldZPlane(this.ScreenPos,0); } }
+}

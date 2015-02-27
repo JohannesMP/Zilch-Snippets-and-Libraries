@@ -1,0 +1,43 @@
+/*
+ * Version:     JKeys v 0.0.1 (01/29/2015)
+ * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * License:     Free for use by all DigiPen Students
+ * ===============================================
+ * 
+ * -- DISCLAIMER:
+ * --               This Script was just thrown together quickly for use during the Zero Help Session.
+ * --               However You are welcome to use it as you like
+ */
+
+class JKeys
+{
+    [Static]
+    var SPACE   : Boolean { get { return JKeys.IsDown(Keys.Space); } }
+    [Static]
+    var EQUAL   : Boolean { get { return JKeys.IsDown(Keys.Equal); } }
+    [Static]
+    var MINUS   : Boolean { get { return JKeys.IsDown(Keys.Minus); } }
+    [Static]
+    var A       : Boolean { get { return JKeys.IsDown(Keys.A); } }
+    [Static]
+    var W       : Boolean { get { return JKeys.IsDown(Keys.W); } }
+    [Static]
+    var S       : Boolean { get { return JKeys.IsDown(Keys.S); } }
+    [Static]
+    var D       : Boolean { get { return JKeys.IsDown(Keys.D); } }
+    [Static]
+    var Up      : Boolean { get { return JKeys.IsDown(Keys.Up); } }
+    [Static]
+    var Down    : Boolean { get { return JKeys.IsDown(Keys.Down); } }
+    [Static]
+    var Left    : Boolean { get { return JKeys.IsDown(Keys.Left); } }
+    [Static]
+    var Right   : Boolean { get { return JKeys.IsDown(Keys.Right); } }
+    
+    [Static]
+    function IsDown(key : Keys) : Boolean
+    {
+        return Zero.Keyboard.KeyIsDown(key);
+    }
+}

@@ -1,0 +1,58 @@
+/*
+ * File:        PlayerScript.z
+ * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+ * ===============================================
+ */
+
+class PlayerScript : ZilchComponent
+{
+    [Dependency]
+    var Collider : Collider;
+    [Dependency]
+    var RigidBody : RigidBody;
+    [Dependency]
+    var Transform : Transform;
+    
+    var Velocity : Real3
+    {
+        get { return this.RigidBody.Velocity; }
+        set { this.RigidBody.Velocity = value; }
+    }
+    
+    var Speed : Real
+    {
+        get { return Math.Length(this.Velocity); }
+        set { this.Velocity = Math.Normalize(this.Velocity) * value; }
+    }
+    
+    var Position : Real3
+    {
+        get { return this.Transform.WorldTranslation; }
+        set { this.Transform.WorldTranslation = value; }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var acceleration = Real3();
+        var speed = 200;
+        var drag = 0.9;
+        
+        if(JKeys.Up)    { acceleration += Real3(0,1,0); }
+        if(JKeys.Down)  { acceleration += Real3(0,-1,0); }
+        if(JKeys.Left)  { acceleration += Real3(-1,0,0); }
+        if(JKeys.Right) { acceleration += Real3(1,0,0); }
+        
+        acceleration = Math.Normalize(acceleration);
+        
+        this.Velocity += acceleration * speed * event.Dt;
+        
+        this.Speed = Math.Min(this.Speed * drag, 50);
+    }
+}

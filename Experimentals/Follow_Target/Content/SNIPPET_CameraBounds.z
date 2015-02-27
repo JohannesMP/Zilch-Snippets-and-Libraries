@@ -1,0 +1,24 @@
+/*
+ * File:        CameraBounds.z
+ * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+ * ===============================================
+ */
+
+class CameraBounds : ZilchComponent
+{
+    [Dependency]
+    var Viewport : CameraViewport;
+    
+    var UpLeft    : Real3 { get { return this.ConvertCornerToWorld( Real2(0, 0) ); } }
+    var UpRight   : Real3 { get { return this.ConvertCornerToWorld( Real2(1, 0) ); } }
+    var DownLeft  : Real3 { get { return this.ConvertCornerToWorld( Real2(0, 1) ); } }
+    var DownRight : Real3 { get { return this.ConvertCornerToWorld( Real2(1, 1) ); } }
+    
+    function ConvertCornerToWorld(screencorner : Real2) : Real3
+    {
+        var screenPos = this.Viewport.ViewportToScreen(this.Viewport.ViewportResolution * screencorner);
+        return this.Viewport.ScreenToWorldZPlane(screenPos, 0.0);
+    }
+}

@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "FollowTarget",
+	uint64 LibraryId = 54d4b9cbf905d5e7,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

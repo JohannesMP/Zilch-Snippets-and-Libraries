@@ -1,0 +1,707 @@
+Level = 
+{
+	LevelSettings = 
+	{
+		LinkId = 
+		{
+			uint Id = 1,
+		},
+		Named = 
+		{
+			string Name = "LevelSettings",
+		},
+		GravityEffect = 
+		{
+			bool Active = false,
+			bool WakeUpOnChange = false,
+			bool LocalSpaceDirection = true,
+			float Strength = 30,
+			Vec3 Direction = [0, -1, 0],
+		},
+		DragEffect = 
+		{
+			bool Active = true,
+			bool WakeUpOnChange = false,
+			float Drag = 0.1,
+		},
+		CameraViewport = 
+		{
+			bool Background = true,
+			Vec2 Offset = [0, 0],
+			Vec2 Size = [1, 1],
+			int Layer = 0,
+			bool Active = true,
+			bool Blocking = true,
+			uint Renderer = 1,
+			uint Camera = 2,
+			ViewportScaling Scaling = Fill,
+			Vec2 Resolution = [1280, 720],
+			Vec4 MarginColor = [0, 0, 0, 1],
+		},
+		ForwardRenderer = 
+		{
+			Vec4 ClearColor = [0.155, 0.155, 0.155, 1],
+			bool DrawNonVisible = false,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool EditorIconDepth = true,
+			bool Wireframe = false,
+		},
+		GridDraw = 
+		{
+			bool Active = true,
+			bool HalfCellOffset = false,
+			float CellSize = 1,
+			GridAxis Axis = ZAxis,
+			int Lines = 100,
+			bool DrawAxisOrigins = true,
+			bool AlwaysDrawInEditor = true,
+			bool DrawInGame = false,
+			Vec4 GridColor = [0.5, 0.5, 0.5, 0.4],
+			Vec4 GridHiLight = [0, 0, 0, 0.4],
+			int HilightInterval = 10,
+			bool FollowEditorCamera = false,
+		},
+		CameraBounds = 
+		{
+		},
+		MousePos = 
+		{
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 3,
+		},
+		Named = 
+		{
+			string Name = "Scripts",
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 4,
+				},
+				Named = 
+				{
+					string Name = "Example",
+				},
+				DebugTest = 
+				{
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 5,
+		},
+		Named = 
+		{
+			string Name = "EditorCamera",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-0.0260078, 0, 49.999],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [-0, -1.09278e-008, 0, 1],
+		},
+		Camera = 
+		{
+			ProjectionMode ProjectionMode = Orthographic,
+			Facing Facing = NegativeZ,
+			CameraTransparentSort TransparentSort = ZDepth,
+			float FieldOfView = 45,
+			float NearPlane = 0.5,
+			float FarPlane = 500,
+			float Size = 20,
+		},
+		EditorCameraController = 
+		{
+			ControlMode ControlMode = ZPlane,
+			float LookDistance = 50,
+			float VerticalAngle = 0,
+			float HorizontalAngle = 0,
+			Vec3 LookTarget = [-0.0260078, 0, -0.001],
+			float MoveSensitivity = 1,
+		},
+		EditorRenderer = 
+		{
+			Vec4 ClearColor = [0.155, 0.155, 0.155, 1],
+			bool DrawNonVisible = true,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool Wireframe = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 2,
+		},
+		Named = 
+		{
+			string Name = "Camera",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, 40],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Camera = 
+		{
+			ProjectionMode ProjectionMode = Orthographic,
+			Facing Facing = NegativeZ,
+			CameraTransparentSort TransparentSort = InheritFromSpace,
+			float FieldOfView = 45,
+			float NearPlane = 0.5,
+			float FarPlane = 200,
+			float Size = 20,
+		},
+		Microphone = 
+		{
+			bool Active = true,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 6,
+		},
+		Named = 
+		{
+			string Name = "Player",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-0.0260078, 0, 2],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5275aa4d802dd6dc:Square",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		PlayerScript = 
+		{
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 7,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder1",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-2.9909, 1.74252, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 0, 0, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/Player",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 8,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder2",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-5.07152, 1.87256, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 0, 0, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder1",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 9,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder3",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-8.50455, 2.08062, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 0, 0, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder2",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 10,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder4",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-7.99929, 6.27009, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 0, 0, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder3",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 11,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder5",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-1.51508, 7.34377, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 0, 0, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder4",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 12,
+		},
+		Named = 
+		{
+			string Name = "Playerb",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0.458203, -6.48421, 2],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5275aa4d802dd6dc:Square",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		PlayerScript = 
+		{
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 13,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder1b",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-4.54879, -6.46801, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [0, 0.43, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/Playerb",
+			bool LockAngle = true,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 14,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder2b",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-6.62941, -6.33797, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [0, 0.43, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder1b",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 15,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder3b",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-10.0624, -6.12991, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [0, 0.43, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder2b",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 16,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder4b",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-9.55718, -1.94044, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [0, 0.43, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder3b",
+			bool LockAngle = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 17,
+		},
+		Named = 
+		{
+			string Name = "CameraHolder5b",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-3.22034, -2.48781, 2],
+			Vec3 Scale = [0.7, 0.7, 0.7],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = false,
+			bool CastShadows = false,
+			Vec4 Color = [0, 0.43, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5274db4c2e7c11f9:Circle",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool OnTop = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		FollowTarget = 
+		{
+			CogPath TargetPath = ":/CameraHolder4b",
+			bool LockAngle = false,
+		},
+	},
+},

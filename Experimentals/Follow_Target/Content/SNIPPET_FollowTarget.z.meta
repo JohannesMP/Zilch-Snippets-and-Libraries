@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SNIPPET_FollowTarget",
+		uint64 ResourceId = 54ea1ff5d31432b0,
+	},
+},

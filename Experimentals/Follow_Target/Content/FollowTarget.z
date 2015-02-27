@@ -1,0 +1,106 @@
+/*
+ * File:        FollowTarget.z
+ * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
+ * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+ * ===============================================
+ */
+
+class FollowTarget : ZilchComponent
+{
+    [Dependency]
+    var Transform : Transform;
+    
+    [Property]
+    var TargetPath : CogPath;
+    
+    [Property]
+    var LockAngle : Boolean;
+    
+    var Target : Cog
+    {
+        get
+        {
+            if (this.TargetPath.Cog != null)
+            {
+                return this.TargetPath.Cog;
+            }
+            throw new Exception("HEY DUMMY, SET YOUR TARGET!");
+        }
+    }
+    
+    var TargetPos : Real3
+    {
+        get { return this.Target.Transform.WorldTranslation; }
+        set { this.Target.Transform.WorldTranslation = value; }
+    }
+    
+    var Pos: Real3
+    {
+        get { return this.Transform.WorldTranslation; }
+        set { this.Transform.WorldTranslation = value; }
+    }
+    
+    var TargetDiff : Real3
+    {
+        get { return this.TargetPos - this.Pos; }
+        set { this.Pos = this.TargetPos - value; }
+    }
+    
+    var TargetDist : Real
+    {
+        get { return Math.Length(this.TargetDiff); }
+        set { this.TargetDiff = Math.Normalize(this.TargetDiff) * value; }
+    }
+    
+    function Initialize(init : CogInitializer)  
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        // debug draw the vector between us and the target
+        
+        var draw = new DebugLine();
+        draw.Start(this.Pos);
+        draw.End(this.TargetPos);
+        draw.Float4Color(this.Owner.Sprite.Color);
+        draw.HeadSize(0.1);
+        draw.Draw();
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+       // if(this.Target.FollowTarget)
+        
+        /* 1. Figure out your position relative to the target */
+        
+        var diff_factor = 0.1; // 0 means don't take target into account. 1 means only take target into account.
+        
+        if(this.Target.FollowTarget != null)
+        {
+            this.TargetDiff = Math.Lerp(this.TargetDiff, this.Target.FollowTarget.TargetDiff, diff_factor);
+        }
+        else
+        {
+            if(this.LockAngle)
+            {
+                this.TargetDiff = Math.Lerp(this.TargetDiff, Real3(1,0,0), diff_factor);
+            }
+        }
+        
+        ///* 2. Figure out your distance relative to target */
+        
+        var dist_target = 0.7;
+        var dist_factor = 0.1; // how much we ease to the target. 0 means don't take the target distance into account, 1 means we match the target distance
+        var dist_min = 0.2;
+        var dist_max = 0.8;
+
+        var new_dist = Math.Lerp(this.TargetDist, dist_target, dist_factor);
+
+        this.TargetDist = Math.Clamp(new_dist, dist_min, dist_max);
+    }
+}
