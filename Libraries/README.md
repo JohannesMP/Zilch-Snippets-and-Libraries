@@ -25,7 +25,8 @@ For example, you can use the `Map` type like this:
 
 <img width=300 src=http://i.imgur.com/trA26PH.png />
 
-- An initial attempt to create an abstraction layer to correctly handle UI interactions and events for individual elements. The component allows the user to track several UI 'states', such as visible, active, selected, as well as mouse-related states such as hover and being held by any number of mouse buttons.
+- An initial attempt to create an abstraction layer to correctly handle UI interactions and events for individual elements. 
+- The `UIStateManager` component allows the user to track several UI 'states', such as visible, active, selected, as well as mouse-related states such as hover and being held by any number of mouse buttons.
 - It also handles sending a UI click event when a true 'click' occurred, accounting for edge cases that simply listening to `Events.MouseUp` or `Events.MouseUpdate` would miss, while providing additional meta information such as what mouse button was released during the mouseUp.
 
 *NOTE:* this is currently being reworked, but is usable in its current state.
