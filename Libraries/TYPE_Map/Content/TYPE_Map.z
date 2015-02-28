@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 @brief      An iteratable HashMap container
-@version    Map v 0.1.0
+@version    Map v 0.1.1
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
@@ -34,7 +34,7 @@
     
 @todo
     As of Zero Build 10681, the [Hidden] tag is not implemented yet.
-    The next build should have it, at which point the H_ prefix will be removed from the 
+    The next build should have it, at which point the H_ prefixes will be removed
 
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
@@ -44,7 +44,7 @@
 
 class Map[KEY, VALUE]
 {
-    // Private Data that shold not be touched
+    // Private Data that should not be touched
     [Hidden] var H_Hash  : HashMap[KEY, VALUE] = new HashMap[KEY, VALUE](); // holds our data
     [Hidden] var H_Array : Array[KEY] = new Array[KEY](); // used to iterate the data
     [Hidden] var H_ModID : Integer = 0; //see IncrementModID:
@@ -82,7 +82,7 @@ class Map[KEY, VALUE]
     {
         if(this.Contains(key))
         {
-            throw new Exception("Map already contains key '`key`'!");
+            throw new Exception("Map[`typeid(KEY).Name`,`typeid(VALUE).Name`] already contains key '`key`'!");
         }
         this.Set(key, val);
     }
@@ -116,7 +116,7 @@ class Map[KEY, VALUE]
 // The corresponding Range class for the Map class
 class MapRange[KEY, VALUE]
 {
-    // Hidden Properties that shold not be touched
+    // Hidden Properties that should not be touched
     [Hidden]
     var H_Map      : Map[KEY, VALUE];
     [Hidden]
