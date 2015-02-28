@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 @brief      An iteratable HashMap container
-@version    Map v 0.1.1
+@version    Map v 0.1.2
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
@@ -31,10 +31,15 @@
         map.Remove(key)      - Tries to remove a given key and its value. If
                                Successful will return true. if key does not exist
                                will return false
+        map.Clone()          - Returns a copy of the map. Note that this 
+                               Only copies the map structure, not elements.
+        map.SortByKey()      - Sort the map by key (must set SortKeyFunction)     -- CURRENTLY INCOMPLETE
+        map.SortByValue()    - Sort the map by value (must set SortValueFunction) -- CURRENTLY INCOMPLETE
     
 @todo
-    As of Zero Build 10681, the [Hidden] tag is not implemented yet.
-    The next build should have it, at which point the H_ prefixes will be removed
+    - Implement SortByKey and SortByValue
+    - As of Zero Build 10681, the [Hidden] tag is not implemented yet.
+      The next build should have it, at which point the H_ prefix will be removed from the 
 
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
@@ -57,6 +62,9 @@ class Map[KEY, VALUE]
     var Count : Integer { get { return this.H_Array.Count; } }
     
     var Default : VALUE;
+    
+    var SortKeyFunction : delegate(left : KEY, right: KEY) : Integer;
+    var SortValueFunction : delegate(left : VALUE, right: VALUE) : Integer;
     
     constructor() { }
     constructor(defaultVal : VALUE) { this.Default = defaultVal; }
@@ -111,12 +119,43 @@ class Map[KEY, VALUE]
         }
         return false;
     }
+    
+    [Hidden]
+    function H_SwapID(leftID : Integer, rightID : Integer)
+    {
+        var temp = this.H_Array.Get(leftID);
+        this.H_Array.Set(leftID, this.H_Array.Get(rightID));
+        this.H_Array.Set(rightID, temp);
+    }
+    
+    /* there is probably an easier way to copy the structure by value */
+    function Clone() : Map[KEY, VALUE]
+    {
+        var returnMap : Map[KEY, VALUE] = new Map[KEY, VALUE]();
+        foreach(var pair in this)
+        {
+            returnMap.Add(pair.Key, pair.Value);
+        }
+        return returnMap;
+    }
+    
+    function SortByKey() : Map[KEY, VALUE]
+    {
+        // this.H_Array.Sort(...
+        return this;
+    }
+    
+    function SortByValue() : Map[KEY, VALUE]
+    {
+        // this.H_Array.Sort(...
+        return this;
+    }
 }
 
 // The corresponding Range class for the Map class
 class MapRange[KEY, VALUE]
 {
-    // Hidden Properties that should not be touched
+    // Hidden Properties that shold not be touched
     [Hidden]
     var H_Map      : Map[KEY, VALUE];
     [Hidden]

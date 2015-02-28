@@ -15,6 +15,11 @@ class MapTest : ZilchComponent
 {
     function Initialize(init : CogInitializer)
     {
+        this.Test_Add_Remove_Foreach();
+    }
+    
+    function Test_Add_Remove_Foreach()
+    {
         // the print format
         var format   = "\t[ %5s -> %s ]\n";
         
@@ -66,4 +71,11 @@ class MapTest : ZilchComponent
         }
         Console.Write("]\n\n");
     }
+    
+    function Test_Sort()
+    {
+        
+    }
+    
+    
 }
