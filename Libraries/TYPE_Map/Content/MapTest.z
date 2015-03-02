@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 @brief      Demonstrating the use of the Map Type
-@date       02/26/2015
+@date       03/02/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
 @details
@@ -81,24 +81,28 @@ class MapTest : ZilchComponent
     function Test_Sort()
     {
         // the print format
-        var format   = "\t[ %2s -> <%f> ]\n";
+        var format = "\t[ %2s  ->  <%.2f> ]\n";
         
-        var map = new Map[Real3, RandContainer]();
-        map.Add(Real3(1,4,0), new RandContainer());
-        map.Add(Real3(2,0,2), new RandContainer());
-        map.Add(Real3(0,5,3), new RandContainer());
-        map.Add(Real3(6,3,9), new RandContainer());
-        map.Add(Real3(4,4,8), new RandContainer());
-        map.Add(Real3(2,1,1), new RandContainer());
+        var rand = new Random();
         
+        var map = new Map[Real3, Real]();
+        
+        
+        map.Add( Real3(1,4,0), rand.Real() * 10 );
+        map.Add( Real3(2,0,2), rand.Real() * 10 );
+        map.Add( Real3(0,5,3), rand.Real() * 10 );
+        map.Add( Real3(6,3,9), rand.Real() * 10 );
+        map.Add( Real3(4,4,8), rand.Real() * 10 );
+        map.Add( Real3(2,1,1), rand.Real() * 10 );
         
         /////////////////////////////////////////////////////////////
         // 1. The unsorted map
         
         Console.Write("Unsorted Map: \n[\n");
+        Console.Write("\t[ ( Real3 )  ->  <Real> ]\n");
         foreach(var pair in map)
         {
-            Console.Write(String.FormatC(format, pair.Key, pair.Value.MyRand));
+            Console.Write(String.FormatC(format, pair.Key, pair.Value));
         }
         Console.Write("]\n");
         
@@ -107,12 +111,12 @@ class MapTest : ZilchComponent
         // 2. Sorting the map by the X component of the key
         
         // set up our key compare function to use the x value of the real3 keys
-        map.GetKeyCompare = this.PointToX;
+        map.GetKeyCompare = this.PointCompareX;
         
         Console.Write("Map Sorted by X component of Key: \n[\n");
         foreach(var pair in map.SortByKeys())
         {
-            Console.Write(String.FormatC(format, pair.Key, pair.Value.MyRand));
+            Console.Write(String.FormatC(format, pair.Key, pair.Value));
         }
         Console.Write("]\n");
         
@@ -120,14 +124,17 @@ class MapTest : ZilchComponent
         /////////////////////////////////////////////////////////////
         // 3. Sorting the map by distance from origin of the key
         
+        // different output format
+        var distFormat = "\t[ %2s dist: %5.2f  ->  <%.2f> ]\n";
+        
         // set up our key compare function to use the distance of the key
-        map.GetKeyCompare = this.PointToDist;
+        map.GetKeyCompare = this.PointCompareDist;
         
         Console.Write("Map Sorted by Distance of Key: \n[\n");
         foreach(var pair in map.SortByKeys())
         {
             var curDist = map.GetKeyCompare(pair.Key);
-            Console.Write(String.FormatC(format, "`pair.Key` <dist: `curDist`>", pair.Value.MyRand));
+            Console.Write(String.FormatC(distFormat, pair.Key, curDist, pair.Value));
         }
         Console.Write("]\n");
         
@@ -136,23 +143,25 @@ class MapTest : ZilchComponent
         // 4. Sorting the map by the 'MyRand' Property of the value
         
         // set up our key compare function to use the distance of the key
-        map.GetValueCompare = this.RandContainerToReal;
+        map.GetValueCompare = this.RealCompare;
         
-        Console.Write("Map Sorted by 'MyRand' component of Value: \n[\n");
+        Console.Write("Map Sorted by Value: \n[\n");
         foreach(var pair in map.SortByValues())
         {
-            Console.Write(String.FormatC(format, pair.Key, pair.Value.MyRand));
+            Console.Write(String.FormatC(format, pair.Key, pair.Value));
         }
         Console.Write("]\n");
     
     }
     
     /*
-        Helper sort functions used in Test_Sort()
+    Helper sort functions used in Test_Sort()
     */
-    function PointToX(key : Real3) : Real { return key.X; }
-    function PointToDist(key : Real3) : Real { return Math.Length(key); }
-    function RandContainerToReal(val : RandContainer) : Real { return val.MyRand; }
+    function PointCompareX(key : Real3) : Real { return key.X; }
+    function PointCompareDist(key : Real3) : Real { return Math.Length(key); }
+    
+    // just returning the input as output since it can be compared directly
+    function RealCompare(val : Real) : Real { return val; }
 }
 
 
