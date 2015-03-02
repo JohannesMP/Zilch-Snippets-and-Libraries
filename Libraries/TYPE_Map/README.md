@@ -1,7 +1,7 @@
 
 # Type: Map
 
-<img width=300 src=http://i.imgur.com/scltrMn.png/>
+<img width=300 src=http://i.imgur.com/IV3uGOA.png/>
 
 ## Download
 - Just the <a href=https://raw.githubusercontent.com/JohannesMP/Zilch-Snippets-and-Libraries/master/Libraries/TYPE_Map/JustCode/TYPE_Map.z>Zilch Script</a> (right click and 'Save Link As...')
