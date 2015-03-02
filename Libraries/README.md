@@ -12,6 +12,7 @@ Libraries were last tested with **Zero Build 10681**
 
 - Currently you cannot iterate over <a href=http://zero.digipen.edu/Zilch/ZilchTypes/HashMap.html>hashmaps</a> in Zilch.
 - This custom container combines a hashmap and an <a href=http://zero.digipen.edu/Zilch/ZilchTypes/Array.html>array</a> to allow you to iterate over it, while still being able to use it like a hashmap.
+- It also includes some additional functionality, such as being able to sort by Keys and sort by Values.
 
 For example, you can use the `Map` type like this:
 
@@ -22,6 +23,9 @@ For example, you can use the `Map` type like this:
     {
       Console.WriteLine("Key: `pair.Key`, Value: `pair.Value`");
     }
+
+For usage examples check the `MapTest.z` file in the included project that has several testing functions that print stuff to the console.
+
 
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Libraries/UI_StateManager>UI: State Manager</a>
 
