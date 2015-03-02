@@ -13,7 +13,7 @@ As of this writing, Zero is only available to DigiPen students.
   * Somewhat complete, possibly buggy projects, generally designed to explore a given idea, concept or feature.
   * May be largely uncommented and rough.
 * **<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Libraries>Libraries</a>**
-  * <img height=100 src=https://camo.githubusercontent.com/488b38827ea2df0852c1de9549bfb67395b5518d/687474703a2f2f692e696d6775722e636f6d2f374c39567938452e706e672f /> <img height=100 src=https://camo.githubusercontent.com/ece0fd0eed3dffa48e7c2a5ea831307bfdd67a3b/687474703a2f2f692e696d6775722e636f6d2f747241323650482e706e67 />
+  * <img height=100 src=https://camo.githubusercontent.com/0cfa5f0812d49488c8a28c8e3f18d40d5a38b300/687474703a2f2f692e696d6775722e636f6d2f6b48524572724c2e706e672f /> <img height=100 src=https://camo.githubusercontent.com/ece0fd0eed3dffa48e7c2a5ea831307bfdd67a3b/687474703a2f2f692e696d6775722e636f6d2f747241323650482e706e67 />
   * Complete (hopefully) bug-free libraries that I've cleaned up and commented for general use.
 * **<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Snippets>Snippets</a>**
   * Like Experimentals, just smaller.
