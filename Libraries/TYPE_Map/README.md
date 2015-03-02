@@ -3,6 +3,11 @@
 
 <img width=300 src=http://i.imgur.com/scltrMn.png/>
 
+## Download
+- <a href=https://raw.githubusercontent.com/JohannesMP/Zilch-Snippets-and-Libraries/master/Libraries/TYPE_Map/JustCode/TYPE_Map.z>Zilch Script</a>
+
+## Details
+
 - Currently you cannot iterate over <a href=http://zero.digipen.edu/Zilch/ZilchTypes/HashMap.html>hashmaps</a> in Zilch.
 - This custom container combines a hashmap and an <a href=http://zero.digipen.edu/Zilch/ZilchTypes/Array.html>array</a> to allow you to iterate over it, while still being able to use it like a hashmap.
 - It also includes some additional functionality, such as being able to sort by Keys or Values.
