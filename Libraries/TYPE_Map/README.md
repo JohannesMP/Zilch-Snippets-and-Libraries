@@ -1,7 +1,7 @@
 
 # Type: Map
 
-<img width=300 src=http://i.imgur.com/kHRErrL.png/>
+<img width=300 src=http://i.imgur.com/scltrMn.png/>
 
 - Currently you cannot iterate over <a href=http://zero.digipen.edu/Zilch/ZilchTypes/HashMap.html>hashmaps</a> in Zilch.
 - This custom container combines a hashmap and an <a href=http://zero.digipen.edu/Zilch/ZilchTypes/Array.html>array</a> to allow you to iterate over it, while still being able to use it like a hashmap.
