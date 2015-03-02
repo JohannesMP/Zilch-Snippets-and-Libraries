@@ -22,7 +22,7 @@ For example, you can use the `Map` type like this:
       Console.WriteLine("Key: `pair.Key`, Value: `pair.Value`");
     }
 
-For usage examples check the <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/blob/master/Libraries/TYPE_Map/Content/MapTest.z>`MapTest.z`</a> file in the included project that has several testing functions that print stuff to the console.
+For more examples check the <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/blob/master/Libraries/TYPE_Map/Content/MapTest.z>`MapTest.z`</a> file in the included project that has several testing functions that print stuff to the console.
 
 ## License
 
