@@ -4,7 +4,7 @@
 <img width=300 src=http://i.imgur.com/scltrMn.png/>
 
 ## Download
-- <a href=https://raw.githubusercontent.com/JohannesMP/Zilch-Snippets-and-Libraries/master/Libraries/TYPE_Map/JustCode/TYPE_Map.z>Zilch Script</a>
+- Just the <a href=https://raw.githubusercontent.com/JohannesMP/Zilch-Snippets-and-Libraries/master/Libraries/TYPE_Map/JustCode/TYPE_Map.z>Zilch Script</a> (right click and 'Save Link As...')
 
 ## Details
 
