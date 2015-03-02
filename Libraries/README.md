@@ -12,7 +12,7 @@ Libraries were last tested with **Zero Build 10681**
 
 - Currently you cannot iterate over <a href=http://zero.digipen.edu/Zilch/ZilchTypes/HashMap.html>hashmaps</a> in Zilch.
 - This custom container combines a hashmap and an <a href=http://zero.digipen.edu/Zilch/ZilchTypes/Array.html>array</a> to allow you to iterate over it, while still being able to use it like a hashmap.
-- It also includes some additional functionality, such as being able to sort by Keys and sort by Values.
+- It also includes some additional functionality, such as being able to sort by Keys or Values.
 
 For example, you can use the `Map` type like this:
 
