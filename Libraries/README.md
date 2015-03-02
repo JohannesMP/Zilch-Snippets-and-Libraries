@@ -35,7 +35,7 @@ For usage examples check the <a href=https://github.com/JohannesMP/Zilch-Snippet
 - The `UIStateManager` component allows the user to track several UI 'states', such as visible, active, selected, as well as mouse-related states such as hover and being held by any number of mouse buttons.
 - It also handles sending a UI click event when a true 'click' occurred, accounting for edge cases that simply listening to `Events.MouseUp` or `Events.MouseUpdate` would miss, while providing additional meta information such as what mouse button was released during the mouseUp.
 
-*NOTE:* this is currently being reworked, but is usable in its current state.
+*NOTE:* this is being reworked, but is usable in its current state.
 
 ## License
 
