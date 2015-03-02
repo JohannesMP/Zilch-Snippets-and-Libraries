@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 @brief      An iteratable HashMap container
-@version    Map v 0.1.2
+@version    Map v 0.1.3
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
@@ -19,6 +19,10 @@
     Instance Properties:
         map.Count            - (Read Only) the number of unique key/value pairs
         map.Default          - The default return value (can be set in constructor)
+        map.GetKeyCompare    - Given a key, needs to return a Real (user must set this)
+                               This defines how two keys are compared when sorting.
+        map.GetValueCompare  - Given a value, needs to return a Real (user must set this)
+                               This defines how two keys are compared when sorting.
     
     Instance Methods:
         map.Contains(key)    - Returns true if the key exists in the map
@@ -33,11 +37,15 @@
                                will return false
         map.Clone()          - Returns a copy of the map. Note that this 
                                Only copies the map structure, not elements.
-        map.SortByKey()      - Sort the map by key (must set SortKeyFunction)     -- CURRENTLY INCOMPLETE
-        map.SortByValue()    - Sort the map by value (must set SortValueFunction) -- CURRENTLY INCOMPLETE
+                               
+        map.CompareKeys()    - Compare two keys directly, using the GetKeyCompare
+                               Delegate (which the user must set first)
+        map.CompareValues()  - Compare two keys via their respective values, using the
+                               GetValueCompare Delegate (which the user must set first)
+        map.SortByKey()      - Sort the map by keys (must set GetKeyCompare first)
+        map.SortByValue()    - Sort the map by values (must set GetValueCompare first)
     
 @todo
-    - Implement SortByKey and SortByValue
     - As of Zero Build 10681, the [Hidden] tag is not implemented yet.
       The next build should have it, at which point the H_ prefix will be removed from the 
 
@@ -63,8 +71,16 @@ class Map[KEY, VALUE]
     
     var Default : VALUE;
     
-    var SortKeyFunction : delegate(left : KEY, right: KEY) : Integer;
-    var SortValueFunction : delegate(left : VALUE, right: VALUE) : Integer;
+    // for a given KEY, return a Real it should be compared by. Used in CompareKeys and SortByKeys
+    /*
+       Example:
+          - Key is Real3 and you want to sort by distance from origin.
+          - This needs to be set to function that takes a key as argument and returns Math.Length(key)
+          - Then calling map.SortByKey() will sort by length of the key
+    */
+    var GetKeyCompare   : delegate(key : KEY)   : Real;
+    // for a given VALUE, return a Real it should be compared by. Used in CompareValuesand SortByValues
+    var GetValueCompare : delegate(val : VALUE) : Real;
     
     constructor() { }
     constructor(defaultVal : VALUE) { this.Default = defaultVal; }
@@ -120,14 +136,6 @@ class Map[KEY, VALUE]
         return false;
     }
     
-    [Hidden]
-    function H_SwapID(leftID : Integer, rightID : Integer)
-    {
-        var temp = this.H_Array.Get(leftID);
-        this.H_Array.Set(leftID, this.H_Array.Get(rightID));
-        this.H_Array.Set(rightID, temp);
-    }
-    
     /* there is probably an easier way to copy the structure by value */
     function Clone() : Map[KEY, VALUE]
     {
@@ -139,15 +147,47 @@ class Map[KEY, VALUE]
         return returnMap;
     }
     
-    function SortByKey() : Map[KEY, VALUE]
+    // Compare two keys directly, using the GetKeyCompare Delegate (make sure to set it).
+    function CompareKeys(left : KEY, right: KEY) : Integer
     {
-        // this.H_Array.Sort(...
+        var l_comp = this.GetKeyCompare(left);
+        var r_comp = this.GetKeyCompare(right);
+        
+        // return 0 if left == right, return -1 if left < right, return 1 if left > right
+        return 0 - (l_comp < r_comp) as Integer + (l_comp > r_comp) as Integer;
+    }
+    
+    // Compare two keys via their respective values, using the GetValueCompare Delegate (make sure to set it).
+    function CompareValues(left : KEY, right : KEY) : Integer
+    {
+        // first we need to get the associated values for the provided keys
+        var l_val = this.Get(left);
+        var r_val = this.Get(right);
+        
+        var l_comp = this.GetValueCompare(l_val);
+        var r_comp = this.GetValueCompare(r_val);
+        
+        // return 0 if left == right, return -1 if left < right, return 1 if left > right
+        return 0 - (l_comp < r_comp) as Integer + (l_comp > r_comp) as Integer;
+    }
+    
+    // Alias to SortByKeys (GetKeyCompare must be set!)
+    function Sort() : Map[KEY, VALUE]
+    {
+        return this.SortByKeys();
+    }
+    
+    // sort and return the current map by its keys (GetKeyCompare must be set!)
+    function SortByKeys() : Map[KEY, VALUE]
+    {
+        this.H_Array.Sort(this.CompareKeys);
         return this;
     }
     
-    function SortByValue() : Map[KEY, VALUE]
+    // sort and return the current map by its values (GetValueCompare must be set!)
+    function SortByValues() : Map[KEY, VALUE]
     {
-        // this.H_Array.Sort(...
+        this.H_Array.Sort(this.CompareValues);
         return this;
     }
 }

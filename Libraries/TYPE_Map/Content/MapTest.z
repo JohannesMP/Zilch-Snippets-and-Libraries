@@ -4,6 +4,11 @@
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+
+@todo
+    - It would be nice to be able to create in-line delegates for Map.GetKeyCompare and Map.GetValueCompare
+      Currently my examples rely on setting up a function, which are used in Test_Sort()
 
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
@@ -15,7 +20,8 @@ class MapTest : ZilchComponent
 {
     function Initialize(init : CogInitializer)
     {
-        this.Test_Add_Remove_Foreach();
+        //this.Test_Add_Remove_Foreach();
+        this.Test_Sort();
     }
     
     function Test_Add_Remove_Foreach()
@@ -31,7 +37,7 @@ class MapTest : ZilchComponent
                                             ["bar",   Real3(2,2,2) ],
                                             ["glork", Real3(4,4,4) ] ];
                                             // This syntax just calls .Add(key, value) on the map
-        
+                                            
         
         /////////////////////////////////////////////////////////////
         // 2. Printing the map's contents via foreach
@@ -74,8 +80,87 @@ class MapTest : ZilchComponent
     
     function Test_Sort()
     {
+        // the print format
+        var format   = "\t[ %2s -> <%f> ]\n";
         
+        var map = new Map[Real3, RandContainer]();
+        map.Add(Real3(1,4,0), new RandContainer());
+        map.Add(Real3(2,0,2), new RandContainer());
+        map.Add(Real3(0,5,3), new RandContainer());
+        map.Add(Real3(6,3,9), new RandContainer());
+        map.Add(Real3(4,4,8), new RandContainer());
+        map.Add(Real3(2,1,1), new RandContainer());
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 1. The unsorted map
+        
+        Console.Write("Unsorted Map: \n[\n");
+        foreach(var pair in map)
+        {
+            Console.Write(String.FormatC(format, pair.Key, pair.Value.MyRand));
+        }
+        Console.Write("]\n");
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 2. Sorting the map by the X component of the key
+        
+        // set up our key compare function to use the x value of the real3 keys
+        map.GetKeyCompare = this.PointToX;
+        
+        Console.Write("Map Sorted by X component of Key: \n[\n");
+        foreach(var pair in map.SortByKeys())
+        {
+            Console.Write(String.FormatC(format, pair.Key, pair.Value.MyRand));
+        }
+        Console.Write("]\n");
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 3. Sorting the map by distance from origin of the key
+        
+        // set up our key compare function to use the distance of the key
+        map.GetKeyCompare = this.PointToDist;
+        
+        Console.Write("Map Sorted by Distance of Key: \n[\n");
+        foreach(var pair in map.SortByKeys())
+        {
+            var curDist = map.GetKeyCompare(pair.Key);
+            Console.Write(String.FormatC(format, "`pair.Key` <dist: `curDist`>", pair.Value.MyRand));
+        }
+        Console.Write("]\n");
+        
+        
+        /////////////////////////////////////////////////////////////
+        // 4. Sorting the map by the 'MyRand' Property of the value
+        
+        // set up our key compare function to use the distance of the key
+        map.GetValueCompare = this.RandContainerToReal;
+        
+        Console.Write("Map Sorted by 'MyRand' component of Value: \n[\n");
+        foreach(var pair in map.SortByValues())
+        {
+            Console.Write(String.FormatC(format, pair.Key, pair.Value.MyRand));
+        }
+        Console.Write("]\n");
+    
     }
     
-    
+    /*
+        Helper sort functions used in Test_Sort()
+    */
+    function PointToX(key : Real3) : Real { return key.X; }
+    function PointToDist(key : Real3) : Real { return Math.Length(key); }
+    function RandContainerToReal(val : RandContainer) : Real { return val.MyRand; }
+}
+
+
+// an example container used as the value in Test_Sort()
+class RandContainer {
+    var MyRand : Real;
+    constructor()
+    {
+        this.MyRand = new Random().Real();
+    }
 }
