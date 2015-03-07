@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SpaceTest",
+		uint64 ResourceId = 5436b5fd5fa53406,
+	},
+},

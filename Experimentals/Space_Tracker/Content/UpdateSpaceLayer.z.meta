@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UpdateSpaceLayer",
+		uint64 ResourceId = 5434003460ec63f5,
+	},
+},
