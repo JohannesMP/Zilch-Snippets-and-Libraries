@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 @brief      An iteratable HashMap container
-@version    Map v 0.1.3
+@version    Map v 0.1.4
 @date       03/02/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
@@ -47,7 +47,9 @@
     
 @todo
     - As of Zero Build 10681, the [Hidden] tag is not implemented yet.
-      The next build should have it, at which point the H_ prefix will be removed from the 
+      The next build should have it, at which point the H_ prefix will be removed
+    - Figure out better way of getting string of type name. Currently typeid(TYPE).Name does not
+      work for delegate types. Until then, modified Exception in Map.Add to no longer use it.
 
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
@@ -106,7 +108,7 @@ class Map[KEY, VALUE]
     {
         if(this.Contains(key))
         {
-            throw new Exception("Map[`typeid(KEY).Name`,`typeid(VALUE).Name`] already contains key '`key`'!");
+            throw new Exception("Map already contains key '`key`'!");
         }
         this.Set(key, val);
     }
