@@ -39,8 +39,16 @@ You can move the objects on the screen with the arrow keys. Notice how the objec
        * now parent the camera to one of the objects in the chain (making sure to set its relative `X` and `Y` coordinates to 0)
 
 
+### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Game_Events>Game Events</a>
+<img width=300 src=http://i.imgur.com/i50PT2D.png />
+
+* A quick reference project to see what order various events are called in. It just prints stuff to the console.
+* Specifically events of type '<a href=http://zero.digipen.edu/Guide/Events.html?highlight=GameEvent#event-list>`GameEvent`</a>' that are sent by the gamesession, and how it relates to events sent by each space.
+
+
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Masked_Sprites>Masked Sprites</a>
 <img width=300 src=http://i.imgur.com/3Jncu5W.png />
+
 * A crude implimentation of a 'masking' functionality for sprites, since Zero currently does not allow us to draw to our own textures.
 * Run project in the editor and move the mouse over the center of the sprite in the middle to reveal the masked sprite.
 
@@ -59,6 +67,17 @@ The masking effect is created as follows:
    - Whatever sprites (without RenderMask enabled) are now behind this object will be visible.
    - I just added a script that moves it to always be under the mouse (see `MaskLogic.z` which uses my `MousePos.z` Snippet).
 7. While not required, I chose to do this in a separate level which is then loaded into its own space on top of the base level (which is still using the normal ForwardRenderer). This means that The base level is unaffected by the Masking.
+
+
+### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Space_Tracker>Space Tracker</a>
+<img width=300 src=http://i.imgur.com/un8J3yF.png />
+
+* By default zero provides no reliable ways to keep track of, or iterate over spaces. This can make debugging (such as when creating spaces for HUD elements) very difficult.
+* This Project adds the '`SpaceTracker`' and '`SpaceUpdateSender`' components.
+  * `SpaceUpdateSender` lives on the `Space` archetype, and sends '`SpaceUpdate`' events.
+  * `SpaceTracker` lives on the `GameSession`, and receives `SpaceUpdate` events, and uses them to maintain a SpaceArray.
+* May move this to its own library once it's a bit more cleaned up and tested.
+
 
 ## License
 
