@@ -1,0 +1,61 @@
+class GameEventTest : ZilchComponent
+{
+    
+    function Initialize(init : CogInitializer)
+    {
+        JDebug("- GAME: ? GAMESESSION HAS BEEN INITIALIZED!");
+        
+        Zero.Connect(this.GameSession, Events.SpaceToSession, this.OnSpaceToSession);
+        
+        // 1
+        Zero.Connect(this.GameSession, Events.GameSetup, this.OnGameSetup);
+        
+        // 2
+        Zero.Connect(this.GameSession, Events.LevelStarted, this.OnLevelStarted);
+        
+        // 3
+        Zero.Connect(this.GameSession, Events.GameLoad, this.OnGameLoad);
+        
+        // 4
+        Zero.Connect(this.GameSession, Events.GameStarted, this.OnGameStarted);
+        
+        Zero.Connect(Zero.Engine, Events.EngineUpdate, this.OnEngineUpdate);
+    }
+
+    function OnSpaceToSession(event : SpaceToSessionEvent)
+    {
+        Zero.Connect(event.Space, Events.AllObjectsInitialized, this.OnAllObjectsInitialized);
+        JDebug("- GAME: ? SpaceToSession: `event`");
+    }
+
+    function OnAllObjectsInitialized(event : CogInitializerEvent)
+    {
+        JDebug("- GAME: ? AllObjectsInitialized: `event`");
+    }
+
+    function OnEngineUpdate(event : UpdateEvent)
+    {
+        JDebug("- GAME: 5 EngineUpdate: `event`");
+        Zero.Disconnect(Zero.Engine, Events.EngineUpdate, this);
+    }
+
+    function OnGameSetup(event : GameEvent)
+    {
+        JDebug("- GAME: 1 GameSetup: `event`");
+    }
+
+    function OnLevelStarted(event : GameEvent)
+    {
+        JDebug("- GAME: 2 LevelStarted: '`event.LevelName`'");
+    }
+
+    function OnGameLoad(event : GameEvent)
+    {
+        JDebug("- GAME: 3 GameLoad: `event`");
+    }
+
+    function OnGameStarted(event : GameEvent)
+    {
+        JDebug("- GAME: 4 GameStarted: `event`");
+    }
+}

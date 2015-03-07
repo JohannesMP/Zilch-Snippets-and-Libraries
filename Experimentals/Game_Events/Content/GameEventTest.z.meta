@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GameEventTest",
+		uint64 ResourceId = 5436bdf4bf815480,
+	},
+},

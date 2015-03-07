@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SpaceEventTest",
+		uint64 ResourceId = 543680d917acdaf4,
+	},
+},

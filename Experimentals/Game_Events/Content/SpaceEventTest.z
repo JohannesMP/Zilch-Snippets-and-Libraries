@@ -1,0 +1,42 @@
+
+class SpaceToSessionEvent : ZilchEvent
+{
+    var Space : Space;
+    
+    constructor(space : Space) : base()
+    {
+        this.Space = space;
+    }
+}
+
+class SpaceEventTest : ZilchComponent
+{
+    sends SpaceToSession : SpaceToSessionEvent;
+    
+    function Initialize(init : CogInitializer)
+    {
+        JDebug("- SPACE: ? SPACE HAS BEEN INITIALIZED!");
+        
+        this.GameSession.DispatchEvent(Events.SpaceToSession, new SpaceToSessionEvent(this.Space));
+
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnAllObjectsInitialized(event : CogInitializerEvent)
+    {
+        JDebug("- SPACE: ? AllObjectsInitialized: `event`");
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        JDebug("- SPACE: 1 FrameUpdate: `event`");
+        Zero.Disconnect(this.Space, Events.FrameUpdate, this);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        JDebug("- SPACE: 2 LogicUpdate: `event`");
+        Zero.Disconnect(this.Space, Events.LogicUpdate, this);
+    }
+}

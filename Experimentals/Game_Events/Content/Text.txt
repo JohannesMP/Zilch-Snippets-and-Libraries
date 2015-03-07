@@ -1,0 +1,7 @@
+This project is purely to see the order that various events occur in.
+
+Open the console (tilde) and press play to see various On<event>
+function calls printing debug text. You can see what events occur
+in what order.
+
+Click the button to reload the current level.

@@ -1,0 +1,18 @@
+class ReceiverTest : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        JDebug("- OBJECT: ? OBJECT HAS BEEN INITIALIZED!");
+        
+        Zero.Connect(this.GameSession, Events.SpaceToSession, this.OnSpaceToSession);
+    }
+
+    function OnSpaceToSession(event : SpaceToSessionEvent)
+    {
+        JDebug("- OBJECT: ? SpaceToSession: `event`");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

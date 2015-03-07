@@ -1,0 +1,19 @@
+class LoadLevel : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseUp, this.OnMouseUp);
+        Zero.Connect(this.Owner, Events.AllObjectsInitialized, this.OnAllObjectsInitialized);
+    }
+
+    function OnAllObjectsInitialized(event : CogInitializerEvent)
+    {
+        JDebug("ALL LOADED");
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent)
+    {
+        JDebug("click");
+        this.Space.ReloadLevel();
+    }
+}
