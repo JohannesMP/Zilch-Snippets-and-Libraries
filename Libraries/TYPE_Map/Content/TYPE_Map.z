@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 @brief      An iteratable HashMap container
-@version    Map v 0.1.3
+@version    Map v 0.1.5
 @date       03/02/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
@@ -30,8 +30,11 @@
                                creates it if it does not already exist.
         map.Add(key, value)  - Adds key/value pair, throwing exception of
                                key already exists
-        map.Get(key, value)  - If the given key is defined, returns its value,
+        map.Get(key)         - If the given key is defined, returns its value,
                                otherwise returns the value held by 'Default'
+        map.Find(value)      - Finds all Keys with a given value, and returns them
+                               as an array.
+        
         map.Remove(key)      - Tries to remove a given key and its value. If
                                Successful will return true. if key does not exist
                                will return false
@@ -122,6 +125,20 @@ class Map[KEY, VALUE]
         }
         
         return returnVal;
+    }
+    
+    // Getting all keys for a given value
+    function Find(val : VALUE) : Array[KEY]
+    {
+        var array = Array[KEY]();
+        foreach(var pair in this)
+        {
+            if(pair.Value == val)
+            {
+                array.Add(pair.Key);
+            }
+        }
+        return array;
     }
     
     // remove a key (and associated value) from the map. If it succeeds, ModID is incremented.
