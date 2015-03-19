@@ -1,0 +1,92 @@
+
+
+class Demo : ZilchComponent
+{
+    [Property]
+    var InfoText : CogPath;
+    
+    var Spaces : Array[Space] = new Array[Space]();
+    var Reversed : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    // spawning spaces
+    function OnKeyDown(event : KeyboardEvent)
+    {
+        if(event.Key == Keys.Space)
+        {
+            var layer = this.Spaces.Count + 1;
+            
+            Console.WriteLine("Space Created at Layer `layer`");
+            var space = this.GameSession.CreateNamedSpace("Demo_`layer`", Archetype.Find("Space"));
+            this.Spaces.Add(space);
+            
+            space.LoadLevel(Level.Find("NonBlockingLevel"));
+            space.LevelSettings.CameraViewport.Layer = layer;
+            
+            space.CreateAtPosition(Archetype.Find("SpaceInfo"), Real3(12, 2 - (layer-1) * 1.9, 0));
+        }
+        
+        if(event.Key == Keys.Back || event.Key == Keys.Delete)
+        {
+            Console.WriteLine("Space Order Reversed");
+            
+            var i = 0;
+            foreach(var space in this.Spaces)
+            {
+                
+                if(this.Reversed)
+                {
+                    space.LevelSettings.CameraViewport.Layer = i + 1;
+                }
+                else
+                {
+                    space.LevelSettings.CameraViewport.Layer = this.Spaces.Count - i;
+                }
+                
+                ++i;
+            }
+            
+            this.Reversed = !this.Reversed;
+        }
+    }
+
+
+    // just printing out spaces
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        var infoText = @this.InfoText.Cog.SpriteText.Text;
+        
+        var text = StringBuilder();
+        text.WriteLine("Spaces: `this.Spaces.Count` (Hit Space bar to add more spaces)\n===============");
+        
+        var i = 0;
+        
+        foreach(var space in this.Spaces)
+        {
+            text.Write("Space #`i`: ");
+            text.WriteLine(space);
+            
+            ++i;
+            
+            if(space.LevelSettings == null || space.LevelSettings.CameraViewport == null)
+            {
+                text.WriteLine("    Level:<NONE>");
+                continue;
+            }
+            var viewport = space.LevelSettings.CameraViewport;
+            text.WriteLine("    Level:`space.CurrentLevel`");
+            text.WriteLine("    Layer:`viewport.Layer`");
+            text.WriteLine("    Blocking: `viewport.Blocking`");
+        }
+        
+        infoText.Set(text.ToString());
+    }
+ 
+    
+}

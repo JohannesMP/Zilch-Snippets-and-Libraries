@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "BlockingSpaceBug",
+	uint64 LibraryId = 552c1d8b36874289,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

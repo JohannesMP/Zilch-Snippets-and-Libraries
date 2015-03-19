@@ -1,0 +1,14 @@
+This Project demonstrates that Zero currently has with multiple spaces
+
+Currently only the top two space viewports seem to receive certain mouse events.
+
+    * ADD SPACES with Space bar
+        - Each loads an empty level that has background and blocking set to false.
+        - Each space's viewport layer is set to +1 the previous
+        - It adds an object that prints out various events (see SpaceInfo.z)
+
+    * REVERSE SPACE LAYER ORDER with Backspace or Delete
+
+    * spaces are colored based on layer, and if they are hovered or clicked.
+
+Notice that once more than two spaces exist, the ones below appear blocked. If a space has 'hover' and then it becomes blocked by two spaces, it will still receive mousedown events on the object, even when it does not actually have the mouse over it.

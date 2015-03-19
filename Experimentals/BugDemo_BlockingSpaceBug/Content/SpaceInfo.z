@@ -1,0 +1,96 @@
+class SpaceInfo : ZilchComponent
+{
+    var HoverFromOwner : Boolean = false;
+    var HoverFromSpace : Boolean = false;
+    
+    var ClickFromOwner : Boolean = false;
+    var ClickFromSpace : Boolean = false;
+    
+    var MousePosFromSpace : Real2;
+    
+    var Layer : Real { get  { return this.LevelSettings.CameraViewport.Layer as Real; } }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        // hover from space
+        Zero.Connect(this.Space, Events.MouseUpdate, this.OnSpaceMouseUpdate);
+        
+        // hover from owner
+        Zero.Connect(this.Owner, Events.MouseEnter,  this.OnOwnerMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit,   this.OnOwnerMouseExit);
+        
+        // clicking from space
+        Zero.Connect(this.Space, Events.LeftMouseDown, this.OnLeftMouseDown);
+        Zero.Connect(this.Space, Events.LeftMouseUp, this.OnLeftMouseUp);
+        
+        // clicking from owner
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnOwnerLeftMouseDown);
+    }
+
+    // hover from space
+    function OnSpaceMouseUpdate(event : ViewportMouseEvent)
+    {
+        this.MousePosFromSpace = event.Mouse.ScreenPosition;
+        this.HoverFromSpace = (event.HitObject == this.Owner);
+    }
+    
+    // hover from owner
+    function OnOwnerMouseExit(event : ViewportMouseEvent) { this.HoverFromOwner = false; }
+    function OnOwnerMouseEnter(event : ViewportMouseEvent) { this.HoverFromOwner = true; }
+
+
+    // clicking from space
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        if(event.HitObject == this.Owner)
+        {
+            this.ClickFromSpace = true;
+        }
+    }
+    function OnLeftMouseUp(event : ViewportMouseEvent)
+    {
+        this.ClickFromSpace = false;
+        this.ClickFromOwner = false;
+    }
+    
+    // clicking from owner
+    function OnOwnerLeftMouseDown(event : ViewportMouseEvent)
+    {
+        this.ClickFromOwner = true;
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.UpdateColor();
+        
+        var text = StringBuilder();
+        
+        text.WriteLine("I AM IN SPACE: `this.Space` | Layer: `this.Layer`");
+        text.WriteLine("Mouse Position: `this.MousePosFromSpace`(via Space)");
+        text.WriteLine("Mouse Hover : `this.HoverFromOwner`(via Owner) | `this.HoverFromSpace`(via Space)");
+        text.WriteLine("Mouse Click : `this.ClickFromOwner`(via Owner) | `this.ClickFromSpace`(via Space)");
+        this.Owner.SpriteText.Text = text.ToString();
+        
+    }
+    
+    
+    function UpdateColor()
+    {
+        var color : Real4 = Real4(this.Layer/50, this.Layer/50, this.Layer/50, 1.0);
+        
+        if(this.HoverFromOwner || this.HoverFromSpace)
+        {
+            color = Real4(0.2, 0.05, 0, 1.0);
+        }
+        
+        if(this.ClickFromOwner || this.ClickFromSpace)
+        {
+            color = Real4(0.6, 0.02, 0, 1.0);
+        }
+        
+        this.Owner.Sprite.Color = color;
+    }
+}
