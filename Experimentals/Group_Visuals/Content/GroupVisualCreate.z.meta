@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GroupVisualCreate",
+		uint64 ResourceId = 55356222a32ce0c2,
+	},
+},

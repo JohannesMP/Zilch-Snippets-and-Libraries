@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "White",
+		uint64 ResourceId = 5535421210c5a0b3,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 128,
+		uint FrameSizeY = 128,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333,
+		float OriginX = 64,
+		float OriginY = 64,
+		float PixelsPerUnit = 128,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

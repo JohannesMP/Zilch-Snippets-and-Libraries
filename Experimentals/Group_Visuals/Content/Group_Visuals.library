@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "Group_Visuals",
+	uint64 LibraryId = 553689a62b0c302d,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

@@ -1,0 +1,95 @@
+class GroupRecolor : ZilchComponent
+{
+    [Property]
+    var Group : CogPath;
+    var Container : GroupContainer;
+    
+    [Property]
+    var Active : Boolean = true;
+    [Property]
+    var UpdateOnLogic : Boolean = true;
+    
+    [Property]
+    var OverrideSprite : Boolean = true;
+    [Property]
+    var SpriteSource : SpriteSource = SpriteSource.Find("White");
+    
+    [Property]
+    var OverrideColor : Boolean = true;
+    [Property]
+    var Color : Real4 = Real4(0.5, 0.5, 0.7, 1.0);
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(this.Group.Cog == null || this.Group.Cog.Transform == null)
+        {
+            throw new Exception("You need to set a legal Group Path on your visual '`this.Owner.Name`'!");
+        }
+        
+        // add a visualcontainer if it does not exist yet
+        if(this.Group.Cog.GroupContainer == null)
+        {
+            var container = this.Group.Cog.AddComponentByName(typeid(GroupContainer).Name);
+            this.Group.Cog.GroupContainer.AddedAtRuntime = true;
+            this.Group.Cog.GroupContainer.Initialize(init);
+        }
+        
+        // hold onto the container
+        this.Container = this.Group.Cog.GroupContainer;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Group.Cog, Events.GroupContainerInit, this.OnGroupContainerInit);
+        
+        this.UpdateGroupSprites();
+    }
+
+    function OnGroupContainerInit(event : Event)
+    {
+        this.UpdateGroupSprites();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Transform.WorldScale != Real3(1,1,1))
+        {
+            throw new Exception("The visual on `this.Owner.Name` is being scaled. Make sure its parents all have a scale of (1,1,1)");
+        }
+        
+        // only update our visual if we are set to do so on logic update
+        if(!this.UpdateOnLogic)
+        {
+            return;
+        }
+        
+        this.UpdateGroupSprites();
+    }
+    
+    function UpdateGroupSprites()
+    {
+        // return if we are not active
+        if(!this.Active)
+        {
+            return;
+        }
+        
+        // return if we don't do anything
+        if(!this.OverrideColor && !this.OverrideSprite)
+        {
+            return;
+        }
+        
+        foreach(var platform in this.Container.GroupObjects)
+        {
+            if(this.OverrideSprite)
+            {
+                platform.Sprite.SpriteSource = this.SpriteSource;
+            }
+            
+            if(this.OverrideColor)
+            {
+                platform.Sprite.Color = this.Color;
+            }
+        }
+    }
+}

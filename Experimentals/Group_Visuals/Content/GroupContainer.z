@@ -1,0 +1,73 @@
+/*
+    This component is used by the other group 
+*/
+
+class GroupContainer : ZilchComponent
+{
+    sends GroupContainerInit : Event; 
+    
+    var GroupObjects : Array[Cog] = Array[Cog]();
+
+    var GroupMinDepth : Real;
+    var GroupMaxDepth : Real;
+    
+    var FirstObject : Boolean = false; // used to ensure we grab a valid min/max when we start our iteration
+    
+    // this is set by the code that adds this component
+    var AddedAtRuntime : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(!this.AddedAtRuntime)
+        {
+            throw new Exception("This component may only be added at runtime. delete it from `this.Owner`");
+        }
+        
+        // Wait until next frame to load our objects, allowing them time to execute, reposition themselves, etc.
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Console.WriteLine("CREATED");
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.GetGroupObjects();
+    }
+    
+    function GetGroupObjects()
+    {
+        this.GroupObjects.Clear();
+        this.FirstObject = true;
+        this.RecursiveGetGroupObjects(this.Owner);
+        this.Owner.DispatchEvent(Events.GroupContainerInit, new Event());
+    }
+    
+    function RecursiveGetGroupObjects(cog : Cog)
+    {
+        foreach(var child in cog.Children)
+        {
+            if(child.Sprite == null || child.Transform == null)
+            {
+                continue;
+            }
+            
+            var depth : Real = child.Transform.WorldTranslation.Z;
+            
+            if(this.FirstObject)
+            {
+                this.GroupMinDepth = depth;
+                this.GroupMaxDepth = depth;
+                this.FirstObject = false;
+            }
+            else
+            {
+                if(depth < this.GroupMinDepth) { this.GroupMinDepth = depth; }
+                if(depth > this.GroupMaxDepth) { this.GroupMaxDepth = depth; }
+            }
+            
+            this.GroupObjects.Add(child);
+            
+            this.RecursiveGetGroupObjects(child);
+        }
+    }
+}

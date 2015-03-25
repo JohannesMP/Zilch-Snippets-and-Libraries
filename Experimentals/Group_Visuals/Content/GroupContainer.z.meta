@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GroupContainer",
+		uint64 ResourceId = 55350c21971177f3,
+	},
+},

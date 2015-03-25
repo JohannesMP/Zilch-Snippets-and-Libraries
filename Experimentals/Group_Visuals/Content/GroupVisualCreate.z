@@ -1,0 +1,176 @@
+class GroupVisualCreate : ZilchComponent
+{
+    [Property]
+    var Group : CogPath;
+    var Container : GroupContainer;
+    
+    [Property]
+    var Active : Boolean = true;
+    [Property]
+    var UpdateOnLogic : Boolean = true;
+    
+    [Property]
+    var VisualSprite : SpriteSource = SpriteSource.Find("White");
+    
+    [Property]
+    var VisualColor : Real4 = Real4(0.0, 0.0, 0.0, 1.0);
+    
+    [Property]
+    var BorderOffset : Real = 0.2;
+    
+    // A positive depth offset means we place the visual in front of the group. a negative value means behind the group
+    [Property]
+    var PositionOffset : Real3 = Real3(0.1, -0.2, -0.001);
+    
+    [Property]
+    var VisualArchetype : Archetype = Archetype.Find("GroupVisualObject");
+    var VisualObjectMap : HashMap[Cog, Cog] = HashMap[Cog, Cog]();
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(this.Group.Cog == null || this.Group.Cog.Transform == null)
+        {
+            throw new Exception("You need to set a legal Group Path on your visual '`this.Owner.Name`'!");
+        }
+        
+        if(this.Owner.Transform.WorldScale != Real3(1,1,1))
+        {
+            throw new Exception("The visual on `this.Owner.Name` is being scaled. Make sure its parents all have a scale of (1,1,1)");
+        }
+        
+        // add a visualcontainer if it does not exist yet
+        if(this.Group.Cog.GroupContainer == null)
+        {
+            var container = this.Group.Cog.AddComponentByName(typeid(GroupContainer).Name);
+            this.Group.Cog.GroupContainer.AddedAtRuntime = true;
+            this.Group.Cog.GroupContainer.Initialize(init);
+        }
+        
+        // hold onto the container
+        this.Container = this.Group.Cog.GroupContainer;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    
+    // remove each effect object that corresponds to a platform object
+    function ClearVisualObjects()
+    {
+        foreach(var platform in this.Container.GroupObjects)
+        {
+            if(this.VisualObjectMap.Contains(platform))
+            {
+                var effect = this.VisualObjectMap.GetOrError(platform);
+                effect.Destroy();
+            }
+        }
+        
+        this.VisualObjectMap.Clear();
+    }
+    
+    
+    // create one effect object per platform object
+    function InitVisualObjects()
+    {
+        foreach(var platform in this.Container.GroupObjects)
+        {
+            var pos = platform.Transform.WorldTranslation;
+            
+            var visual = this.Space.CreateAtPosition(this.VisualArchetype, pos);
+            visual.AttachTo(this.Owner);
+            visual.Name = "DYNAMIC_VISUAL_DO_NOT_TOUCH";
+            
+            this.VisualObjectMap.Add(platform, visual);
+        }
+    }
+    
+    // update the visuals
+    function UpdateVisualObjects()
+    {
+        foreach(var platform in this.Container.GroupObjects)
+        {
+            if(!this.VisualObjectMap.Contains(platform))
+            {
+                continue;
+            }
+            
+            var visual = this.VisualObjectMap.GetOrError(platform);
+            
+            var pos : Real3 = platform.Transform.WorldTranslation;
+            
+            if(this.PositionOffset.Z > 0)
+            {
+                // we are in front of the group, so we need the max depth value
+                pos = Real3(pos.X + this.PositionOffset.X, pos.Y + this.PositionOffset.Y, this.Container.GroupMaxDepth + this.PositionOffset.Z);
+            }
+            else
+            {
+                // we are behind the group so we need the min depth value
+                pos = Real3(pos.X + this.PositionOffset.X, pos.Y + this.PositionOffset.Y, this.Container.GroupMinDepth + this.PositionOffset.Z);
+            }
+            
+            visual.Transform.WorldTranslation = pos;
+            visual.Transform.WorldRotation = platform.Transform.WorldRotation;
+            visual.Area.Size = this.CalcAreaSize(platform);
+            
+            visual.Sprite.Color = this.VisualColor;
+            visual.Sprite.SpriteSource = this.VisualSprite;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Transform.WorldScale != Real3(1,1,1))
+        {
+            throw new Exception("The visual on `this.Owner.Name` is being scaled. Make sure its parents all have a scale of (1,1,1)");
+        }
+        
+        // if we are not active but have visuals, clear them
+        if(!this.Active)
+        {
+            if(this.VisualObjectMap.Count != 0)
+            {
+                this.ClearVisualObjects();
+            }
+            return;
+        }
+        else
+        {
+            // if our visual count does not match the group object count, re-create our visual objects
+            if(this.VisualObjectMap.Count != this.Container.GroupObjects.Count)
+            {
+                this.ClearVisualObjects();
+                this.InitVisualObjects();
+                this.UpdateVisualObjects();
+            }
+        }
+        
+        // only update our visual if we are set to do so on logic update
+        if(!this.UpdateOnLogic)
+        {
+            return;
+        }
+        
+        this.UpdateVisualObjects();
+    }
+    
+    function CalcAreaSize(cog : Cog) : Real2
+    {
+        var width : Real = 1.0;
+        var height : Real = 1.0;
+        
+        if(cog.Area != null)
+        {
+            width = cog.Area.Size.X;
+            height = cog.Area.Size.Y;
+        }
+        
+        width *= cog.Transform.WorldScale.X;
+        height *= cog.Transform.WorldScale.Y;
+        
+        width += this.BorderOffset;
+        height += this.BorderOffset;
+        
+        return Real2(width, height);
+    }
+}

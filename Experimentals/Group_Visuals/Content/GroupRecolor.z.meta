@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GroupRecolor",
+		uint64 ResourceId = 55354758139459a6,
+	},
+},
