@@ -46,6 +46,13 @@ You can move the objects on the screen with the arrow keys. Notice how the objec
 * Specifically events of type '<a href=http://zero.digipen.edu/Guide/Events.html?highlight=GameEvent#event-list>`GameEvent`</a>' that are sent by the gamesession, and how it relates to events sent by each space.
 
 
+### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Group_Visuals>Group Visuals</a>
+<img width=300 src=http://i.imgur.com/jouHW1O.png />
+
+* A simple system for dynamically adding sprites based on an existing group of sprites.
+* Effectively it allows for the addition of Drop Shadows, Glows, Outlines, etc.
+
+
 ### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/Masked_Sprites>Masked Sprites</a>
 <img width=300 src=http://i.imgur.com/3Jncu5W.png />
 
