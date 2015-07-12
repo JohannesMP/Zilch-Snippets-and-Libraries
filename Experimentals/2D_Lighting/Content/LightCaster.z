@@ -1,0 +1,118 @@
+class LightCaster : ZilchComponent
+{
+    var LightPosition : Real3;
+    
+    var ShadowObjects : Array[Cog] = Array[Cog]();
+    var ShadowPoints : Array[Real3] = Array[Real3]();
+    var Line : DebugLine = DebugLine();
+    var Triangle : DebugTriangle = DebugTriangle();
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+        this.Line.HeadSize(0.2);
+        this.Line.Float4Color(Real4(1,0,0,1));
+        this.Triangle.Float4Color(Real4(1,1,1,0.5));
+        //this.Triangle.Border(true);
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        this.Line.Start(this.LightPosition);
+        this.Triangle.Position0(this.LightPosition);
+        var i : Integer = 0;
+        
+        if(this.ShadowPoints.Count > 1)
+        {
+            for(i = 0; i < this.ShadowPoints.Count-1; ++i)
+            {
+                var factor = (i as Real)/this.ShadowPoints.Count;
+                this.Triangle.Position1(this.ShadowPoints[i]);
+                this.Triangle.Position2(this.ShadowPoints[i+1]);
+                //this.Triangle.Float4Color(Real4(1-factor, factor,1,0.5));
+                this.Triangle.Draw();
+            }
+            // draw the last one
+            this.Triangle.Position1(this.ShadowPoints[this.ShadowPoints.Count-1]);
+            this.Triangle.Position2(this.ShadowPoints[0]);
+            this.Triangle.Draw();
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.LightPosition = this.GetMousePos();
+        
+        this.ShadowObjects.Clear();
+        
+        Console.WriteLine(this.Space.FindObjectByName("ShadowCasters").Children);
+        
+        // grab each object
+        foreach(var child in this.Space.FindObjectByName("ShadowCasters").Children)
+        {
+            
+            if(child.ShadowCaster != null)
+            {
+                this.ShadowObjects.Add(child);
+            }
+        }
+        
+        // raycast each object to get light points
+        var ray : Ray = Ray();
+        ray.Start = this.LightPosition;
+        this.ShadowPoints.Clear();
+        foreach(var object in this.ShadowObjects)
+        {
+            var points = ColliderPoints.GetColliderPoints(object, this.LightPosition);
+            if(points != null)
+            {
+                foreach (var point in points)
+                {
+                    var direction = point-ray.Start;
+                    
+                    // up
+                    var up = Math.RotateVector(direction, Real3(0,0,1), 0.00001);
+                    ray.Direction = up;
+                    
+                    var cast = this.Space.PhysicsSpace.CastRayFirst(ray);
+                    if(cast.ObjectHit != null)
+                    {
+                        this.ShadowPoints.Add(cast.WorldPosition);
+                    }
+                    
+                    // down
+                    var down = Math.RotateVector(direction, Real3(0,0,1), -0.00001);
+                    ray.Direction = down;
+                    cast = this.Space.PhysicsSpace.CastRayFirst(ray);
+                    if(cast.ObjectHit != null)
+                    {
+                        this.ShadowPoints.Add(cast.WorldPosition);
+                    }
+                }
+            }
+        }
+        
+        // sort light points by angle to source
+        this.ShadowPoints.Sort(this.ComparePointAngles);
+        
+    }
+    
+    function ComparePointAngles(left : Real3, right : Real3) : Boolean
+    {
+        return this.GetPointSourceRotation(left) > this.GetPointSourceRotation(right);
+    }
+    
+    function GetPointSourceRotation(point : Real3) : Real
+    {
+        var diff = point - this.LightPosition;
+        return Math.ATan2(diff.X, diff.Y);
+    }
+    
+    function GetMousePos() : Real3
+    {
+        var mousePos = Zero.Mouse.ScreenPosition;
+        var viewport = this.Space.LevelSettings.CameraViewport;
+        return viewport.ScreenToWorldZPlane(mousePos, 0);
+    }
+}

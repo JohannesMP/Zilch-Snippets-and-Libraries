@@ -1,0 +1,115 @@
+class ColliderPoints : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    //
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var start = Real3(0,0,0);
+        
+        var line = DebugLine();
+        line.Float4Color(Real4(0,1,0,1));
+        line.Start(start);
+        line.HeadSize(0.2);
+        
+        var vect = DebugSphere();
+        vect.Float4Color(Real4(1,0,0,1));
+        vect.Radius(0.2);
+        
+        var points = ColliderPoints.GetColliderPoints(this.Owner, start);
+        
+        if(points != null)
+        {
+            foreach(var point in points)
+            {
+                line.End(point);
+                line.Draw();
+                vect.Position(point);
+                vect.Draw();
+            }
+        }
+    }
+    //
+    
+    [Static] function GetColliderPoints(obj : Cog, source : Real3) : Array[Real3]
+    {
+        if(obj.BoxCollider != null)
+        {
+            return ColliderPoints.GetBoxColliderPoints(obj.BoxCollider, source);
+        }
+        if(obj.SphereCollider != null)
+        {
+            return ColliderPoints.GetSphereColliderPoints(obj.SphereCollider, source);
+        }
+        return null;
+    }
+    //
+    
+    
+    // given a box collider, calculate its relevant collision points (vertices)
+    [Static] function GetBoxColliderPoints(col : BoxCollider, source : Real3) : Array[Real3]
+    {
+        var points = Array[Real3]() {   Real3( 0.5,  0.5, 0.0),
+                                        Real3( 0.5, -0.5, 0.0),
+                                        Real3(-0.5, -0.5, 0.0),
+                                        Real3(-0.5,  0.5, 0.0) };
+        var offset = col.Owner.Transform.WorldTranslation;
+        var scale = col.Owner.Transform.WorldScale;
+        scale *= col.Size;
+        var rotation = col.Owner.Transform.WorldRotation;
+        
+        return ColliderPoints.TransformPoints(points, scale, rotation, offset);
+    }
+    //
+    
+    
+    // given a sphere collider and source point, calculate its relevant collision points (tangent points)
+    [Static] function GetSphereColliderPoints(col : SphereCollider, source : Real3) : Array[Real3]
+    {
+        var offset = col.Owner.Transform.WorldTranslation;
+        var scale = col.Owner.Transform.WorldScale;
+        
+        // Note: spherecollider uses largest scale component to scale uniformely.
+        var r = col.Radius * Math.Max(scale.X, Math.Max(scale.Y, scale.Z));
+        
+        var diff = offset - Real3(source.X, source.Y, offset.Z);
+        var dist = Math.Length(diff);
+        
+        // if the source point is inside the circle no tangent points exist.
+        if(dist <= r) { return null;}
+        
+        // we're drawing a right triangle from the center of the circle, to the tangent point, to the source point.
+        // The closer the source gets to the circle, the larger the offset angle is.
+        var tangent = Math.Sqrt(dist*dist - r*r);
+        var angle = Math.ATan2(r,tangent);
+        
+        // We first apply the offset angle for the tangent point.
+        var points = Array[Real3]() {   Real3( r, 0.0, 0.0),
+                                        Real3(-r, 0.0, 0.0) };
+        points[0] = Math.RotateVector(points[0], Real3(0,0,1), angle);
+        points[1] = Math.RotateVector(points[1], Real3(0,0,1), -angle);
+        
+        // Then we calculate the rotation of both tangent points towards the source.
+        var rotation = Math.RotationQuaternionBetween(Real3(0,-1,0), Math.Normalize(diff));
+        
+        return ColliderPoints.TransformPoints(points, Real3(1,1,1), rotation, offset);
+    }
+    //
+    
+    
+    // Helper function for transforming a set of points
+    [Static] function TransformPoints(points : Array[Real3], scale : Real3, rotation : Quaternion, offset : Real3) : Array[Real3]
+    {
+        for(var i = 0; i < points.Count; ++i)
+        {
+            points[i] *= scale;
+            points[i] = Math.Transform(points[i], rotation);
+            points[i] += offset;
+        }
+        return points;
+    }
+}
+//

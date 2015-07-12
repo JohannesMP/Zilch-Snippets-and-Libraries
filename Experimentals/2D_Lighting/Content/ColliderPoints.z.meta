@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ColliderPoints",
+		uint64 ResourceId = 556da0684bcddd64,
+	},
+},

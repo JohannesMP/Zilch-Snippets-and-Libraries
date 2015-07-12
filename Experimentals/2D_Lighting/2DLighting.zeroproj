@@ -1,0 +1,26 @@
+Cog = 
+{
+	Project = 
+	{
+		string ProjectName = "2DLighting",
+		string ProjectOwner = "",
+		string DefaultLevel = "Level",
+		string ProjectSpace = "Space",
+		uint ProjectEngineRevision = 12003,
+		bool AutoTakeProjectScreenshot = true,
+	},
+	EditorSettings = 
+	{
+		EditorMode EditorMode = Mode2D,
+		bool ViewCube = true,
+		float ViewCubeViewportSize = 150,
+		ScriptReloadMethod ScriptReloadEditor = ReInitializeObjects,
+		ScriptReloadMethod ScriptReloadGame = PatchObjects,
+	},
+	ProjectDescription = 
+	{
+		string ShortDescription = "",
+		string LongDescription = "",
+		string Tags = "",
+	},
+},

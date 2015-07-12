@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ShadowCaster",
+		uint64 ResourceId = 556db31873d31ae8,
+	},
+},

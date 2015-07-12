@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "2DLighting",
+	uint64 LibraryId = 556d4106a3193b5e,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

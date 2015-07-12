@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "Template2dProject",
+	uint64 LibraryId = 554cea0f94af55fd,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},
