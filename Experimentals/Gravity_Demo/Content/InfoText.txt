@@ -1,0 +1,8 @@
+This Project demonstrates how you might use Properties (with getters and setters) and debug draw to get some cool results
+- We simulate gravity and generate a function that returns the gravity at any given point in space
+- we combine that with debug draw to create a vector field showing the force of gravity
+
+- Move around with Arrow keys / WASD
+- Click to spawn an object (at a static velocity)
+- Use the = and - keys to enlarge the sun in the center, and observe the effect it has on the objects orbiting it.
+- Increasing its radious by n increases its area (and 2d gravity) by n^2, which is accurately represented here.

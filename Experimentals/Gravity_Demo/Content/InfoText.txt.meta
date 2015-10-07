@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "InfoText",
+		uint64 ResourceId = 5602eb2bbbebfa02,
+	},
+},

@@ -16,4 +16,7 @@ GameSession =
 		string StartingSpaceName = "5404abbbf8b280f4:Space",
 		string StartingLevelName = "5404abbbf8b27c80:Level",
 	},
+	CameraViewports = 
+	{
+	},
 },

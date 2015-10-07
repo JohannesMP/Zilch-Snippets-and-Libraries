@@ -1,6 +1,6 @@
 Level = 
 {
-	LevelSettings = 
+	Cog = 
 	{
 		LinkId = 
 		{
@@ -14,7 +14,7 @@ Level =
 		{
 			bool Active = false,
 			bool WakeUpOnChange = false,
-			float Drag = 0.1,
+			float Drag = 0.100000001,
 		},
 		CameraViewport = 
 		{
@@ -24,15 +24,43 @@ Level =
 			int Layer = 0,
 			bool Active = true,
 			bool Blocking = true,
-			uint Renderer = 1,
-			uint Camera = 2,
+			CogPath Renderer = 
+			{
+				string Path = ".",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 1,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath Camera = 
+			{
+				string Path = ":/Camera",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 2,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
 			ViewportScaling Scaling = Fill,
 			Vec2 Resolution = [1280, 720],
 			Vec4 MarginColor = [0, 0, 0, 1],
 		},
 		ForwardRenderer = 
 		{
-			Vec4 ClearColor = [0.155, 0.155, 0.155, 1],
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
 			bool DrawNonVisible = false,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -49,8 +77,8 @@ Level =
 			bool DrawAxisOrigins = true,
 			bool AlwaysDrawInEditor = true,
 			bool DrawInGame = true,
-			Vec4 GridColor = [0.5, 0.5, 0.5, 0.4],
-			Vec4 GridHiLight = [0, 0, 0, 0.4],
+			Vec4 GridColor = [0.5, 0.5, 0.5, 0.400000006],
+			Vec4 GridHiLight = [0, 0, 0, 0.400000006],
 			int HilightInterval = 10,
 			bool FollowEditorCamera = false,
 		},
@@ -77,9 +105,23 @@ Level =
 		},
 		GravityField = 
 		{
-			CogPath SunPath = ":/Sun",
+			CogPath SunPath = 
+			{
+				string Path = ":/Sun",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 4,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
 			bool ShowVectorField = true,
-			Vec4 VectorColorMin = [0, 0.52, 1, 1],
+			Vec4 VectorColorMin = [0, 0.519999981, 1, 1],
 			Vec4 VectorColorMax = [1, 0, 0, 1],
 			float VectorMaxFactor = 6,
 			float VectorFieldDensity = 2,
@@ -97,7 +139,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 4,
+			uint Id = 5,
 		},
 		Named = 
 		{
@@ -107,7 +149,7 @@ Level =
 		{
 			Vec3 Translation = [0, 0, 50],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0, -1.09278e-008, 0, 1],
+			Quat Rotation = [-0, -1.09278471e-008, 0, 1],
 		},
 		Camera = 
 		{
@@ -117,7 +159,7 @@ Level =
 			float FieldOfView = 45,
 			float NearPlane = 0.5,
 			float FarPlane = 500,
-			float Size = 20,
+			float Size = 29.836483,
 		},
 		EditorCameraController = 
 		{
@@ -130,7 +172,7 @@ Level =
 		},
 		EditorRenderer = 
 		{
-			Vec4 ClearColor = [0.155, 0.155, 0.155, 1],
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
 			bool DrawNonVisible = true,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -163,7 +205,7 @@ Level =
 			float FarPlane = 200,
 			float Size = 20,
 		},
-		Microphone = 
+		SoundListener = 
 		{
 			bool Active = true,
 		},
@@ -172,7 +214,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 5,
+			uint Id = 4,
 		},
 		Named = 
 		{
@@ -181,7 +223,7 @@ Level =
 		Transform = 
 		{
 			Vec3 Translation = [0, 0, 0],
-			Vec3 Scale = [1.5317, 1.5317, 1.5317],
+			Vec3 Scale = [1.53170002, 1.53170002, 1.53170002],
 			Quat Rotation = [0, 0, 0, 1],
 		},
 		Sprite = 
@@ -190,7 +232,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = false,
 			bool CastShadows = false,
-			Vec4 Color = [1, 0.57, 0, 1],
+			Vec4 Color = [1, 0.569999993, 0, 1],
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
@@ -198,7 +240,6 @@ Level =
 			bool RenderMask = false,
 			bool FlipX = false,
 			bool FlipY = false,
-			bool OnTop = false,
 			bool AnimationActive = true,
 			float AnimationSpeed = 1,
 			uint StartFrame = 0,
@@ -229,7 +270,7 @@ Level =
 		{
 			float ScaleChangeSpeed = 10,
 			float Density = 5,
-			Vec4 ColorMin = [0.4307, 0.59, 0.59, 1],
+			Vec4 ColorMin = [0.430700004, 0.589999974, 0.589999974, 1],
 			Vec4 ColorMax = [1, 0, 0, 1],
 		},
 	},
@@ -249,8 +290,8 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-3.77295, 2.65457, 0],
-			Vec3 Scale = [0.836401, 0.836401, 0.836401],
+			Vec3 Translation = [-3.77294993, 2.6545701, 0],
+			Vec3 Scale = [0.836400986, 0.836400986, 0.836400986],
 			Quat Rotation = [0, 0, 0, 1],
 		},
 		Sprite = 
@@ -259,7 +300,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = false,
 			bool CastShadows = false,
-			Vec4 Color = [0.11, 0, 1, 1],
+			Vec4 Color = [0.109999999, 0, 1, 1],
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
@@ -267,7 +308,6 @@ Level =
 			bool RenderMask = false,
 			bool FlipX = false,
 			bool FlipY = false,
-			bool OnTop = false,
 			bool AnimationActive = true,
 			float AnimationSpeed = 1,
 			uint StartFrame = 0,
@@ -296,6 +336,54 @@ Level =
 		},
 		SateliteController = 
 		{
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 7,
+		},
+		Named = 
+		{
+			string Name = "SpriteText",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0.283938408, 4.14391947, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		SpriteText = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string FontName = "4e7bac697bec55c5:Verdana",
+			uint FontSize = 30,
+			string Text = "This Project demonstrates how you might use Properties (with getters and setters) and debug draw to get some cool results
+- We simulate gravity and generate a function that returns the gravity at any given point in space
+- we combine that with debug draw to create a vector field showing the force of gravity
+
+- Click to spawn an object (at a static velocity)
+- Use the = and - keys to enlarge the sun in the center, and observe the effect it has on the objects orbiting it.",
+			TextAlign Align = Left,
+			float PixelsPerUnit = 64,
+			bool Smoothing = true,
+		},
+		SpriteTextBlock = 
+		{
+			string TextBlock = "5602eb2bbbebfa02:InfoText",
+		},
+		Area = 
+		{
+			Vec2 Size = [24.3097534, 8.92531776],
+			Location Origin = Center,
 		},
 	},
 },
