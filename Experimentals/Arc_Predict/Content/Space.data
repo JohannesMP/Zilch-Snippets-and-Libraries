@@ -10,8 +10,8 @@ Space =
 	},
 	TimeSpace = 
 	{
-		float MaxDt = 0.3,
-		float MinDt = 1e-006,
+		float MaxDt = 0.300000012,
+		float MinDt = 9.99999997e-007,
 		float TimeScale = 1,
 		uint TimeMode = 0,
 		uint StepCount = 1,
@@ -20,6 +20,8 @@ Space =
 	{
 		TransparentSort TransparentSort = ViewDepth,
 		string SpriteLayerOrder = "52b23ad3c402d436:DefaultSpriteLayerOrder",
+		bool UseRandomSeed = false,
+		uint RandomSeed = 0,
 	},
 	ActionSpace = 
 	{
@@ -36,6 +38,9 @@ Space =
 		string StaticBroadphaseType = "StaticAabbTree",
 	},
 	SoundSpace = 
+	{
+	},
+	ReactiveSpace = 
 	{
 	},
 },
