@@ -1,8 +1,0 @@
-TextContent = 
-{
-	TextBuilder = 
-	{
-		string Name = "Text",
-		uint64 ResourceId = 5436fcd5ec886c62,
-	},
-},

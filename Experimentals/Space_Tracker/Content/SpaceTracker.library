@@ -1,7 +1,0 @@
-ContentLibrary = 
-{
-	string Name = "SpaceTracker",
-	uint64 LibraryId = 54d5a5dba6afe28c,
-	string SourceControlType = "",
-	bool ReadOnly = false,
-},
