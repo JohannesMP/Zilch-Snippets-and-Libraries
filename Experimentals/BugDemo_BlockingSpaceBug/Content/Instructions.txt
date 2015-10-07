@@ -1,4 +1,5 @@
-This Project demonstrates a bug that Zero currently has with multiple spaces
+This Project originally demonstrated a bug that Zero had with multiple spaces.
+The bug has been fixed, but this porject might still be useful for someone that wants to mess with spaces.
 
 Currently only the top two space viewports seem to receive certain mouse events.
 
