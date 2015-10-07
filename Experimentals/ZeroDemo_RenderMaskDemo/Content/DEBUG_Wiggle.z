@@ -1,0 +1,27 @@
+class DEBUG_Wiggle : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+
+    [Property]
+    var WigglePeriod : Real = 2;
+    [Property]
+    var WiggleDist : Real2 = Real2(5,0);
+    
+    var HalfPi : Real = Math.Pi/2;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var time = event.RealTimePassed / this.WigglePeriod + this.HalfPi;
+        var wiggle = (Math.Sin(time) * this.WiggleDist) / this.WigglePeriod;
+        
+        Console.WriteLine(wiggle);
+        
+        this.Transform.WorldTranslation += Real3(wiggle, 0) * event.Dt;
+    }
+}
+

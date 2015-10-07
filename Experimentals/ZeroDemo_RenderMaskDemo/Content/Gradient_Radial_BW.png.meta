@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Gradient_Radial_BW",
+		uint64 ResourceId = 561bce994fc3daa2,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 256,
+		uint FrameSizeY = 256,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 128,
+		float OriginY = 128,
+		float PixelsPerUnit = 256,
+		bool Smoothing = true,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

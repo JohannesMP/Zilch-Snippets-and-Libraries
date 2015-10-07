@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "RenderMaskDemo",
+	uint64 LibraryId = 561bd11a76931841,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

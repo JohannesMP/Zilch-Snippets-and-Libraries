@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DEBUG_Rotate",
+		uint64 ResourceId = 5642f8564d287fc1,
+	},
+},

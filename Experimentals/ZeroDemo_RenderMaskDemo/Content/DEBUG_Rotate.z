@@ -1,0 +1,21 @@
+
+
+class DEBUG_Rotate : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+
+    [Property]
+    var RotateSpeed : Real = 2;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var angle = event.RealTimePassed * this.RotateSpeed;
+        
+        this.Transform.SetEulerAnglesXYZ(0,0,angle);
+    }
+}

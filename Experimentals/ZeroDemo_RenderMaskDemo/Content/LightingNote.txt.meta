@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "LightingNote",
+		uint64 ResourceId = 5602eee5b3aa1bde,
+	},
+},

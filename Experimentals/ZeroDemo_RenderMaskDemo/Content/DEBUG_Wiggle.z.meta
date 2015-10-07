@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DEBUG_Wiggle",
+		uint64 ResourceId = 5642fe8ac64c5012,
+	},
+},
