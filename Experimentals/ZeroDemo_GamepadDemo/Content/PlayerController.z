@@ -1,0 +1,57 @@
+/*
+ * A Player input controller designed specifically to not be tied to a single input device.
+ * It listens to PlayerMovement events and uses that to move the player.
+ *
+ * PlayerMovement events could come from any source, including Keyboard, Gamepad, or even an AI script
+ */ 
+
+class PlayerController : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+    [Dependency] var RigidBody : RigidBody;
+    
+    [Property]
+    var PlayerMoveSpeed : Real = 5;
+    
+    // A Property 'Alias' that allows us to use 'this.Position' instead of 'this.Owner.Transform.WorldTranslation'
+    var Position : Real3
+    {
+        get { return this.Transform.WorldTranslation; }
+        set { this.Transform.WorldTranslation = value; }
+    }
+    
+    var MovementInput : Real2; // allow us to store movement in one function and use it in Logic Update.
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.PlayerMovement, this.OnPlayerMovement);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Position += Real3(this.MovementInput, 0) * this.PlayerMoveSpeed * event.Dt;
+    }
+
+    function OnPlayerMovement(event : PlayerMovementEvent)
+    {
+        this.MovementInput = event.Movement;
+        
+        // normalize the input ONLY if it is larger than 1
+        if(Math.Length(this.MovementInput) > 1.0)
+        {
+            this.MovementInput = Math.Normalize(this.MovementInput);
+        }
+    }
+}
+
+
+// Used to pass Command input to the player
+enum PlayerCommands { Up, Down, Left, Right, None }
+
+// The event we listen to (and that is sent from our input source)
+class PlayerMovementEvent : ZilchEvent
+{
+    var Movement : Real2;
+    constructor(movement : Real2) : base() { this.Movement = movement; }
+}

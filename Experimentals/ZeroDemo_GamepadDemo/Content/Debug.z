@@ -1,0 +1,23 @@
+/*
+ * This wrapper class allows us to call Debug("TEXT") instead of Console.WriteLine("TEXT");
+ */
+
+
+class Debug
+{
+    // When false, all Debug(...) calls are silent. When true we see them.
+    [Static] var DebugEnabled : Boolean = true;
+    
+    constructor(a : any)
+    {
+        if(Debug.DebugEnabled) { Console.WriteLine(a); }
+    }
+    constructor(a : any, b : any)
+    {
+        if(Debug.DebugEnabled) { Console.WriteLine(a, b); }
+    }
+    constructor(a : any, b : any, c : any)
+    {
+        if(Debug.DebugEnabled) { Console.WriteLine(a, b, c); }
+    }
+}

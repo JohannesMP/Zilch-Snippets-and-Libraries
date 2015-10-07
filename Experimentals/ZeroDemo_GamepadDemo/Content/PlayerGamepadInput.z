@@ -1,0 +1,52 @@
+/*
+ * An input provider that the player controller can listen to.
+ *
+ * It generates input data from the left stick of a gamepad (based on a given gamepad)
+ */
+
+class PlayerGamepadInput : ZilchComponent
+{
+    // Note: 'sends' just registers the event.
+    sends PlayerMovement : PlayerMovementEvent;
+    
+    [Dependency] var PlayerController : PlayerController;
+    
+    [Property]
+    var GamepadID : Integer;
+    
+    var GamepadIsActive : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.GameSession, Events.GamepadFound, this.OnGamepadFound);
+        Zero.Connect(this.GameSession, Events.GamepadLost, this.OnGamepadLost);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnGamepadLost(event : GamepadStateEvent)
+    {
+        if(event.PadID == this.GamepadID)
+        {
+            this.GamepadIsActive = false;
+        }
+    }
+
+    function OnGamepadFound(event : GamepadStateEvent)
+    {
+        if(event.PadID == this.GamepadID)
+        {
+            this.GamepadIsActive = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.GamepadIsActive)
+        {
+            var pad = Zero.Gamepads.GetGamePad(this.GamepadID);
+            var movement = pad.LeftStick;
+            this.Owner.DispatchEvent(Events.PlayerMovement, PlayerMovementEvent(movement));
+        }
+    }
+}

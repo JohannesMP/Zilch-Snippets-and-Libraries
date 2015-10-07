@@ -1,0 +1,53 @@
+/*
+ * An input provider that the player controller can listen to.
+ *
+ * It generates input data using a simple random walk algorithm
+ */
+
+class PlayerAIInput : ZilchComponent
+{
+    // Note: 'sends' just registers the event.
+    sends PlayerMovement : PlayerMovementEvent;
+    
+    [Dependency] var PlayerController : PlayerController;
+    
+    [Property]
+    var RandTimeMin : Real = 0.1;
+    [Property]
+    var RandTimeMax : Real = 2.0;
+    
+    
+    // The time we need to reach (set randomly)
+    var TimerGoal   : Real = 0;
+    // The current time on the timer
+    var Timer : Real = 0;
+    
+    var CurrentMovement : Real2;
+    
+    var RandGen : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Update the timer
+        this.Timer += event.Dt;
+        
+        // Check if we've reached our desired time
+        if(this.Timer > this.TimerGoal)
+        {
+            // make sure to reset for the next iteration
+            this.Timer = 0;
+            // We pick a new timer goal (how long we move in a given direction)
+            this.TimerGoal = this.RandGen.Range(this.RandTimeMin, this.RandTimeMax);
+            
+            // We pick a new direction and velocity
+            this.CurrentMovement = this.RandGen.Real2(0.1, 1.0);
+        }
+        
+        this.Owner.DispatchEvent(Events.PlayerMovement, PlayerMovementEvent(this.CurrentMovement));
+    }
+}

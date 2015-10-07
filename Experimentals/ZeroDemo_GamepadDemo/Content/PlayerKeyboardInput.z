@@ -1,0 +1,74 @@
+/*
+ * An input provider that the player controller can listen to.
+ *
+ * It generates input data from the keyboard (based on defined keybindings)
+ */
+
+class PlayerKeyboardInput : ZilchComponent
+{
+    // Note: 'sends' just registers the event.
+    sends PlayerMovement : PlayerMovementEvent;
+    
+    [Dependency] var PlayerController : PlayerController;
+    
+    // PlayerCommands is defined in the PlayerController
+    var KeyBindings : HashMap[PlayerCommands, Array[Keys]] = HashMap[PlayerCommands, Array[Keys]]();
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Set up key bindings
+        this.KeyBindings[PlayerCommands.Up]    = Array[Keys]() { Keys.Up,    Keys.W };
+        this.KeyBindings[PlayerCommands.Down]  = Array[Keys]() { Keys.Down,  Keys.S };
+        this.KeyBindings[PlayerCommands.Left]  = Array[Keys]() { Keys.Left,  Keys.A };
+        this.KeyBindings[PlayerCommands.Right] = Array[Keys]() { Keys.Right, Keys.D };
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // note: movement is just to pass direction to the player controller. it should not factor in speed.
+        var movement = Real2();
+        
+        if(this.IsCommandActive(PlayerCommands.Up))
+        {
+            movement.Y += 1;
+        }
+        if(this.IsCommandActive(PlayerCommands.Down))
+        {
+            movement.Y -= 1;
+        }
+        if(this.IsCommandActive(PlayerCommands.Left))
+        {
+            movement.X -= 1;
+        }
+        if(this.IsCommandActive(PlayerCommands.Right))
+        {
+            movement.X += 1;
+        }
+        
+        // Normalize movement
+        movement = Math.Normalize(movement);
+        
+        // Send it so that the player controller can see it
+        this.Owner.DispatchEvent(Events.PlayerMovement, PlayerMovementEvent(movement));
+    }
+    
+    function IsCommandActive(command : PlayerCommands) : Boolean
+    {
+        // Grab the array of all keys that could be bound for this command
+        var keysBound = this.KeyBindings.Get(command);
+        
+        // Loop over every key bound to the current command, check if it is down.
+        foreach(var key in keysBound)
+        {
+            if(Zero.Keyboard.KeyIsDown(key))
+            {
+                return true;
+            }
+        }
+        
+        // If we reach this point it means nonoe of the bound keys was down.
+        return false;
+    }
+}

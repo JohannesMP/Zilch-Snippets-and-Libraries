@@ -1,0 +1,71 @@
+/*
+ * A component that should be attached on the gamesession (but can be in a level if need be for testing).
+ * 
+ * It is designed to send out two events on the gamesession:
+ * 
+ * - GamepadFound (when a Gamepad has been plugged in)
+ * - GamepadLost  (when a gamepad has been unplugged)
+ */
+class GamepadStateManager : ZilchComponent
+{
+    // Register custom event names for Gamepad Found/Lost
+    // This allows us to call the event via Events.<name> instead of just as a string.
+    sends GamepadFound : GamepadStateEvent;
+    sends GamepadLost  : GamepadStateEvent;
+    
+    /* 
+     * For every gamepad, we store if it is active or not (true/false).
+     *
+     * In any frame we can compare the current state of a gamepad 
+     *     to the past state stored on this map to figure out when
+     *     the gamepad has become active, so we can send an event.
+     */
+    var GamepadsActive : HashMap[Integer, Boolean] = HashMap[Integer, Boolean]();
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Make sure all gamepads start as inactive.
+        for(var i = 0; i < Zero.Gamepads.GamepadCount; ++i)
+        {
+            this.GamepadsActive.SetOrIgnore(i, false);
+        }
+        
+        Zero.Connect(Zero.Engine, Events.EngineUpdate, this.OnEngineUpdate);
+    }
+    
+    function OnEngineUpdate(event : UpdateEvent)
+    {
+        this.CheckPads();
+    }
+    
+    function CheckPads()
+    {
+        for(var i = 0; i < Zero.Gamepads.GamepadCount; ++i)
+        {
+            var pad = Zero.Gamepads.GetGamePad(i);
+            
+            // Was OFF and is now ON - SEND 'FOUND' EVENT.
+            if(!this.GamepadsActive[i] && pad.IsActive)
+            {
+                this.GameSession.DispatchEvent(Events.GamepadFound, GamepadStateEvent(i));
+            }
+            
+            // Was ON and is now OFF - SEND 'LOST' EVENT.
+            if(this.GamepadsActive[i] && !pad.IsActive)
+            {
+                this.GameSession.DispatchEvent(Events.GamepadLost, GamepadStateEvent(i));
+            }
+            
+            this.GamepadsActive[i] = pad.IsActive;
+        }
+    }
+}
+
+// A custom event class used to send specific events about Gamepad State Changes
+class GamepadStateEvent : ZilchEvent
+{
+    var PadID : Integer; // The ID corresponds to the ID of the gamepad that this event is sent for.
+    constructor(padID : Integer) : base() { this.PadID = padID; }
+}
+

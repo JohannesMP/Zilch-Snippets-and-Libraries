@@ -1,0 +1,24 @@
+// A testing class used to see that we can detect when gamepads are plugged in or removed.
+
+class GamepadListener : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.GameSession, Events.GamepadFound, this.OnGamepadFound);
+        Zero.Connect(this.GameSession, Events.GamepadLost, this.OnGamepadLost);
+    }
+
+    function OnGamepadLost(event : GamepadStateEvent)
+    {
+        Debug("LOST: `event.PadID`");
+    }
+
+    function OnGamepadFound(event : GamepadStateEvent)
+    {
+        Debug("Found: `event.PadID`");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

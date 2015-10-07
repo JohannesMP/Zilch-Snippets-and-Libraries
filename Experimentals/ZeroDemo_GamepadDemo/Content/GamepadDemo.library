@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "GamepadDemo",
+	uint64 LibraryId = 56049cfecd591af0,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},
