@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "DebugInfo",
+		uint64 ResourceId = 55b9373e14e7c965,
+	},
+},

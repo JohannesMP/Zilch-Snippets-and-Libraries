@@ -6,7 +6,8 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		uint ProjectEngineRevision = 12003,
+		string ProjectFolder = "C:\Users\Jo\Desktop\j.peter_2DLighting",
+		uint ProjectEngineRevision = 12385,
 		bool AutoTakeProjectScreenshot = true,
 	},
 	EditorSettings = 
@@ -16,6 +17,7 @@ Cog =
 		float ViewCubeViewportSize = 150,
 		ScriptReloadMethod ScriptReloadEditor = ReInitializeObjects,
 		ScriptReloadMethod ScriptReloadGame = PatchObjects,
+		bool AutoUpdateContentChanges = true,
 	},
 	ProjectDescription = 
 	{

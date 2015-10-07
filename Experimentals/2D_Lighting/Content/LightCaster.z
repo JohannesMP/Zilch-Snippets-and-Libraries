@@ -6,37 +6,92 @@ class LightCaster : ZilchComponent
     var ShadowPoints : Array[Real3] = Array[Real3]();
     var Line : DebugLine = DebugLine();
     var Triangle : DebugTriangle = DebugTriangle();
+    var Point : DebugSphere = DebugSphere();
+    
+    var ShowPoints  : Boolean = false;
+    var ShowColors  : Boolean = false;
+    var ShowBorders : Boolean = false;
     
     function Initialize(init : CogInitializer)
     {
         Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
         Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OnKeyUp);
         this.Line.HeadSize(0.2);
-        this.Line.Float4Color(Real4(1,0,0,1));
-        this.Triangle.Float4Color(Real4(1,1,1,0.5));
-        //this.Triangle.Border(true);
+        this.Line.Width(0.1);
+        this.Line.Float4Color(Real4(0,1,0,0.5));
+        this.Point.Radius(0.1);
+        this.Point.Width(0.1);
+        this.Point.Float4Color(Real4(1,0,0,1));
+    }
+
+    function OnKeyUp(event : KeyboardEvent)
+    {
+        if(event.Key == Keys.Two)
+        {
+            this.ShowPoints = !this.ShowPoints;
+        }
+        
+        else if(event.Key == Keys.Three)
+        {
+            this.ShowColors = !this.ShowColors;
+        }
+        
+        else if(event.Key == Keys.One)
+        {
+            this.ShowBorders = !this.ShowBorders;
+        }
     }
 
     function OnFrameUpdate(event : UpdateEvent)
     {
-        this.Line.Start(this.LightPosition);
+        this.Triangle.Border(this.ShowBorders);
         this.Triangle.Position0(this.LightPosition);
+
         var i : Integer = 0;
         
         if(this.ShadowPoints.Count > 1)
         {
             for(i = 0; i < this.ShadowPoints.Count-1; ++i)
             {
+                
                 var factor = (i as Real)/this.ShadowPoints.Count;
                 this.Triangle.Position1(this.ShadowPoints[i]);
                 this.Triangle.Position2(this.ShadowPoints[i+1]);
-                //this.Triangle.Float4Color(Real4(1-factor, factor,1,0.5));
+                
+                if(this.ShowColors)
+                {
+                    this.Triangle.Float4Color(Real4(1-factor, factor,1,0.5));
+                }
+                else
+                {
+                    this.Triangle.Float4Color(Real4(1,1,1,0.5));
+                }
                 this.Triangle.Draw();
+                
             }
             // draw the last one
             this.Triangle.Position1(this.ShadowPoints[this.ShadowPoints.Count-1]);
             this.Triangle.Position2(this.ShadowPoints[0]);
             this.Triangle.Draw();
+        }
+        
+        if(this.ShowPoints)
+        {
+            var object = this.ShadowObjects[this.ShadowObjects.Count-1];
+            var points = ColliderPoints.GetColliderPoints(object, this.LightPosition);
+            
+            if(points!= null)
+            {
+                this.Line.Start(this.LightPosition);
+                foreach(var point in points)
+                {
+                    this.Line.End(point);
+                    this.Line.Draw();
+                    this.Point.Position(point);
+                    this.Point.Draw();
+                }
+            }
         }
     }
 
@@ -45,8 +100,6 @@ class LightCaster : ZilchComponent
         this.LightPosition = this.GetMousePos();
         
         this.ShadowObjects.Clear();
-        
-        Console.WriteLine(this.Space.FindObjectByName("ShadowCasters").Children);
         
         // grab each object
         foreach(var child in this.Space.FindObjectByName("ShadowCasters").Children)
@@ -57,6 +110,10 @@ class LightCaster : ZilchComponent
                 this.ShadowObjects.Add(child);
             }
         }
+        
+        // sort objects based on distance from source (used for debug)
+        this.ShadowObjects.Sort(this.CompareCogDistances);
+        
         
         // raycast each object to get light points
         var ray : Ray = Ray();
@@ -98,16 +155,30 @@ class LightCaster : ZilchComponent
         
     }
     
+    
     function ComparePointAngles(left : Real3, right : Real3) : Boolean
     {
         return this.GetPointSourceRotation(left) > this.GetPointSourceRotation(right);
     }
+    
+    function CompareCogDistances(left : Cog, right : Cog) : Boolean
+    {
+        return this.GetCogSourceDistanceSQ(left) > this.GetCogSourceDistanceSQ(right);
+    }
+    
     
     function GetPointSourceRotation(point : Real3) : Real
     {
         var diff = point - this.LightPosition;
         return Math.ATan2(diff.X, diff.Y);
     }
+    
+    function GetCogSourceDistanceSQ(cog : Cog) : Real
+    {
+        var diff = cog.Transform.WorldTranslation - this.LightPosition;
+        return Math.LengthSq(diff);
+    }
+    
     
     function GetMousePos() : Real3
     {
