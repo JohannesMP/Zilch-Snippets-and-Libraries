@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DebugVarsTextUpdater",
+		uint64 ResourceId = 560099d199ea9a19,
+	},
+},

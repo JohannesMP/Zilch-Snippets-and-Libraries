@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PathDraw",
+		uint64 ResourceId = 550c29115c0d3b5f,
+	},
+},

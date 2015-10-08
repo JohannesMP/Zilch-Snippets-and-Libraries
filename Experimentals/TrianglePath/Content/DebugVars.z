@@ -1,0 +1,105 @@
+class DebugVars : ZilchComponent
+{
+    var DebugDraw : Boolean = false;
+    var FadeApex  : Boolean = true;
+    var FadeEnd   : Boolean = true;
+    var VaryColor : Boolean = true;
+    var VaryWidth : Boolean = true;
+    
+    var Points   : Real;
+    var Distance : Integer
+    {
+        get { return (this.Points / this.PointDT) as Integer; }
+        set { this.Points = (value * this.PointDT); }
+    }
+    
+    var PointDT    : Real    = 0.05;
+        
+    function Initialize(init : CogInitializer)
+    {
+        this.Distance = 100;
+        
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    // just a small function to make checking keys faster
+    function Down(key : Keys) : Boolean { return Zero.Keyboard.KeyIsDown(key); }
+    function Press(key : Keys) : Boolean { return Zero.Keyboard.KeyIsPressed(key); }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        // Toggle Paused State
+        if( this.Press(Keys.P)       ||
+            this.Press(Keys.Zero)    ||
+            this.Press(Keys.NumPad0) )
+        {
+            this.Space.TimeSpace.TogglePause();
+        }
+        
+        // Toggle Debug Draw
+        if( this.Press(Keys.Space)   ||
+            this.Press(Keys.One)     ||
+            this.Press(Keys.NumPad1) )
+        {
+            this.DebugDraw = !this.DebugDraw;
+        }
+        
+        // Toggle Apex Fade
+        if( this.Press(Keys.F)       ||
+            this.Press(Keys.A)       ||
+            this.Press(Keys.Two)     ||
+            this.Press(Keys.NumPad2) )
+        {
+            this.FadeApex = !this.FadeApex;
+        }
+        
+        // Toggle Apex Fade
+        if( this.Press(Keys.F)       ||
+            this.Press(Keys.A)       ||
+            this.Press(Keys.Three)   ||
+            this.Press(Keys.NumPad3) )
+        {
+            this.FadeEnd = !this.FadeEnd;
+        }
+        
+        // Toggle varying color
+        if( this.Press(Keys.Four)    ||
+            this.Press(Keys.NumPad4) )
+        {
+            this.VaryColor = !this.VaryColor;
+        }
+        
+        // Toggle varying width
+        if( this.Press(Keys.Five)    ||
+            this.Press(Keys.NumPad5) )
+        {
+            this.VaryWidth = !this.VaryWidth;
+        }
+        
+        if( this.Down(Keys.Up)    ||
+            this.Down(Keys.Add)   ||
+            this.Down(Keys.Equal) )
+        {
+            this.Points += 2 * event.Dt;
+        }
+        
+        if( this.Down(Keys.Down)     ||
+            this.Down(Keys.Minus)    ||
+            this.Down(Keys.Subtract) )
+        {
+            this.Points -= 2 * event.Dt;
+        }
+        
+        if( this.Down(Keys.RightBracket) ||
+            this.Down(Keys.Right)        )
+        {
+            this.PointDT /= (1 + 1.1 * event.Dt);
+        }
+        
+        if( this.Down(Keys.LeftBracket) ||
+            this.Down(Keys.Left)        )
+        {
+            this.PointDT *= (1 + 1.1 * event.Dt);
+        }
+    }
+}

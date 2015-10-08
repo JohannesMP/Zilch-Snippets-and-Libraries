@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "UbuntuMono-R",
+		uint64 ResourceId = 560092f69669151e,
+	},
+},

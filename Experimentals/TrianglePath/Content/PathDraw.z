@@ -1,0 +1,236 @@
+class PathDraw : ZilchComponent
+{
+    
+    [Property]
+    var MaxDrawDist : Real = 0.5;
+    
+    [Property]
+    var StartWidth : Real = 0.2;
+    [Property]
+    var EndWidth : Real = 0.5;
+    
+    [Property]
+    var FadeOff : Real = 0.1;
+    
+    [Property]
+    var StartColor : Real4 = Real4(1,0,0,1);
+    [Property]
+    var EndColor : Real4 = Real4(1,0,1,1);
+    
+    
+    // DO NOT MODIFY MANUALLY
+    
+    var Points : Array[Real3] = Array[Real3]();
+    var Timer : Real; 
+    
+    // access our debug variables, in a component on levelsettings. you could easily change it to be on the gamesession if you wanted.
+    var Vars : DebugVars
+    {
+        get
+        {
+            if(this.LevelSettings.DebugVars != null)
+            {
+                return this.LevelSettings.DebugVars;
+            }
+            throw Exception("You need to make sure 'DebugVars' exists on levelsettings");
+        }
+    }
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Handle physics updates in logic update, So we can pause the game
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        // Handle drawing in frameupdate, so stuff remains visible when game is paused
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // We use our own timer instead of 'TimePassed' to account for pausing
+        this.Timer += event.Dt;
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        this.UpdatePoints(this.Vars.PointDT);
+        
+        var last_point = Real3();
+        
+        var last_low1 = Real3();
+        var last_low2 = Real3();
+        var last_high1 = Real3();
+        var last_high2 = Real3();
+        
+        var i = 0;
+        
+        var diff = Real3();
+        var color = Real4();
+        
+        foreach(var point in this.Points)
+        {
+            if(this.Vars.VaryColor)
+            {
+                // Do linear interpolation based on index of the point we are operating on.
+                // - Basically the closer our point is to the start point, the more the color will be
+                //   like 'StartColor', And the closer to the end the more the color ends up like 'EndColor'
+                color = Math.Lerp(this.StartColor, this.EndColor, (i as Real)/this.Points.Count);
+            }
+            else
+            {
+                color = this.StartColor;
+            }
+            
+            
+            // Vector from last point to current point
+            diff = point - last_point;
+            // Grab the length for future use
+            var len = Math.Length(diff);
+            // Normalize the vector to a length of 1 (makes it much easier to operate on)
+            diff = Math.Normalize(diff);
+            
+            // Calculate normal (vector at 90 degree angle to the original vector). We will use this for the width of our path.
+            var normal = Real3(diff.Y, -diff.X, 0);
+            
+            if(this.Vars.VaryWidth)
+            {
+                // Set up the length to be a linear interpolation. like with color, it means that the length will vary between
+                //   'StartWidth' and EndWidth depending on how close this point is between the first and last point.
+                normal *= Math.Lerp(this.StartWidth, this.EndWidth, (i as Real)/this.Points.Count);
+            }
+            else
+            {
+                normal *= this.StartWidth;
+            }
+            
+            var low = point - normal;
+            var high = point + normal;
+
+            // Set up a gradual fadeout
+            var opacity = (1 - (i as Real/this.Points.Count))/2 + 0.3;
+            
+
+            if(this.Vars.FadeApex)
+            {
+                var minstart = 0.04;
+                var minend = 0.01;
+                if(len < minstart)
+                {
+                    opacity *= Math.Max((len - minend) / (minstart - minend), 0);
+                }
+            }
+            
+            if(this.Vars.FadeEnd)
+            {
+                // OPACITY: Handle end of the line
+                // normalized distance to the end
+                len = 1 - ((i as Real)/this.Points.Count);
+                
+                if(len < this.FadeOff)
+                {
+                    opacity *= (len / this.FadeOff);
+                }
+            }
+            
+            // apply opacity
+            color.W = opacity;
+            
+            
+            // DEBUG: draw 'width' lines
+            if(i > 0 && this.Vars.DebugDraw)
+            {
+                var line = DebugLine();
+                line.Start(last_point as Real3);
+                line.End(point);
+                line.Float4Color(Real4(1,0,0,1));
+                line.Draw();
+                
+                var norm = DebugLine();
+                norm.Start(point + normal);
+                norm.End(point - normal);
+                norm.Float4Color(Real4(0,1,0,1));
+                norm.Draw();
+            }
+                
+            if(i > 1)
+            {
+                var end_pos = Real3();
+                
+                // even, draw low
+                if(i%2 == 0)
+                {
+                    var tri2 = DebugTriangle();
+                    tri2.Position0(last_high1);
+                    tri2.Position1(low);
+                    if(i != 2)
+                    {
+                        tri2.Position2(last_low2);
+                    }
+                    else
+                    {
+                        tri2.Position2(last_low1);
+                    }
+                    tri2.Float4Color(color);
+                    tri2.BackShade(false);
+                    tri2.Draw();
+                    end_pos = low;
+                }
+                // odd, draw high
+                else
+                {
+                    var tri2 = DebugTriangle();
+                    tri2.Position0(last_high2);
+                    tri2.Position1(high);
+                    tri2.Position2(last_low1);
+                    tri2.Float4Color(color);
+                    tri2.BackShade(false);
+                    tri2.Draw();
+                    end_pos = high;
+                }
+                
+                if(this.Vars.DebugDraw)
+                {
+                    // Set up debug circle
+                    var circle = DebugCircle();
+                    circle.Axis(Real3(0,0,1));
+                    circle.Radius(0.1);
+                    circle.Float4Color(Real4(1,0,0,1));
+                    circle.Position(end_pos);
+                    circle.Draw();
+                }
+            }
+            
+            last_point = point;
+            last_low2 = last_low1;
+            last_low1 = low;
+            last_high2 = last_high1;
+            last_high1 = high;
+            ++i;
+        }
+    }
+    
+    function UpdatePoints(dT : Real)
+    {
+        // Start with an empty array of points
+        this.Points.Clear();
+        
+        // Set up our initial variables
+        var accel = Real3(0,-2,0);
+        var vel = Real3(Math.Sin(this.Timer)*2,5 + Math.Cos(this.Timer/1.3)*1,0);
+        // handle default position
+        var pos = Real3(0,-2,0);
+        // use object position if we are attached to an object.
+        if(this.Owner.Transform != null)
+        {
+            pos = this.Owner.Transform.WorldTranslation;
+        }
+        
+        // Generate points based on physics
+        for(var i = 0; i < this.Vars.Distance; ++i)
+        {
+            vel += accel * dT;
+            pos += vel * dT;
+            this.Points.Add(pos);
+        }
+    }
+}

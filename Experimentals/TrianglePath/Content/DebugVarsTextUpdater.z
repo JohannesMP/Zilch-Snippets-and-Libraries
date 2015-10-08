@@ -1,0 +1,45 @@
+class DebugVarsTextUpdater : ZilchComponent
+{
+    [Dependency] var SpriteText : SpriteText;
+    
+    // access our debug variables, in a component on levelsettings. you could easily change it to be on the gamesession if you wanted.
+    var Vars : DebugVars
+    {
+        get
+        {
+            if(this.LevelSettings.DebugVars != null)
+            {
+                return this.LevelSettings.DebugVars;
+            }
+            throw Exception("You need to make sure 'DebugVars' exists on levelsettings");
+        }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        var text = StringBuilder();
+        
+        var format = "   %-15s : %-6s - (%s)";
+        var num    = "   %-15s : %-.4f - (%s)";
+
+        text.WriteLine();
+        text.WriteLine(String.FormatC(format, "Paused",         this.Space.TimeSpace.Paused, "0 or P"));
+        text.WriteLine();                                       
+        text.WriteLine(String.FormatC(format, "DebugDraw",      this.Vars.DebugDraw,         "1 or Space"));
+        text.WriteLine();                                       
+        text.WriteLine(String.FormatC(format, "Fade Apex",      this.Vars.FadeApex,          "2"));
+        text.WriteLine(String.FormatC(format, "Fade End",       this.Vars.FadeEnd,           "3"));
+        text.WriteLine(String.FormatC(format, "Vary Color",     this.Vars.VaryColor,         "4"));
+        text.WriteLine(String.FormatC(format, "Vary Width",     this.Vars.VaryWidth,         "5"));
+        text.WriteLine();
+        text.WriteLine(String.FormatC(num,    "Arc Resolution", this.Vars.PointDT,           "[/] or Left/Right"));
+        text.WriteLine(String.FormatC(num,    "Arc Distance",   this.Vars.Points,        "+/- or Up/Down"));
+
+        this.SpriteText.Text = text.ToString();
+    }
+}

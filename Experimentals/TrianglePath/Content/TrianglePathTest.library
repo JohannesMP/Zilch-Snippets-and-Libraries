@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "TrianglePathTest",
+	uint64 LibraryId = 550c290159f0a91c,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},
