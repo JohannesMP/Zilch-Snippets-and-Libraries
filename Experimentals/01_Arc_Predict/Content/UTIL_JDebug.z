@@ -1,5 +1,4 @@
-/******************************************************************************/
-/*!
+/*!*****************************************************************************
 @brief      Utility functions for Debugging
 @version    JDebug v 0.1.4
 @date       02/10/2015
@@ -36,8 +35,7 @@
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
     All content © 2015 DigiPen (USA) Corporation, all rights reserved
-*/
-/******************************************************************************/
+*******************************************************************************/
 
 
 class JDebug

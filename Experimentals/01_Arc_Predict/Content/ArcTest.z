@@ -1,5 +1,4 @@
-/******************************************************************************/
-/*!
+/*!*****************************************************************************
 @brief      A quick exploration in realistically pre-simulating ballistic arcs
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
@@ -8,8 +7,7 @@
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
     All content © 2015 DigiPen (USA) Corporation, all rights reserved
-*/
-/******************************************************************************/
+*******************************************************************************/
 
 class ArcTest : ZilchComponent
 {

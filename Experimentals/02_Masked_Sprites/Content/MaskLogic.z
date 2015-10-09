@@ -1,3 +1,15 @@
+/*!*****************************************************************************
+@brief      Basic script to move the mask to where the mouse is on the screen
+@date       02/26/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
+
 class MaskLogic : ZilchComponent
 {
     [Dependency]
