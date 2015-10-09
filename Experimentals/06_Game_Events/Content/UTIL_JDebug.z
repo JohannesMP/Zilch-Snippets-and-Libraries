@@ -1,11 +1,9 @@
-/******************************************************************************/
-/*!
-@file       UTIL_JDebug.z
+/*!*****************************************************************************
 @brief      Utility functions for Debugging
 @version    JDebug v 0.1.4
 @date       02/10/2015
-@author     Johannes Peter
-@par        email: j.peter\@digipen.edu.
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
 
 @warn       For the debug drawing functions do NOT use in LogicUpdate! Use FrameUpdate Instead!
 @details
@@ -37,8 +35,7 @@
 @copyright
     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
     All content © 2015 DigiPen (USA) Corporation, all rights reserved
-*/
-/******************************************************************************/
+*******************************************************************************/
 
 
 class JDebug

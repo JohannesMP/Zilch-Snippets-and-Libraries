@@ -1,8 +1,19 @@
-/*
- * An input provider that the player controller can listen to.
- *
- * It generates input data from the left stick of a gamepad (based on a given gamepad)
- */
+/*!*****************************************************************************
+@brief      A Player input provider, generating input data using the left stick of a gamepad.
+@date       10/06/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    Sends PlayerMovement event to be used by a GamepadStateManager.
+
+    While the gamepad id is hard-coded, you could set it via scripts. For example,
+    Have a script that spawns a player when a controller is plugged in, using the id
+    of that controller.
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class PlayerGamepadInput : ZilchComponent
 {

@@ -6,7 +6,7 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\TrianglePath",
+		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\10_Triangle_Path",
 		uint ProjectEngineRevision = 12385,
 		bool AutoTakeProjectScreenshot = true,
 	},

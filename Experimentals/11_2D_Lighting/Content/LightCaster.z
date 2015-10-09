@@ -1,3 +1,25 @@
+/*!*****************************************************************************
+@brief
+    Calculate a visibility triangle fan within the current scene, then draw it as a light field.
+@date       07/11/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    This process wass heavily inspired by the methods described in these two tutorials:
+    - http://ncase.me/sight-and-light/
+    - http://www.redblobgames.com/articles/visibility/
+
+    Effectively the process is:
+    1. Get a set of all relevant collider vertices (see 'ColliderPoints' component)
+    2. Cast two Rays from the light source to the vertices (+/- very small angle).
+    3. Store the results in an array of points.
+    4. Sort the points array by angle, relative to the light.
+    5. Loop over the ordered points, drawing a triangle from the light, the i'th point and the i+1'th point.
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 class LightCaster : ZilchComponent
 {
     var LightPosition : Real3;

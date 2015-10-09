@@ -1,6 +1,7 @@
 /*
  * Version:     JDebug v 0.1.3 (01/29/2015)
  * Author:      Johannes Peter (j.peter@digipen.edu)
+ * Url:         https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
  * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
  * License:     Free for use by all DigiPen Students
  * ===============================================
@@ -23,6 +24,7 @@
  *  --- String Utilities ---
  * JDebug.GetTimeString - Generate a nicely formatted string of current game time from a provided ZilchComponent
  */
+
 
 class JDebug
 {

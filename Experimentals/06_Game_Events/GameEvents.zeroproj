@@ -6,7 +6,7 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\Game_Events",
+		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\06_Game_Events",
 		uint ProjectEngineRevision = 12385,
 		bool AutoTakeProjectScreenshot = true,
 	},

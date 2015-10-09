@@ -6,7 +6,7 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\Jo\Desktop\ZeroDemo_RenderMaskDemo",
+		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\12_Render_Masks",
 		uint ProjectEngineRevision = 12385,
 		bool AutoTakeProjectScreenshot = true,
 	},

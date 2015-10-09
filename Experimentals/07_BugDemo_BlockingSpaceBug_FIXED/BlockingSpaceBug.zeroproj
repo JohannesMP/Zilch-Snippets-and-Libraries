@@ -6,7 +6,7 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\BugDemo_BlockingSpaceBug",
+		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\07_BugDemo_BlockingSpaceBug_FIXED",
 		uint ProjectEngineRevision = 12385,
 		bool AutoTakeProjectScreenshot = true,
 	},

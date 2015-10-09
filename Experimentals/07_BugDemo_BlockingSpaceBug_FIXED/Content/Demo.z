@@ -1,3 +1,12 @@
+/*!*****************************************************************************
+@brief      Handle spawning and updating of spaces.
+@date       03/18/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
 
 
 class Demo : ZilchComponent

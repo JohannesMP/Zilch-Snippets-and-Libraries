@@ -1,3 +1,14 @@
+/*!*****************************************************************************
+@brief      For a given group, apply a recolor effect to the sprites
+@date       03/24/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
+
 class GroupRecolor : ZilchComponent
 {
     [Property]

@@ -1,10 +1,14 @@
-/*
- * File:        CameraBounds.z
- * Author:      Johannes Peter (j.peter@digipen.edu)
- * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
- * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
- * ===============================================
- */
+/*!*****************************************************************************
+@brief      Snippet to grab the viewports bounds in World-Space.
+@date       02/26/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class CameraBounds : ZilchComponent
 {
@@ -16,6 +20,16 @@ class CameraBounds : ZilchComponent
     var DownLeft  : Real3 { get { return this.ConvertCornerToWorld( Real2(0, 1) ); } }
     var DownRight : Real3 { get { return this.ConvertCornerToWorld( Real2(1, 1) ); } }
     
+    var Up    : Real { get { return this.UpLeft.Y; } }
+    var Down  : Real { get { return this.DownLeft.Y; } }
+    var Left  : Real { get { return this.UpLeft.X; } }
+    var Right : Real { get { return this.UpRight.X; } }
+    
+    var Width : Real { get { return this.Right - this.Left; } }
+    var Height : Real { get { return this.Up - this.Down; } }
+    
+    var Center : Real3 { get { return this.ConvertCornerToWorld( Real2(0.5, 0.5) ); } }
+
     function ConvertCornerToWorld(screencorner : Real2) : Real3
     {
         var screenPos = this.Viewport.ViewportToScreen(this.Viewport.ViewportResolution * screencorner);

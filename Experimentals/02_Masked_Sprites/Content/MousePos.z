@@ -1,3 +1,15 @@
+/*!*****************************************************************************
+@brief      A small snippet to grab the mouse's position in World-Space, projected to the Z plane.
+@date       02/26/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
+
 class MousePos : ZilchComponent
 {
     [Dependency]

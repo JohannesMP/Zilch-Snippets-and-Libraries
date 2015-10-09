@@ -1,4 +1,16 @@
-// A testing class used to see that we can detect when gamepads are plugged in or removed.
+/*!*****************************************************************************
+@brief      A testing component used to see that we can detect when gamepads are plugged in or removed.
+@date       10/06/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    Relies on the custom 'GamepadFound' and 'GamepadLost' events,
+    as defined in the custom 'GamepadStateManager' Component.
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class GamepadListener : ZilchComponent
 {

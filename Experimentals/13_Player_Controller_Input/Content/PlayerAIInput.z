@@ -1,8 +1,15 @@
-/*
- * An input provider that the player controller can listen to.
- *
- * It generates input data using a simple random walk algorithm
- */
+/*!*****************************************************************************
+@brief      A Player input provider, generating input data using a simple random walk.
+@date       10/06/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    Sends PlayerMovement to be used by a GamepadStateManager
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class PlayerAIInput : ZilchComponent
 {

@@ -1,5 +1,5 @@
 /*!*****************************************************************************
-@brief      A Quick and dirty debug script. basically just an alias for Console.WriteLine.
+@brief      Basically just an alias for Console.WriteLine.
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries

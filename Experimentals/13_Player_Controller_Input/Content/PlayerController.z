@@ -1,9 +1,20 @@
-/*
- * A Player input controller designed specifically to not be tied to a single input device.
- * It listens to PlayerMovement events and uses that to move the player.
- *
- * PlayerMovement events could come from any source, including Keyboard, Gamepad, or even an AI script
- */ 
+/*!*****************************************************************************
+@brief      A Player input controller designed specifically to *not* be tied to a single input device.
+@date       10/06/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    This component listens to PlayerMovement events and uses that to move the player.
+
+    PlayerMovement events could come from any source, including Keyboard, Gamepad, or AI script.
+    You could even implement replay playback by storing inputs and then playing them back,
+    Where the playback component jus tsends the events. This component would react as expected.
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class PlayerController : ZilchComponent
 {

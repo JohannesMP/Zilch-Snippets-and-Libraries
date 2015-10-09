@@ -1,3 +1,13 @@
+/*!*****************************************************************************
+@brief      Space event testing.
+@date       03/07/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class SpaceToSessionEvent : ZilchEvent
 {

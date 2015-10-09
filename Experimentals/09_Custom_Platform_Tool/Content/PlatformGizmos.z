@@ -1,22 +1,18 @@
-/******************************************************************************/
-/*!
-@par        Florb
-@file       PlatformGizmos.z
-@author     Johannes Peter
-@par        email: j.peter\@digipen.edu
-
-
+/*!*****************************************************************************
 @brief
-    The Custom Tool made for placing platforms intuitively and easily, by adding two gizmos when a valid gizmo is selected.
+    The Custom Tool made for placing platforms intuitively and easily,
+    by adding two gizmos when a valid object is selected.
+@date       04/08/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
 
-@copyright  All content © 2015 DigiPen (USA) Corporation, all rights reserved
-*/
-/******************************************************************************/
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
 
 
 enum MaxDimension { X, Y, Z }
 
-//[RunInEditor]
 [Tool]
 class PlatformGizmos : ZilchComponent
 {

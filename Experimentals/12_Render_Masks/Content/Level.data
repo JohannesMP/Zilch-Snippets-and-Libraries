@@ -2243,7 +2243,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-22.8206062, 15.4840593, -0.283545703],
+			Vec3 Translation = [-20.2999516, 15.4840593, -0.283545703],
 			Vec3 Scale = [1, 1, 1],
 			Quat Rotation = [0, 0, 0, 1],
 		},

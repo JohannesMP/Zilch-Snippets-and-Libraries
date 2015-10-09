@@ -1,3 +1,15 @@
+/*!*****************************************************************************
+@brief
+    Pre-simulate a point along a parabolic arc, then draw it as a path using debugtriangle.
+@date       04/13/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
+
 class PathDraw : ZilchComponent
 {
     
@@ -19,11 +31,10 @@ class PathDraw : ZilchComponent
     
     
     // DO NOT MODIFY MANUALLY
-    
     var Points : Array[Real3] = Array[Real3]();
     var Timer : Real; 
     
-    // access our debug variables, in a component on levelsettings. you could easily change it to be on the gamesession if you wanted.
+    // Access our debug variables, in a component on levelsettings. you could easily change it to be on the gamesession if you wanted.
     var Vars : DebugVars
     {
         get

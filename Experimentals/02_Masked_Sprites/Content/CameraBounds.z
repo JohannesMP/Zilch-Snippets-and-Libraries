@@ -1,5 +1,5 @@
 /*!*****************************************************************************
-@brief      A small snippet to grab the camera's position in World-Space, projected to the Z plane.
+@brief      Snippet to grab the viewports bounds in World-Space.
 @date       02/26/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries

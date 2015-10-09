@@ -1,10 +1,13 @@
-/*
- * File:        PlayerScript.z
- * Author:      Johannes Peter (j.peter@digipen.edu)
- * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
- * License:     This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
- * ===============================================
- */
+/*!*****************************************************************************
+@brief      Basic Player controller. Note the use of properties with getters/setters.
+@date       02/26/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class PlayerScript : ZilchComponent
 {
@@ -40,9 +43,9 @@ class PlayerScript : ZilchComponent
 
     function OnLogicUpdate(event : UpdateEvent)
     {
+        var speed        = 200;
+        var drag         = 0.9;
         var acceleration = Real3();
-        var speed = 200;
-        var drag = 0.9;
         
         if(JKeys.Up)    { acceleration += Real3(0,1,0); }
         if(JKeys.Down)  { acceleration += Real3(0,-1,0); }

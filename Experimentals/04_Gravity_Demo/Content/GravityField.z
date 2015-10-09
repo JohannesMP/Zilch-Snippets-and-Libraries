@@ -1,3 +1,19 @@
+/*!*****************************************************************************
+@brief      The core of the gravity field simulation.
+@date       02/27/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    We're using the inverse square law to calculate gravity. It's coded currently
+    to only use a single sun, but in theory you could factor many other forces and
+    Attractors into it, and satelites would still just work because they just call
+    the 'GetGravity' function with their position.
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
+
 class GravityField : ZilchComponent
 {
     [Property]

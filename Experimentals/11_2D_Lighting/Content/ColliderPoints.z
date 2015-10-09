@@ -1,3 +1,21 @@
+/*!*****************************************************************************
+@brief
+    Provides several static functions that, for a given collider, return a set of points.
+@date       07/11/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    Zero doesn't give us an easy way to iterate over the vertices of a collider's mesh.
+    As a result we have to reverse engineer the points given the collider's owner.
+
+    For Sphere colliders we really only need the two tangent points where the light
+    would pass the edge.
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
+
 class ColliderPoints : ZilchComponent
 {
     function Initialize(init : CogInitializer)
@@ -32,7 +50,7 @@ class ColliderPoints : ZilchComponent
             }
         }
     }
-    //
+
     
     [Static] function GetColliderPoints(obj : Cog, source : Real3) : Array[Real3]
     {

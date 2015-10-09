@@ -1,6 +1,5 @@
 // Just a tag class used for 2d light calculations
 class ShadowCaster : ZilchComponent
 {
-    [Dependency]
-    var Collider : Collider;
+    [Dependency] var Collider : Collider;
 }

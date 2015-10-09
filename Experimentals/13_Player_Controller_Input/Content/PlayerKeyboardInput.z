@@ -1,8 +1,20 @@
-/*
- * An input provider that the player controller can listen to.
- *
- * It generates input data from the keyboard (based on defined keybindings)
- */
+/*!*****************************************************************************
+@brief      A Player input provider, generating input data using the keyboard
+@date       10/06/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    Sends PlayerMovement event to be used by a GamepadStateManager.
+
+    This component provides you with a solid framework for key-bindings.
+    It uses a hashmap to map a given player command (an enum defined in 'PlayerController'),
+    To an array of keys. This array -could- be set at runtime in an options menu,
+    on a per-player basis.
+
+@copyright
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class PlayerKeyboardInput : ZilchComponent
 {
@@ -68,7 +80,7 @@ class PlayerKeyboardInput : ZilchComponent
             }
         }
         
-        // If we reach this point it means nonoe of the bound keys was down.
+        // If we reach this point it means none of the bound keys was down.
         return false;
     }
 }

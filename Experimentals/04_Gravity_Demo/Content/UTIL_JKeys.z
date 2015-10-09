@@ -1,14 +1,19 @@
-/*
- * Version:     JKeys v 0.0.1 (01/29/2015)
- * Author:      Johannes Peter (j.peter@digipen.edu)
- * Copyright:   ©2014-15 DigiPen Institute of Technology | All Rights Reserved
- * License:     Free for use by all DigiPen Students
- * ===============================================
- * 
- * -- DISCLAIMER:
- * --               This Script was just thrown together quickly for use during the Zero Help Session.
- * --               However You are welcome to use it as you like
- */
+
+/*!*****************************************************************************
+@brief      A small snippet to grab the mouse's position in World-Space, projected to the Z plane.
+@version    JKeys v 0.0.1
+@date       01/29/2015
+@author     Johannes Peter (j.peter\@digipen.edu)
+@par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
+@details
+    This Script was just thrown together quickly for a Zero Help Session.
+    However You are welcome to use it as you like.
+
+@copyright
+    This Script is provided for all DigiPen students to use, copy, modify, etc. without limitations.
+    All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*******************************************************************************/
+
 
 class JKeys
 {
