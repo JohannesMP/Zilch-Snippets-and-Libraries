@@ -1,6 +1,6 @@
 Level = 
 {
-	LevelSettings = 
+	Cog = 
 	{
 		LinkId = 
 		{
@@ -32,15 +32,43 @@ Level =
 			int Layer = 0,
 			bool Active = true,
 			bool Blocking = true,
-			uint Renderer = 1,
-			uint Camera = 2,
+			CogPath Renderer = 
+			{
+				string Path = ".",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 1,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath Camera = 
+			{
+				string Path = ":/Camera",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 2,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
 			ViewportScaling Scaling = Fill,
 			Vec2 Resolution = [1280, 720],
 			Vec4 MarginColor = [0, 0, 0, 1],
 		},
 		ForwardRenderer = 
 		{
-			Vec4 ClearColor = [0.155, 0.155, 0.155, 1],
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
 			bool DrawNonVisible = false,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -57,8 +85,8 @@ Level =
 			bool DrawAxisOrigins = true,
 			bool AlwaysDrawInEditor = true,
 			bool DrawInGame = true,
-			Vec4 GridColor = [0.5, 0.5, 0.5, 0.4],
-			Vec4 GridHiLight = [0, 0, 0, 0.4],
+			Vec4 GridColor = [0.5, 0.5, 0.5, 0.400000006],
+			Vec4 GridHiLight = [0, 0, 0, 0.400000006],
 			int HilightInterval = 10,
 			bool FollowEditorCamera = false,
 		},
@@ -75,9 +103,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [24.354, 8.45706, 71.1211],
+			Vec3 Translation = [25.6142502, 14.1147366, 23.6310062],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.0330022, 0.243474, 0.00828957, 0.96931],
+			Quat Rotation = [-0.15443711, 0.458470017, 0.0812532753, 0.871408224],
 		},
 		Camera = 
 		{
@@ -92,15 +120,15 @@ Level =
 		EditorCameraController = 
 		{
 			ControlMode ControlMode = ZPlane,
-			float LookDistance = 74.5912,
-			float VerticalAngle = 0.0680678,
-			float HorizontalAngle = -0.492183,
-			Vec3 LookTarget = [-10.8125, 3.38372, 5.53587],
+			float LookDistance = 37.0409241,
+			float VerticalAngle = 0.350811392,
+			float HorizontalAngle = -0.968657613,
+			Vec3 LookTarget = [-3.05290771, 1.38525605, 3.92860961],
 			float MoveSensitivity = 1,
 		},
 		EditorRenderer = 
 		{
-			Vec4 ClearColor = [0.155, 0.155, 0.155, 1],
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
 			bool DrawNonVisible = true,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -119,9 +147,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [7.31853, 4.7236, 39.4852],
+			Vec3 Translation = [7.31853008, 4.72359991, 39.485199],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0.20311, 0, 0.979156],
+			Quat Rotation = [0, 0.203109995, 0, 0.979156017],
 		},
 		Camera = 
 		{
@@ -133,7 +161,7 @@ Level =
 			float FarPlane = 200,
 			float Size = 20,
 		},
-		Microphone = 
+		SoundListener = 
 		{
 			bool Active = true,
 		},
@@ -143,17 +171,6 @@ Level =
 		LinkId = 
 		{
 			uint Id = 4,
-		},
-		Named = 
-		{
-			string Name = "Sprite",
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
-			uint Id = 5,
 		},
 		Named = 
 		{
@@ -205,17 +222,22 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 6,
+			uint Id = 5,
 		},
 		Named = 
 		{
 			string Name = "SpriteText",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-13.8099, 6.77911, -1.72718],
-			Vec3 Scale = [1.55366, 1.55366, 1.55366],
-			Quat Rotation = [0, 0.262171, 0, 0.965021],
+			Vec3 Translation = [-13.8099003, 6.77910995, -1.72718],
+			Vec3 Scale = [1.55366004, 1.55366004, 1.55366004],
+			Quat Rotation = [0, 0.262171, 0, 0.965021014],
 		},
 		SpriteText = 
 		{
@@ -227,7 +249,6 @@ Level =
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
-			TextPositionMode Position = Centered,
 			string FontName = "4e7bac697bec55c5:Verdana",
 			uint FontSize = 30,
 			string Text = "ArcPrediction Demo
@@ -252,15 +273,13 @@ Controls:
        T  : Toggle Arc Vertex (highest point) indicator
        P  : Pause Cube
        R  : Restart Cube Path",
-			bool OnTop = false,
-			Vec2 Size = [0, 0],
 			TextAlign Align = Left,
 			float PixelsPerUnit = 64,
 			bool Smoothing = true,
 		},
 		Area = 
 		{
-			Vec2 Size = [25.4386, 11.8639],
+			Vec2 Size = [25.4386005, 11.8639002],
 			Location Origin = Center,
 		},
 		SpriteTextBlock = 

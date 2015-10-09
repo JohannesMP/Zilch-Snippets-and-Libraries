@@ -6,7 +6,7 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\Arc_Predict",
+		string ProjectFolder = "C:\Users\Jo\Desktop\Zilch-Snippets-and-Libraries\Experimentals\01_Arc_Predict",
 		uint ProjectEngineRevision = 12385,
 		bool AutoTakeProjectScreenshot = true,
 	},
