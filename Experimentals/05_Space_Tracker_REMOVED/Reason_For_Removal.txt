@@ -1,0 +1,15 @@
+I created the original Space tracker experimental because, at the time,
+Zero had no way to iterate over all existing spaces.
+
+It consisted of:
+1. A `SpaceUpdateSender` component was added to the default space archetype.
+- It was set up to send an event with its space's name on init and destroy.
+2. A `SpaceTracker` component was added to the gamesession
+- It listened to the SpaceUpdateSender events, and used them to maintain an array of spaces.
+- That array could easily be queried and iterated over to list all existing spaces.
+
+However soon after I created the experimental, Zero added a native solution;
+`GameSession.AllSpaces` can now be iterated over for all current spaces.
+
+Since this experimental was not particularly interesting I removed it.
+If you really want to mess with it, just roll back to commit a68ad41319
