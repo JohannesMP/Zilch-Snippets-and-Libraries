@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "StaticObject",
+		uint64 ResourceId = 560142d8a0240b18,
+	},
+},

@@ -1,0 +1,23 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "PlatformTool",
+	},
+	Archetyped = 
+	{
+		string Name = "5601488562a51928:PlatformTool",
+	},
+	PlatformGizmos = 
+	{
+		bool Enabled = true,
+		bool DrawDebugVectors = false,
+		bool AngleSnap = true,
+		bool DistanceSnap = true,
+		float SnapDistance = 1,
+	},
+},

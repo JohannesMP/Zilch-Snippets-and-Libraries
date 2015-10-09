@@ -1,0 +1,22 @@
+Cog = 
+{
+	Project = 
+	{
+		string ProjectName = "PlatformTool",
+		string ProjectOwner = "",
+		string DefaultLevel = "Level",
+		string ProjectSpace = "Space",
+		string ProjectFolder = "C:\Users\Jo\Desktop\temp\twotone\DevExperimentals\week13_j.peter_PlatformTool",
+		uint ProjectEngineRevision = 12385,
+		bool AutoTakeProjectScreenshot = true,
+	},
+	EditorSettings = 
+	{
+		EditorMode EditorMode = Mode2D,
+		bool ViewCube = true,
+		float ViewCubeViewportSize = 150,
+		ScriptReloadMethod ScriptReloadEditor = ReInitializeObjects,
+		ScriptReloadMethod ScriptReloadGame = PatchObjects,
+		bool AutoUpdateContentChanges = true,
+	},
+},

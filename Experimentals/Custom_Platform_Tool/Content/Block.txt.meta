@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "Block",
+		uint64 ResourceId = 56014262b106915a,
+	},
+},

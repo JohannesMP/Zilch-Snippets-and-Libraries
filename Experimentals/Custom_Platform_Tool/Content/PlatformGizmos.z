@@ -1,0 +1,874 @@
+/******************************************************************************/
+/*!
+@par        Florb
+@file       PlatformGizmos.z
+@author     Johannes Peter
+@par        email: j.peter\@digipen.edu
+
+
+@brief
+    The Custom Tool made for placing platforms intuitively and easily, by adding two gizmos when a valid gizmo is selected.
+
+@copyright  All content © 2015 DigiPen (USA) Corporation, all rights reserved
+*/
+/******************************************************************************/
+
+
+enum MaxDimension { X, Y, Z }
+
+//[RunInEditor]
+[Tool]
+class PlatformGizmos : ZilchComponent
+{
+    [Property]
+    var Enabled : Boolean
+    {
+        get { return this.IsEnabled; }
+        set
+        {
+            if(!value) { this.HideGizmos(); }
+            this.IsEnabled = value;
+        }
+    }
+    var IsEnabled : Boolean = true;
+    [Property]
+    var DrawDebugVectors : Boolean = false;
+    
+    // If Info about the platform is displayed
+    var DisplayInfo : Boolean = true;
+    var ToggleInfoKey : Keys = Keys.Alt; // currently not used, info always shown
+    
+    var TempDisableKey : Keys = Keys.Alt;
+    
+    // == Angle snap ==
+    [Property]
+    var AngleSnap : Boolean = true;
+    var AngleSnapKey : Keys = Keys.Shift;
+    var SnapAngles : Array[Integer] = Array[Integer]() {
+            0,
+         //       15,
+            30,
+            45,
+            60,
+          //      75,
+            90,
+          //      105,
+            120,
+            135,
+            150
+          //      , 165
+            };
+    var IsAngleSnapActive : Boolean { get { return (this.AngleSnap && Zero.Keyboard.KeyIsDown(this.AngleSnapKey)); } }
+    
+    // == Distance snap ==
+    [Property]
+    var DistanceSnap : Boolean = true;
+    var DistanceSnapKey : Keys = Keys.Control;
+    [Property]
+    var SnapDistance : Real = 1.0;
+    var IsDistanceSnapActive : Boolean { get { return (this.DistanceSnap && Zero.Keyboard.KeyIsDown(this.DistanceSnapKey)); } }
+    
+    // Gizmos are hidden in the Objects view
+    var HideInObjectView : Boolean = true;
+    
+    var GizmoName : String = "GIZMO_COG_DELETE_IF_VISIBLE";
+    
+    var GizmoLeft : Cog;
+    var GizmoRight : Cog;
+    
+    var GizmoDragging : Cog;
+    var IsGizmoDragActive : Boolean { get { return (this.GizmoDragging != null); } }
+    var GizmoDragOffset : Real3;
+    
+    var DragDimension : MaxDimension = MaxDimension.X;
+    
+    var PrimarySelection : Cog;
+    
+    var BeforeDragPosition : Real3;
+    var BeforeDragScale : Real3;
+    var BeforeDragRotation : Quaternion;
+    var BeforeDragAreaSize : Real2;
+    
+    var PrimarySelectionPos : Real3
+    {
+        get { return this.PrimarySelection.Transform.WorldTranslation; }
+        set { this.PrimarySelection.Transform.WorldTranslation = value; }
+    }
+    var PrimarySelectionRot : Quaternion
+    {
+        get { return this.PrimarySelection.Transform.WorldRotation; }
+        set { this.PrimarySelection.Transform.WorldRotation = value; }
+    }
+    
+    // accounts for area
+    var PrimarySelectionScale : Real3
+    {
+        get
+        {
+            var scale = this.PrimarySelection.Transform.WorldScale;
+            if(this.PrimarySelection.Area != null)
+            {
+                scale.X *= this.PrimarySelection.Area.Size.X;
+                scale.Y *= this.PrimarySelection.Area.Size.Y;
+            }
+            return scale;
+        }
+        set
+        {
+            var scale = value;
+            if(this.PrimarySelection.Area != null)
+            {
+                scale.X /= this.PrimarySelection.Area.Size.X;
+                scale.Y /= this.PrimarySelection.Area.Size.Y;
+            }
+            this.PrimarySelection.Transform.WorldScale = scale;
+        }
+    }
+    
+    
+    var SelectionCount : Integer;
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Destroy all Old Gizmos
+        foreach(var space in this.GameSession.AllSpaces)
+        {
+            foreach(var obj in space.FindAllObjectsByName(this.GizmoName))
+            {
+                obj.Destroy();
+            }
+        }
+        Zero.Connect(Zero.Editor.ActiveSelection, Events.SelectionFinal, this.OnSelectionFinal);
+        Zero.Connect(Zero.Engine, Events.EngineUpdate, this.OnEngineUpdate);
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+    }
+    
+    // Make sure to destroy our gizmos when the editor closes, or the zilch scripts are re-compiled
+    function Destroyed()
+    {
+        this.HideGizmos();
+    }
+
+    // Mainly for debug stuff. Most other keys are handled inside the actual dragging events
+    function OnKeyDown(event : KeyboardEvent)
+    {
+        
+        if(event.Key == this.ToggleInfoKey && this.PrimarySelection != null)
+        {
+            this.Enabled = !this.Enabled;
+        }
+    }
+
+    // Used to draw the gizmos, as well as update the gizmo position to match the selected object if the user is NOT dragging one of the gizmos.
+    function OnEngineUpdate(event : UpdateEvent)
+    {
+        if(!this.Enabled) { return; }
+        
+        // we have one valid selection
+        if(this.PrimarySelection != null && this.SelectionCount == 1)
+        {
+            this.ShowGizmos();
+        }
+        else
+        {
+            this.HideGizmos();
+        }
+        
+        // draw relevant angle snap guides
+        if((this.IsAngleSnapActive && this.IsGizmoDragActive) || this.DrawDebugVectors)
+        {
+            this.DrawAngleGuides(this.GizmoDragging);
+        }
+        
+        // draw relevant distance snap guides
+        if((this.IsDistanceSnapActive && this.IsGizmoDragActive) || this.DrawDebugVectors)
+        {
+            this.DrawDistanceGuides(this.GizmoDragging);
+        }
+    }
+
+
+    // We listen to when the selection changes finally
+    function OnSelectionFinal(event : Event)
+    {
+        // 1. Get the primary selection cog
+        var primary = Zero.Editor.ActiveSelection.GetPrimaryObject() as Cog;
+        if(this.IsValidPlatform(primary))
+        {
+            this.PrimarySelection = primary;
+        }
+        else
+        {
+            this.PrimarySelection = null;
+        }
+        
+        // 2. Get the selection count
+        var count = 0;
+        foreach(var selection in Zero.Editor.ActiveSelection.AllObjects())
+        {
+            if(this.IsValidPlatform(selection))
+            {
+                ++count;
+            }
+        }
+        this.SelectionCount = count;
+    }
+    
+    
+    // Used to filter if a selected object actually is a platform. 
+    function IsValidPlatform(cog : Cog) : Boolean
+    {
+        if(cog == null || cog.Transform == null) { return false; }
+        if(cog == this.GizmoLeft || cog == this.GizmoRight) { return false; }
+        
+        // WORKAROUND: for some reason checking for cog.StaticObject == null sometimes leads to proxy error...
+        //             It has the added benefit for making our script completely portable. If STaticObject does
+        //             Not exist in the project, it auto-magically not be checked for.
+        
+        //             Here is the code that is being replaced:
+        // if(cog.StaticObject == null) { return false; }
+        
+        // the logic here is, if we can add the component, it means it didn't exist on the object in question, so it's not a valid platform
+        if(cog.AddComponentByName("StaticObject"))
+        {
+            // if we were able to add it we need to quickly remove it again!
+            cog.RemoveComponentByName("StaticObject");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Used to filter if a given cog is one of our gizmos.
+    function IsValidGizmo(cog : Cog) : Boolean
+    {
+        if(cog == null) { return false; }
+        if(cog != this.GizmoLeft && cog != this.GizmoRight) { return false; }
+        return true;
+    }
+
+    // If no gizmo exists, create it. Then show/move/draw/etc. the gizmos as needed
+    function ShowGizmos()
+    {
+        // Create Gizmos If needed
+        if(this.GizmoRight == null)
+        {
+            this.GizmoRight = this.CreateGizmo(this.PrimarySelection);
+            // temp initial placement right
+            this.GizmoRight.Transform.WorldTranslation = this.PrimarySelectionPos - Real3(2,2,0);
+        }
+        if(this.GizmoLeft == null)
+        {
+            this.GizmoLeft = this.CreateGizmo(this.PrimarySelection);
+            // temp initial placement left
+            this.GizmoLeft.Transform.WorldTranslation = this.PrimarySelectionPos + Real3(2,2,0);
+        }
+        
+        if(!this.IsGizmoDragActive)
+        {
+            this.GizmosMatchSelection();
+        }
+        
+        this.DrawGizmo(this.GizmoRight);
+        this.DrawGizmo(this.GizmoLeft);
+        
+        // handle info
+        if(this.DisplayInfo)
+        {
+            this.DrawPlatformInfo();
+        }
+    }
+    
+    // Actually draw a single gizmo. Will be called once for each gizmo object when we have a valid selection
+    function DrawGizmo(gizmo : Cog)
+    {
+        var sphere = DebugSphere();
+        sphere.Position(gizmo.Transform.WorldTranslation);
+        sphere.OnTop(false);
+        sphere.Float4Color(Real4(1,0.5,0,1));
+        sphere.Radius(gizmo.Transform.WorldScale.X*1.1);
+        sphere.Draw();
+    }
+    
+    // Used to place and draw the info text that shows angle, length, etc
+    function DrawPlatformInfo()
+    {
+        var obj = this.PrimarySelection;
+        var angle = Math.Abs(Math.Abs(Math.ToDegrees(obj.Transform.EulerAngles.Z))-90);
+        
+        var long = this.PrimarySelectionScale.X;
+        var short = this.PrimarySelectionScale.Y;
+        
+        var offset = Real3(0,-short/2,0);
+        
+        // use drag dimension
+        var flip_dimensions = (this.IsGizmoDragActive && this.DragDimension != MaxDimension.X) || (this.GetMaxDimension(obj) != MaxDimension.X);
+        
+        var quaternion = Math.ToQuaternion(Real3(0,0,1), obj.Transform.EulerAngles.Z);
+        
+        if(flip_dimensions)
+        {
+            var temp = long;
+            long = short;
+            short = temp;
+            
+            offset = Real3(0,-short/2,0);
+            
+            quaternion = Math.ToQuaternion(Real3(0,0,1), obj.Transform.EulerAngles.Z + Math.Pi/2);
+
+            // handle flipping to be under the platform
+            if(obj.Transform.EulerAngles.Z > 0)
+            {
+                offset = -offset;
+            }
+        }
+        else
+        {
+            // handle flipping to be under the platform
+            if(Math.Abs(obj.Transform.EulerAngles.Z) > Math.Pi/2)
+            {
+                offset = -offset;
+            }
+            
+            angle = 90 - angle;
+        }
+        
+        offset = Math.Transform(offset, quaternion);
+        
+        angle = Math.Round(angle * 10)/10;
+        long = Math.Round(long * 100)/100;
+        
+        var string = StringBuilder();
+        string.Write("\n\n\n");
+        string.Write("Angle: ");
+        string.Write(angle);
+        if(this.IsAngleSnapActive)
+        {
+            string.Write(" SNAP");
+        }
+        string.Write("\n");
+        string.Write("Length: ");
+        string.Write(long);
+        if(this.IsDistanceSnapActive)
+        {
+            string.Write(" SNAP");
+        }
+        
+        var text = DebugText();
+        text.DisplayText(string.ToString());
+        text.Position(this.PrimarySelectionPos + offset);
+        text.SpaceId(obj.Space.RuntimeId);
+        text.Float4Color(Real4(1,1,1,1));
+        text.Size(0.3);
+        text.Draw();
+    }
+    
+    // Used to clean up/destroy gizmos. Is called whenever we select objects that are not valid, or we have no selection.
+    function HideGizmos()
+    {
+        if(this.GizmoLeft != null)
+        {
+            this.GizmoLeft.Destroy();
+            this.GizmoLeft = null;
+        }
+        if(this.GizmoRight != null)
+        {
+            this.GizmoRight.Destroy();
+            this.GizmoRight = null;
+        }
+    }
+    
+    // Create a gizmo in the space of the selected cog. This function assumes that the provided parent is valid, so IsValidParent shold have been called before this.
+    function CreateGizmo(parent : Cog) : Cog
+    {
+        var gizmo = parent.Space.Create(Archetype.Find(""));
+        gizmo.Name = this.GizmoName;
+        gizmo.Transform.Scale = Real3(0.35, 0.35, 0.35);
+        if(gizmo.Model != null)
+        {
+            gizmo.Model.Mesh = Mesh.Find("Sphere");
+            gizmo.Model.Material = Material.Find("EditorMaterial");
+        }
+        //gizmo.AddComponentByName("BoxCollider");
+        gizmo.AddComponentByName("MouseCapture");
+        gizmo.AddComponentByName("Reactive");
+        
+        // hide from object view
+        gizmo.ObjectViewHidden = this.HideInObjectView;
+        // make transient so that it won't be saved in the level
+        gizmo.Transient = true;
+        
+        
+        // We disconnect first to make sure we only ever listen to a given event once. Just to be safe.
+        Zero.Disconnect(gizmo, Events.LeftMouseDown, this);
+        Zero.Connect(gizmo, Events.LeftMouseDown, this.OnGizmoMouseDown);
+        
+        Zero.Disconnect(gizmo, Events.MouseDragStart, this);
+        Zero.Connect(gizmo, Events.MouseDragStart, this.OnGizmoDragStart);
+        
+        Zero.Disconnect(gizmo, Events.MouseDragMove, this);
+        Zero.Connect(gizmo, Events.MouseDragMove, this.OnGizmoDragMove);
+        
+        Zero.Disconnect(gizmo, Events.MouseDragEnd, this);
+        Zero.Connect(gizmo, Events.MouseDragEnd, this.OnGizmoDragEnd);
+        
+        
+        // For managing locks -- a locked object basically cannot be selected
+        //Zero.Disconnect(gizmo.Space, Events.LeftMouseDown, this);
+        //Zero.Connect(gizmo.Space, Events.LeftMouseDown, this.OnSpaceMouseDown);
+        
+        //Zero.Disconnect(gizmo.Space, Events.LeftMouseUp, this);
+        //Zero.Connect(gizmo.Space, Events.LeftMouseUp, this.OnSpaceMouseUp);
+        
+        return gizmo;
+    }
+
+    // CURRENTLY NOT CALLED. SEE CreateGizmo -- For locking the gizmo cogs when another selection is being made
+    function OnSpaceMouseDown(event : ViewportMouseEvent)
+    {
+        Console.WriteLine("- SPACE_DOWN");
+        if(this.GizmoLeft != null && event.HitObject != this.GizmoLeft)
+        {
+            Console.WriteLine("LOCK_LEFT");
+            this.GizmoLeft.Locked = true;
+        }
+        if(this.GizmoRight != null && event.HitObject != this.GizmoRight)
+        {
+            Console.WriteLine("LOCK_RIGHT");
+            this.GizmoRight.Locked = true;
+        }
+    }
+    // CURRENTLY NOT CALLED. SEE CreateGizmo -- For locking the gizmo cogs when another selection is being made
+    function OnSpaceMouseUp(event : ViewportMouseEvent)
+    {
+        Console.WriteLine("- SPACE_UP");
+        if(this.GizmoLeft != null)
+        {
+            Console.WriteLine("UNLOCK_LEFT");
+            this.GizmoLeft.Locked = false;
+        }
+        if(this.GizmoRight != null)
+        {
+            Console.WriteLine("UNLOCK_RIGHT");
+            this.GizmoRight.Locked = false;
+        }
+    }
+
+    // When a gizmo is clicked we need to set the event to handled so that the selection tool won't start trying to make a selection.
+    function OnGizmoMouseDown(event : ViewportMouseEvent)
+    {
+        event.HandledEvent = true;
+        
+        // We capture the mouse to allow us to listen to drag events.
+        event.HitObject.MouseCapture.Capture(event);
+    }
+
+    // Called at the beginning of the drag. Basically when the user starts using a gizmo to manipulate the selected object.
+    function OnGizmoDragStart(event : ViewportMouseEvent)
+    {
+        // set the start values, which are needed for undo to work in OnGizmoDragEnd.
+        this.BeforeDragPosition = this.PrimarySelection.Transform.WorldTranslation;
+        this.BeforeDragScale = this.PrimarySelection.Transform.WorldScale;
+        this.BeforeDragRotation = this.PrimarySelection.Transform.WorldRotation;
+        if(this.PrimarySelection.Area != null)
+        {
+            this.BeforeDragAreaSize = this.PrimarySelection.Area.Size;
+        }
+        
+        // Grab the gizmo we're using right now. Used for calculating snapping
+        this.GizmoDragging = event.HitObject;
+        //  Grab the difference between the mouse and the object center. used to prevent the object from snapping immediately to the mouse when dragging.
+        this.GizmoDragOffset = event.HitObject.Transform.WorldTranslation - event.HitPosition;
+        // For the duration of the drag we only modify one axis. Without this weird stuff would happen when we get to the point where one axis becomes smaller than the other.
+        this.DragDimension = this.GetMaxDimension(this.PrimarySelection);
+    }
+
+    // CAlled at the end of the drag. At this point we save the state so that undo works.
+    function OnGizmoDragEnd(event : Event)
+    {
+        // first we need to temporarily store the new state
+        var finalDragPos = this.PrimarySelection.Transform.WorldTranslation;
+        var finalDragScale = this.PrimarySelection.Transform.WorldScale;
+        var finalDragRotation = this.PrimarySelection.Transform.WorldRotation;
+        var finalDragArea = Real2();
+        if(this.PrimarySelection.Area != null)
+        {
+            finalDragArea = this.PrimarySelection.Area.Size;
+        }
+        
+        var opQueue = Zero.Editor.OperationQueue;
+        opQueue.BeginBatch();
+        
+        // We temporarily revert back to our previous state. This is unintuitive, but basically how it works is:
+        //
+        // 1. Object is in the start state
+        // 2. We save the state with SaveObjectState
+        // 3. Any changes should be made now
+        // 3. We call EndBatch, which then looks at all the changes made to the object since SaveObjectState was called.
+        //
+        // Because this all needs to happen in the same game loop, need to store the object's state at the beginning of the drag,
+        // set it back to that state before we call SaveObjectState, and then before EndBatch we set it to the actual new state.
+        // It's a bit annoying, but makes sense once you think about it.
+        
+        this.PrimarySelection.Transform.WorldTranslation = this.BeforeDragPosition;
+        this.PrimarySelection.Transform.WorldScale = this.BeforeDragScale;
+        this.PrimarySelection.Transform.WorldRotation = this.BeforeDragRotation;
+        if(this.PrimarySelection.Area != null)
+        {
+            this.PrimarySelection.Area.Size = this.BeforeDragAreaSize;
+        }
+        opQueue.SaveObjectState(this.PrimarySelection);
+        
+        // Now apply the new position/rotation/scale/etc...
+        this.PrimarySelection.Transform.WorldTranslation = finalDragPos;
+        this.PrimarySelection.Transform.WorldScale = finalDragScale;
+        this.PrimarySelection.Transform.WorldRotation = finalDragRotation;
+        if(this.PrimarySelection.Area != null)
+        {
+            this.PrimarySelection.Area.Size = finalDragArea;
+        }
+        
+        // The key to making undo work is what happened between SaveObjectState and EndBatch.
+        opQueue.EndBatch();
+        
+        // since we're doing dragging, we no longer have a gizmo being dragged.
+        this.GizmoDragging = null;
+    }
+    
+    // Handle the actual logic for snapping our gizmos and for making the selected object correspond to the gizmo's states.
+    function OnGizmoDragMove(event : ViewportMouseEvent)
+    {
+        var newpos = event.ToWorldZPlane(this.PrimarySelectionPos.Z);
+        
+        event.HitObject.Transform.WorldTranslation = newpos + this.GizmoDragOffset;
+        var pos = event.HitObject.Transform.WorldTranslation;
+        pos.Z = this.PrimarySelectionPos.Z;
+        event.HitObject.Transform.WorldTranslation = pos;
+        
+        // handle angle snapping
+        if(this.IsAngleSnapActive)
+        {
+            this.GizmoSnapAngle(event.HitObject);
+        }
+        
+        // handle distance snapping
+        if(this.IsDistanceSnapActive)
+        {
+            this.GizmoSnapDistance(event.HitObject);
+        }
+        
+        this.SelectionMatchGizmos();
+    }
+    
+    // moves/resizes platfrom to match gizmos. Should only be called when the user is dragging a gizmo.
+    function SelectionMatchGizmos()
+    {
+        var left  = this.GizmoLeft.Transform.WorldTranslation;
+        var right = this.GizmoRight.Transform.WorldTranslation;
+        
+        var diff = left-right;
+        var length = Math.Length(diff);
+        
+        var center = (left + right)/2;
+        var scale = this.PrimarySelectionScale;
+        
+        var angle = Math.Angle2D(diff);
+        
+        if(this.IsGizmoDragActive)
+        {
+            if(this.DragDimension != MaxDimension.X)
+            {
+                angle -= Math.Pi/2;
+            }
+        }
+        else
+        {
+            if(this.GetMaxDimension(this.PrimarySelection) != MaxDimension.X)
+            {
+                angle -= Math.Pi/2;
+            }
+        }
+        
+        
+        var rotation = Math.ToQuaternion(Real3(0,0,1), angle);
+        
+        var offset = Real3();
+        
+        if(this.DragDimension == MaxDimension.X)
+        {
+            scale.X = length + this.PrimarySelectionScale.Y;
+        }
+        else
+        {
+            scale.Y = length + this.PrimarySelectionScale.X;
+        }
+        
+        this.PrimarySelectionPos = center;
+        this.PrimarySelectionScale = scale;
+        this.PrimarySelectionRot = rotation;
+    }
+    
+    // moves gizmos to match platform. Should only be called when the user is NOT dragging a gizmo
+    function GizmosMatchSelection()
+    {
+        var center = this.PrimarySelectionPos;
+        var scale = this.PrimarySelectionScale;
+        
+        var left = Real3();
+        var right = Real3();
+        var offset = Real3();
+        
+        // get max axis
+        var max_dim = this.GetMaxDimension(this.PrimarySelection);
+        
+        if(max_dim == MaxDimension.X)
+        {
+            left  += Real3(scale.X - scale.Y, 0, 0);
+            offset += Real3(0, scale.Y, 0);
+        }
+        else
+        {
+            left  += Real3(0, scale.Y - scale.X, 0);
+            offset += Real3(scale.X, 0, 0);
+        }
+        
+        left = Math.Transform(left, this.PrimarySelectionRot)/2;
+        right = -left;
+        
+        var length = Math.Length(offset);
+        
+        offset = Math.Normalize(left) * (length * 2/3 + 0.5);
+        offset = Real3(offset.Y, -offset.X, offset.Z);
+        
+        left += center;
+        right += center;
+        
+        left.Z = this.PrimarySelectionPos.Z;
+        right.Z = this.PrimarySelectionPos.Z;
+        
+        this.GizmoLeft.Transform.WorldTranslation = left;
+        this.GizmoRight.Transform.WorldTranslation = right;
+    }
+    
+    // Get the vector corresponding to the closest angle. Simply calles GetSnapAngleVector
+    function GizmoSnapAngle(gizmo : Cog)
+    {
+        var moved = this.GizmoRight;
+        var locked =this.GizmoLeft;
+        
+        if(gizmo == this.GizmoLeft)
+        {
+            moved = this.GizmoLeft;
+            locked = this.GizmoRight;
+        }
+        if(moved == null || locked == null) { return; }
+        
+        var locked_pos = locked.Transform.WorldTranslation;
+        var snapped_diff = this.GetSnapAngleVector(gizmo);
+        
+        gizmo.Transform.WorldTranslation = locked_pos + snapped_diff;
+    }
+    // The actual logic for calculating the offset that our dragged gizmo should be relative to the stationary gizmo.
+    function GetSnapAngleVector(gizmo : Cog) : Real3
+    {
+        var moved = this.GizmoRight;
+        var locked =this.GizmoLeft;
+        
+        if(gizmo == this.GizmoLeft)
+        {
+            moved = this.GizmoLeft;
+            locked = this.GizmoRight;
+        }
+        if(moved == null || locked == null) { return Real3(); }
+        
+        var moved_pos  = moved.Transform.WorldTranslation;
+        var locked_pos = locked.Transform.WorldTranslation;
+        var gizmo_diff = moved_pos - locked_pos;
+        
+        var have_snap = false;
+        
+        // default to the distance to the X axis (Y value)
+        var shortest_dist : Real = 0;
+        var snapped_diff : Real3 = Real3();
+        
+        foreach(var angle in this.SnapAngles)
+        {
+            var rad = Math.ToRadians(angle);
+            
+            var vector = Real3(Math.Sin(rad), Math.Cos(rad), 0);
+            var vecnorm = Real3(vector.Y, -vector.X, 0);
+            
+            var norm_dist = Math.Dot(vecnorm, gizmo_diff);
+            var vec_dist = Math.Dot(vector, gizmo_diff);
+            
+            vecnorm *= norm_dist;
+            vector *= vec_dist;
+            
+            // we have a new shortest distance, snap to here
+            if(Math.Abs(norm_dist) < shortest_dist || !have_snap)
+            {
+                have_snap = true;
+                shortest_dist = Math.Abs(norm_dist);
+                snapped_diff = vector;
+            }
+        }
+        
+        return snapped_diff;
+    }
+    
+    // Draw the debug lines that show what angles we can snap to.
+    function DrawAngleGuides(gizmo : Cog)
+    {
+        var moved = this.GizmoRight;
+        var locked =this.GizmoLeft;
+        
+        if(gizmo == this.GizmoLeft)
+        {
+            moved = this.GizmoLeft;
+            locked = this.GizmoRight;
+        }
+        if(moved == null || locked == null) { return; }
+        
+        var moved_pos  = moved.Transform.WorldTranslation;
+        var locked_pos = locked.Transform.WorldTranslation;
+        var gizmo_diff = moved_pos - locked_pos;
+        var gizmo_norm = Math.Normalize(gizmo_diff);
+        var gizmo_dist = Math.Length(gizmo_diff);
+        var snapped_diff = this.GetSnapAngleVector(gizmo);
+        var snapped_norm = Math.Normalize(snapped_diff);
+        
+        var offset = 200;
+        var length = gizmo_dist + offset;
+        
+        var line = DebugLine();
+        line.SpaceId(this.PrimarySelection.Space.RuntimeId);
+        
+        foreach(var angle in this.SnapAngles)
+        {
+            var rad = Math.ToRadians(angle);
+                        
+            var vector_dir = Real3(Math.Sin(rad), Math.Cos(rad), 0);
+            var vecnorm = Real3(vector_dir.Y, -vector_dir.X, 0);
+            
+            var norm_dist = Math.Dot(vecnorm, gizmo_diff);
+            var vec_dist = Math.Dot(vector_dir, gizmo_diff);
+            
+            vecnorm *= norm_dist;
+            var vector = vector_dir * vec_dist;
+            
+            var start = moved_pos;
+            var end = moved_pos - vecnorm;
+            
+            var center = (start + end)/2;
+            line.OnTop(false);
+            line.Start(locked_pos + vector_dir * length);
+            line.End(locked_pos - vector_dir * length);
+            line.Float4Color(Real4(1,1,1,0.1));
+            line.Draw();
+            
+            if(this.DrawDebugVectors)
+            {
+                line.Start(start);
+                line.End(end);
+                line.Float4Color(Real4(0,1,0,1));
+                line.HeadSize(0.06);
+                line.Draw();
+                
+                line.Start(locked_pos);
+                line.End(locked_pos + vector);
+                line.Float4Color(Real4(1,1,1,1));
+                line.Draw();
+            }
+        }
+
+        line.HeadSize(0);
+        line.Start(locked_pos + snapped_norm * length);
+        line.End(locked_pos - snapped_norm  * length);
+        line.Float4Color(Real4(1,1,1,1));
+        line.Draw();
+    }
+    
+    // while maintaining the angle between the dragged gizmo and the stationary gizmo, snap the distance to be a multiple of our snap distance.
+    function GizmoSnapDistance(gizmo : Cog)
+    {
+        var moved = this.GizmoRight;
+        var locked =this.GizmoLeft;
+        
+        if(gizmo == this.GizmoLeft)
+        {
+            moved = this.GizmoLeft;
+            locked = this.GizmoRight;
+        }
+        if(moved == null || locked == null) { return; }
+        
+        var short_dist = this.PrimarySelectionScale.X;
+        if(this.GetMaxDimension(this.PrimarySelection) != MaxDimension.Y)
+        {
+            short_dist = this.PrimarySelectionScale.Y;
+        }
+        
+        var moved_pos  = moved.Transform.WorldTranslation;
+        var locked_pos = locked.Transform.WorldTranslation;
+        var gizmo_diff = moved_pos - locked_pos;
+        
+        var gizmo_dist = Math.Length(gizmo_diff) + short_dist;
+        
+        var snapped_dist = Math.Round(gizmo_dist/this.SnapDistance)*this.SnapDistance - short_dist;
+        
+        gizmo.Transform.WorldTranslation = locked_pos + Math.Normalize(gizmo_diff) * snapped_dist;
+    }
+    
+    // draw the guides for the 'ticks' we would snap to
+    function DrawDistanceGuides(gizmo : Cog)
+    {
+        var moved = this.GizmoRight;
+        var locked =this.GizmoLeft;
+        
+        if(gizmo == this.GizmoLeft)
+        {
+            moved = this.GizmoLeft;
+            locked = this.GizmoRight;
+        }
+        if(moved == null || locked == null) { return; }
+        
+        var short_dist = this.PrimarySelectionScale.X;
+        if(this.GetMaxDimension(this.PrimarySelection) != MaxDimension.Y)
+        {
+            short_dist = this.PrimarySelectionScale.Y;
+        }
+        
+        var moved_pos  = moved.Transform.WorldTranslation;
+        var locked_pos = locked.Transform.WorldTranslation;
+        var gizmo_diff = moved_pos - locked_pos;
+        var gizmo_dist = Math.Length(gizmo_diff);
+        
+        var gizmo_diff_norm = Math.Normalize(gizmo_diff);
+        var gizmo_diff_tangent = Real3(gizmo_diff_norm.Y, -gizmo_diff_norm.X, 0);
+        var short_offset = gizmo_diff_norm * short_dist;
+        
+        var drawDist = 20;
+        
+        for(var i : Real = -drawDist ; i < gizmo_dist/2 + short_dist/2 + drawDist; i += this.SnapDistance/2)
+        {
+            var pos = locked_pos + gizmo_diff_norm * i*2 - short_offset/2;
+            
+            var line = DebugLine();
+            line.Start(pos + gizmo_diff_tangent * (short_dist/2));
+            line.End(pos - gizmo_diff_tangent * (short_dist/2));
+            line.Float4Color(Real4(1,0.5,0,0.5));
+            line.Draw();
+        }
+    }
+    
+    // A general utility function that returns the max dimension of a given cog. Works only in 2D (so ignores Z), and takes area components into account.
+    function GetMaxDimension(obj : Cog) : MaxDimension
+    {
+        var scale = this.PrimarySelectionScale;
+        
+        if(scale.X > scale.Y)
+        {
+            return MaxDimension.X;
+        }
+        return MaxDimension.Y;
+    }
+}

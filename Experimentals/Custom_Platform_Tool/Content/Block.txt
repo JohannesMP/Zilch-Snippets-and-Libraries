@@ -1,0 +1,9 @@
+Custom Editor Tool Demo!
+
+- Select a platform
+- Click and drag one of the two handles
+- Hold SHIFT to Snap to distance.
+- Hold CTRL  to Snap to angle.
+- Tap ALT to Enable/Disable Tool.
+- Select 'PlatformTool' from the tools panel to
+   modify settings, such as DebugDraw.
