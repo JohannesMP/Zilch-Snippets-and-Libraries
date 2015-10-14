@@ -1,7 +1,7 @@
 # Zilch Snippets and Libraries
 Contains code snippets, libraries and example projects, shared here as a resource for other DigiPen students.
 
-Most of the code is designed to be used with DigiPen's *<a href=http://zero.digipen.edu>Zero Engine</a>* and was written in <a href=http://zero.digipen.edu/Zilch.html>Zilch</a> (Zero's scripting language).
+Most of the code is designed to be used with DigiPen's *<a href=http://zero.digipen.edu>Zero Engine</a>* and was written in <a href=http://zilch.digipen.edu>Zilch</a> (Zero's C# inspired scripting language).
 
 As of this writing, Zero is only available to DigiPen students.
 
