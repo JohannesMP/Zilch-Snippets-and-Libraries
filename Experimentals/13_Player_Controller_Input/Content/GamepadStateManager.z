@@ -1,5 +1,5 @@
 /*!*****************************************************************************
-@brief      Sends events on gamesession when gamepads are plugged in or removed.
+@brief      Sends events on gamesession when Gamepads are plugged in or removed.
 @date       10/06/2015
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
@@ -8,7 +8,7 @@
     It is designed to send out two events on the gamesession:
 
     - GamepadFound (when a Gamepad has been plugged in)
-    - GamepadLost  (when a gamepad has been unplugged)
+    - GamepadLost  (when a Gamepad has been unplugged)
 
 @copyright
     All content © 2015 DigiPen (USA) Corporation, all rights reserved
@@ -23,18 +23,20 @@ class GamepadStateManager : ZilchComponent
     sends GamepadLost  : GamepadStateEvent;
     
     /* 
-     * For every gamepad, we store if it is active or not (true/false).
+     * For every Gamepad, we store if it is active or not (true/false).
      *
-     * In any frame we can compare the current state of a gamepad 
+     * In any frame we can compare the current state of a Gamepad 
      *     to the past state stored on this map to figure out when
-     *     the gamepad has become active, so we can send an event.
+     *     the Gamepad has become active, so we can send an event.
+     *
+     * Note: this could also be implemented as an array of booleans. 
      */
     var GamepadsActive : HashMap[Integer, Boolean] = HashMap[Integer, Boolean]();
     
     
     function Initialize(init : CogInitializer)
     {
-        // Make sure all gamepads start as inactive.
+        // Make sure all Gamepads start as inactive.
         for(var i = 0; i < Zero.Gamepads.GamepadCount; ++i)
         {
             this.GamepadsActive.SetOrIgnore(i, false);
@@ -74,7 +76,7 @@ class GamepadStateManager : ZilchComponent
 // A custom event class used to send specific events about Gamepad State Changes
 class GamepadStateEvent : ZilchEvent
 {
-    var PadID : Integer; // The ID corresponds to the ID of the gamepad that this event is sent for.
+    var PadID : Integer; // The ID corresponds to the ID of the Gamepad that this event is sent for.
     constructor(padID : Integer) : base() { this.PadID = padID; }
 }
 
