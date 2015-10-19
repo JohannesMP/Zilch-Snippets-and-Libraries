@@ -4,7 +4,7 @@
 @author     Johannes Peter (j.peter\@digipen.edu)
 @par        url: https://github.com/JohannesMP/Zilch-Snippets-and-Libraries
 @details
-    Should be attached on the gamesession (but can be in a level if need be for testing).
+    Should be attached on the gamesession (but can be in a space or level if need be for testing).
     It is designed to send out two events on the gamesession:
 
     - GamepadFound (when a Gamepad has been plugged in)
