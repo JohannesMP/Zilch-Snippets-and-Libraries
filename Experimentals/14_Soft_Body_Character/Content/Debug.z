@@ -1,0 +1,97 @@
+class Debug
+{
+    constructor(a : any)
+    {
+        Console.WriteLine(a);
+    }
+    constructor(a : any, b : any)
+    {
+        Console.WriteLine(a,b);
+    }
+}
+
+
+class DebugVector
+{
+    var DefaultLength : Real = 0;
+    var DefaultColor  : Real4 = Real4(0,1,0,1);
+    
+    constructor(start:Real3, end:Real3, color:Real4)
+    {
+        this.DrawVector(start, end, color);
+    }
+    
+    constructor(start:Real3, end:Real3)
+    {
+        this.DrawVector(start, end, this.DefaultColor);
+    }
+    
+    constructor(contact : ContactPoint, normalLength : Real, color : Real4)
+    {
+        this.DrawVector(contact, normalLength, color);
+        
+    }
+    
+    constructor(contact : ContactPoint, normalLength : Real)
+    {
+        this.DrawVector(contact, normalLength, this.DefaultColor);
+    }
+    
+    constructor(contact : ContactPoint, color : Real4)
+    {
+        this.DrawVector(contact, this.DefaultLength, color);
+    }
+    
+    constructor(contact : ContactPoint)
+    {
+        this.DrawVector(contact, this.DefaultLength, Real4(0,1,0,1));
+    }
+    
+    function DrawVector(start:Real3, end:Real3, color:Real4)
+    {
+        var vector = DebugLine();
+        vector.Start(start);
+        vector.End(end);
+        vector.Float4Color(color);
+        vector.HeadSize(0.1);
+        vector.Draw();
+    }
+    
+   function DrawVector(contact : ContactPoint, normalLength : Real, color : Real4)
+   {
+        var start = contact.WorldPoint;
+        var diff = contact.WorldNormalTowardsOther * normalLength;
+        if(normalLength == 0)
+        {
+            diff = contact.WorldNormalTowardsOther * contact.Penetration * 2;
+        }
+        var end = start + diff;
+        this.DrawVector(start, end, color);
+   }
+    
+}
+
+
+class DebugPoint
+{
+    var DefaultColor  : Real4 = Real4(1,0.5,0,1);
+    
+    constructor(point : Real3)
+    {
+        this.DrawPoint(point);
+    }
+    
+    function DrawPoint(pos : Real3)
+    {
+        this.DrawPoint(pos, this.DefaultColor);
+    }
+    
+    function DrawPoint(pos : Real3, color : Real4)
+    {
+        var point = DebugSphere();
+        point.Position(pos);
+        point.Float4Color(color);
+        point.Radius(0.2);
+        point.Draw();
+    }
+}

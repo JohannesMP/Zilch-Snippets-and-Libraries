@@ -1,0 +1,19 @@
+Material = 
+{
+	Phong = 
+	{
+		float SpecularExponent = 128,
+		float SpecularScalar = 1,
+	},
+	Transparency = 
+	{
+		MaterialBlendMode BlendMode = Alpha,
+	},
+	TextureDiffuse = 
+	{
+		string DiffuseTexture = "5573a48b3504254e:SsaoRandom4x4",
+		Vec2 DiffuseScroll = [0, 0],
+		Vec2 DiffuseTiling = [1, 1],
+		Vec2 DiffuseOffset = [0, 0],
+	},
+},

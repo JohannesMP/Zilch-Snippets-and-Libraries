@@ -1,0 +1,31 @@
+class WrapTest : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        var range = 10;
+        
+        Console.WriteLine( this.Wrap(range, 10) );
+        
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+    
+    
+    function Wrap(range : Integer, index : Integer) : Integer
+    {
+        // output value will range from offset to offset + range
+        var offset = 0;
+        
+        var wrapped = ((index - offset) % range) + offset;
+        if(wrapped < offset)
+        {
+            wrapped += range;
+        }
+        return wrapped;
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DEBUG_AllDebugDraw",
+		uint64 ResourceId = 562f05881c6ccb5f,
+	},
+},

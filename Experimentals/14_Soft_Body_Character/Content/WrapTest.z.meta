@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "WrapTest",
+		uint64 ResourceId = 56c3a03305fb5f89,
+	},
+},

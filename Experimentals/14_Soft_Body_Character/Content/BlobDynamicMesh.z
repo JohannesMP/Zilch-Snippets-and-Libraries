@@ -1,0 +1,137 @@
+class BlobDynamicMesh : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+    [Dependency] var BlobDynamicSimulation : BlobDynamicSimulation;
+    [Dependency] var DynamicMesh : DynamicMesh;
+    [Dependency] var DynamicModel : DynamicModel;
+    
+    var VertexCount : Integer
+    {
+        get { return this.BlobDynamicSimulation.Linkages.Count + 1; }
+    }
+    
+    var FirstRun : Boolean = true;
+    var IndexData : Array[Integer3] = Array[Integer3]();
+    var UVData    : Array[Real2]    = Array[Real2]();
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.UVData.Reserve(this.VertexCount);
+        
+        this.IndexData = this.GenerateIndexData();
+        this.GenerateVertexData(true);
+        this.DynamicMesh.DrawVertices = true;
+        this.DynamicMesh.DrawNormals = true;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.DynamicMesh.Clear();
+        this.GenerateVertexData(true);
+    }
+    
+    
+    // We're using our simulation to get the vertex coordinates.
+    function GetVertexPosition(index : Integer) : Real3
+    {
+        if(index < 0 || index > this.VertexCount)
+        {
+            throw Exception("Invalid Index : `index`");
+        }
+        
+        // index 0 will always be the current center position from the simulation
+        if(index == 0)
+        {
+            return Real3();
+        }
+        else
+        {
+            var linkage = this.BlobDynamicSimulation.Linkages[index-1];
+            return this.BlobDynamicSimulation.GetLeftLinkagePoint(linkage) - this.BlobDynamicSimulation.GroupCenter;
+        }
+    }
+    
+    
+    
+    function GenerateVertexData(backface : Boolean)
+    {                
+        // bounds to normalize UV values. We grab first point as starting values.
+        var minBounds : Real2 = this.GetVertexPosition(0).XY;
+        var maxBounds : Real2 = this.GetVertexPosition(0).XY;
+        
+        // add vertex and normal data, as well as grab min/max values for texture coords.
+        for(var i = 0; i < this.VertexCount; ++i)
+        {
+            var vertex = this.GetVertexPosition(i);
+            
+             // min bounds
+            if(vertex.X < minBounds.X) { minBounds.X = vertex.X; }
+            if(vertex.Y < minBounds.Y) { minBounds.Y = vertex.Y; }
+            
+            // max bounds
+            if(vertex.X > maxBounds.X) { maxBounds.X = vertex.X; }
+            if(vertex.Y > maxBounds.Y) { maxBounds.Y = vertex.Y; }
+            
+            this.DynamicMesh.AddVertex(vertex);
+            
+            var diff = Math.Normalize(vertex - this.GetVertexPosition(0));
+            this.DynamicMesh.AddNormal(Real3(diff.XY,1));
+        }
+        
+        // now that we have the bounds of our vertex data, we can normalize UV to a range of 0 to 1
+        for(var i = 0; i < this.VertexCount; ++i)
+        {
+            if(this.FirstRun)
+            {
+                var vertex = this.GetVertexPosition(i);
+                Debug(i);
+                this.UVData { Real2(vertex.X / (maxBounds.X - minBounds.X), vertex.Y / (maxBounds.Y - minBounds.Y)) };
+            }
+            this.DynamicMesh.AddUV(this.UVData[i]);
+        }
+        
+        
+        // finally add the indeces as triangle
+        foreach(var triangle in this.IndexData)
+        {
+            this.DynamicMesh.AddTriangleIndices(triangle.X, triangle.Y, triangle.Z);
+            if(backface)
+            {
+                this.DynamicMesh.AddTriangleIndices(triangle.X, triangle.Z, triangle.Y); // for backface
+            }
+        }
+        
+        this.Owner.DispatchEvent("DynamicMeshModified", ObjectEvent());
+    }
+    
+    function GenerateIndexData() : Array[Integer3]
+    {
+        var indexData = Array[Integer3]();
+        
+        var min = 1;
+        var max = this.VertexCount - 1;
+        for(var i = min; i < max; ++i)
+        {
+            indexData { Integer3(0, i, i+1) };
+        }
+        indexData { Integer3(0, max, min) };
+        
+        return indexData;
+    }
+    
+    
+    // NOTE: Not used anymore. we cannot update normals dynamically so have to re-make the mesh anyways. 
+    
+    //function UpdateDynamicMesh()
+    //{
+    //    for(var i = 1; i < this.VertexCount; ++i)
+    //    {
+    //        this.DynamicMesh.SetVertex(i,this.GetVertexPosition(i) - this.Transform.WorldTranslation);
+    //    }
+        
+    //    //this.VertexData
+    //    this.Owner.DispatchEvent("DynamicMeshModified", ObjectEvent());
+    //}
+}

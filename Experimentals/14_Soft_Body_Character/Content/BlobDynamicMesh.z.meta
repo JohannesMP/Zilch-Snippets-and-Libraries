@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BlobDynamicMesh",
+		uint64 ResourceId = 56c3e6230cb527fe,
+	},
+},

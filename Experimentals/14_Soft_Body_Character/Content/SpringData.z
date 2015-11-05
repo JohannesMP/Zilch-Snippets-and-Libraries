@@ -1,0 +1,7 @@
+class SpringData : ZilchComponent
+{
+    // hold onto the base length that this spring was created with.
+    var BaseLength : Real;
+    // the current value between 0 and 1 that was applied to the Bas Length (mainly for debugging)
+    var CurFactor : Real;
+}

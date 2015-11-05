@@ -1,0 +1,43 @@
+class DEBUG_AllDebugDraw : ZilchComponent
+{
+    [Property] var Disable       : Boolean = false;
+    [Property] var DrawColliders : Boolean = true;
+    [Property] var DrawLinks     : Boolean = true;
+    
+    // names of object to be ignored when debug drawing. Using Hashmap for convenience
+    var IgnoredNames : HashMap[String, Boolean] = HashMap[String, Boolean]()
+    {
+        { "WorldAnchor",   true },
+        { "LevelSettings", true },
+        { "EditorCamera",  true },
+        { "Camera",        true }
+    };
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        if(this.Disable) { return; } 
+        
+        foreach(var obj in this.Space.AllObjects())
+        {
+            // skip ignored objects
+            if(this.IgnoredNames.Contains(obj.Name)) { continue; }
+            
+            // draw colliders
+            if(this.DrawColliders && obj.Collider != null)
+            {
+                obj.DebugDraw();
+            }
+            
+            if(this.DrawLinks && obj.ObjectLink != null)
+            {
+                obj.DebugDraw();
+            }
+        }
+    }
+}

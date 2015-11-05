@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BlobDynamicSimulation",
+		uint64 ResourceId = 562c2a8d34466480,
+	},
+},

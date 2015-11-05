@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SpringTest",
+		uint64 ResourceId = 56c007b82896dba7,
+	},
+},

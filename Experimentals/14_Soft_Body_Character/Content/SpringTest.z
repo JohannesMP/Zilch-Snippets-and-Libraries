@@ -1,0 +1,27 @@
+class SpringTest : ZilchComponent
+{
+    var ObjArch : Archetype = Archetype.Find("Object");
+    //var LinkArch : Archetype = Archetype.Find("Link");
+    
+    function Initialize(init : CogInitializer)
+    {
+        //var root = this.Space.CreateAtPosition(this.ObjArch, Real3(0,0,0));
+        //root.RigidBody.DynamicState = RigidBodyDynamicState.Static;
+        
+        //var obj = this.Space.CreateAtPosition(this.ObjArch, Real3(2,0,0));
+        
+        //var link = this.Space.Create(this.LinkArch);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //this.Space.FindObjectByName("Object");
+    }
+}

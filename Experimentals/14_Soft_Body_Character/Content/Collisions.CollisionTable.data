@@ -1,0 +1,53 @@
+CollisionTable = 
+{
+	Array RegisteredGroups = 
+	[
+		"4e740859314e5515:DefaultGroup",
+		"56c07ca3c7730b63:DynamicEdge",
+		"56c07cb5ca18facb:NoCollide",
+	],
+	Array CollisionFilters = 
+	[
+		{
+			string TypeA = "56c07ca3c7730b63:DynamicEdge",
+			string TypeB = "56c07cb5ca18facb:NoCollide",
+			bool SkipResolution = false,
+			bool SkipDetectingCollision = true,
+			bool StartEvent = false,
+			bool EndEvent = false,
+			bool PersistedEvent = false,
+			bool PreSolveEvent = false,
+		},
+		{
+			string TypeA = "56c07ca3c7730b63:DynamicEdge",
+			string TypeB = "56c07ca3c7730b63:DynamicEdge",
+			bool SkipResolution = false,
+			bool SkipDetectingCollision = true,
+			bool StartEvent = false,
+			bool EndEvent = false,
+			bool PersistedEvent = false,
+			bool PreSolveEvent = false,
+		},
+		{
+			string TypeA = "4e740859314e5515:DefaultGroup",
+			string TypeB = "56c07cb5ca18facb:NoCollide",
+			bool SkipResolution = false,
+			bool SkipDetectingCollision = true,
+			bool StartEvent = false,
+			bool EndEvent = false,
+			bool PersistedEvent = false,
+			bool PreSolveEvent = false,
+		},
+		{
+			string TypeA = "56c07cb5ca18facb:NoCollide",
+			string TypeB = "56c07cb5ca18facb:NoCollide",
+			bool SkipResolution = false,
+			bool SkipDetectingCollision = true,
+			bool StartEvent = false,
+			bool EndEvent = false,
+			bool PersistedEvent = false,
+			bool PreSolveEvent = false,
+		},
+	],
+	bool AutoRegister = true,
+},

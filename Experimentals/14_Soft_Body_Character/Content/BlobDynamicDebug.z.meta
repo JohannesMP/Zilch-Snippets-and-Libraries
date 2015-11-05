@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BlobDynamicDebug",
+		uint64 ResourceId = 56c3d6230038bcc0,
+	},
+},

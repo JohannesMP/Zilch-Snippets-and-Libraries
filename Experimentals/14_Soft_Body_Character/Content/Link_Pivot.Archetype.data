@@ -1,0 +1,65 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Archetyped = 
+	{
+		string Name = "56c3a8010a06a116:Link_Pivot",
+	},
+	ObjectLink = 
+	{
+		CogPath ObjectA = 
+		{
+			string Path = ":/Linkage",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 4294967293,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+		CogPath ObjectB = 
+		{
+			string Path = ":/Linkage",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 4294967293,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+		Vec3 BodyPointA = [0, 0, 0],
+		Vec3 BodyPointB = [0, 0, 0],
+	},
+	PositionJoint = 
+	{
+		bool Active = true,
+		bool SendsEvents = false,
+		bool AutoSnaps = false,
+		bool CollideConnected = false,
+		float MaxForce = 0,
+		Vec3 BodyPointA = [0, 0, 0],
+		Vec3 BodyPointB = [0, 0, 0],
+	},
+	JointConfigOverride = 
+	{
+		float Slop = 0.100000001,
+		float LinearBaumgarte = 1,
+		float AngularBaumgarte = 4.5,
+		float LinearErrorCorrection = 10,
+		float AngularErrorCorrection = 0.200000003,
+		ConstraintPositionCorrection PositionCorrectionType = Inherit,
+	},
+},

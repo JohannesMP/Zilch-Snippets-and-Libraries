@@ -1,0 +1,389 @@
+class BlobDynamicSimulation : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+    
+    // Archetypes
+    var LinkageArchetype    : Archetype = Archetype.Find("Linkage");
+    var LinkPivotArchetype  : Archetype = Archetype.Find("Link_Pivot");
+    var LinkSpringArchetype : Archetype = Archetype.Find("Link_Spring");
+    
+    // Containers
+    var Linkages : Array[Cog] = Array[Cog]();
+    var Springs  : Array[Cog] = Array[Cog]();
+    
+    // The center of the Set of 
+    var GroupCenter : Real3;
+    
+    // setting the width/radius of the linkage capsules
+    var LinkageRadius : Real = 0.1;
+    
+    // Spring Configurations
+    var SpringStiffness : Real = 1.8;
+    var SpringDampness : Real = 0.5;
+    
+    // how much the spring will vary between push and pull (Range: 0-1)
+    var SpringFactor : Real = 0.5;
+    // how much longer the spring will be when 
+    var SpringPushFactor : Real
+    {
+        get { return 1 + this.SpringFactor; }
+        set 
+        {
+            if(value >= 1 || value <= 0) { throw Exception("Invalid Spring Factor Range"); }
+            this.SpringFactor = value - 1;
+        }
+    }
+    var SpringPullFactor : Real
+    {
+        get { return 1 / this.SpringPushFactor; }
+        set { this.SpringPushFactor = 1 / value; }
+    }
+    var SpringDefaultColor : Real4 = Real4(0.7,0,1,1);
+    var SpringPushColor    : Real4 = Real4(1,0,0,1);
+    var SpringPullColor    : Real4 = Real4(0,0,1,1);
+    
+    var TargetAcceleration : Real = 4;
+    var TargetDeceleration : Real = 5;
+    var TargetDirection    : Real = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        // create the points that will be used to define the linkages of our blob
+        var path = this.CreateCirclePath(23, 3.0);
+        
+        // set up how linkages will be connected. Basically every entry here defines one kind of connection.
+        //    - given an object at position i, the index of it's opposite is i + total/2
+        //    - each entry here defines an offset to be added to the opposite index.
+        //    - so index i will be connected to i + total/2 + offset, for every offset defined here.
+        
+        // positive means relative to current index
+        // negative means relative to midpoint of ocunt.
+        var link_offsets = Array[Integer]()
+        {
+            1,
+            2,
+            3,
+            4,
+            //-1,
+            -4,
+        };
+        
+        this.RunOnPath(path, this.CreateLinkage, true);
+        this.RunOnCogs(this.Linkages, this.CreateLinkageJoint, true);
+        this.RunOnCogPairs(this.Linkages, link_offsets, this.CreateLinkageSpring);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var movement = 0.0;
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Left))
+        {
+            movement -= 1;
+        }
+        else if(Zero.Keyboard.KeyIsDown(Keys.Right))
+        {
+            movement += 1;
+        }
+        
+        // if we have no input, slow down
+        if(movement == 0)
+        {
+            this.TargetDirection *= 1 - this.TargetAcceleration * event.Dt;
+        }
+        // if we have input, speed up
+        else
+        {
+            this.TargetDirection += movement * this.TargetAcceleration * event.Dt;
+        }
+        
+        this.TargetDirection = Math.Clamp(this.TargetDirection,-1,1);
+        
+        // Modify our springs to create spin
+        this.RunOnCogs(this.Springs, this.ApplySpringForce);
+        
+        // Store our center
+        this.GroupCenter = Real3();
+        foreach(var capsule in this.Linkages)
+        {
+            this.GroupCenter += this.GetLeftLinkagePoint(capsule);
+        }
+        this.GroupCenter = this.GroupCenter/this.Linkages.Count;
+        this.Transform.WorldTranslation = this.GroupCenter;
+    }
+
+    
+    
+    ///////////////////////////
+    // ITERATION FUNCTIONS
+    ///////////////////////////
+    
+    // Run any function that accepts two points on a set of points
+    function RunOnPath(path : Array[Real3], func : delegate(left : Real3, right : Real3), closeLoop : Boolean)
+    {
+        // run function on each pair in the path
+        for(var i = 0; i < path.Count-1; ++i)
+        {
+            func(path[i], path[i+1]);
+        }
+        // if we're looping, run function on first and last element
+        if(closeLoop)
+        {
+            func(path[path.Count-1], path[0]);
+        }
+    }
+    
+    
+    function RunOnCogs(cogs : Array[Cog], func : delegate(cog : Cog))
+    {
+        foreach(var cog in cogs)
+        {
+            func(cog);
+        }
+    }
+    
+    
+    function RunOnCogs(cogs : Array[Cog], func : delegate(cog1 : Cog, cog2 : Cog), closeLoop : Boolean)
+    {
+        for(var i = 0; i < cogs.Count-1; ++i)
+        {
+            func(cogs[i], cogs[i+1]);
+        }
+        if(closeLoop)
+        {
+            func(cogs[cogs.Count-1], cogs[0]);
+        }
+    }
+    
+    
+    // run a piece of code on cog pairs, as defined by the provided offsets
+    function RunOnCogPairs(cogs : Array[Cog], offsets : Array[Integer], func : delegate(cog1 : Cog, cog2 : Cog))
+    {
+        var count = cogs.Count;
+        for(var i = 0; i < count; ++i)
+        {
+            var cur = cogs[i];
+            foreach(var offset in offsets)
+            {
+                if(offset == 0) { continue; } // no need to link to ourselves
+                
+                // with positive offset, relative to current index
+                var index = this.Wrap(count, i + offset + 2);
+                // with negative offset, relative to halfway point
+                if(offset < 0)
+                {
+                    index = this.Wrap(count, i + cogs.Count/2 + offset + 2);
+                }
+                var next  = cogs[index];
+                func(cur, next);
+            }
+        }
+    }
+    
+    
+    ///////////////////////////
+    // LINKAGE FUNCTIONS
+    ///////////////////////////
+    
+    // create a linkage between two points
+    function CreateLinkage(left : Real3, right : Real3)
+    {
+        // create linkage
+        var linkage = this.Space.Create(this.LinkageArchetype);
+        
+        // move linkage to connect  the left and right position
+        this.SetLinkagePoints(linkage, left, right);
+        
+        // store linkage
+        this.Linkages.Add(linkage);
+    }
+    
+    
+    function DrawLinkage(cog : Cog)
+    {
+        var left  = this.GetLeftLinkagePoint(cog);
+        var right = this.GetRightLinkagePoint(cog);
+        DebugVector(left, right, Real4(1,0.5,0,1));
+    }
+    
+    
+    // Helper function to grab a given point in a linkage's object space and return it's world space
+    function GetRelativeLinkagePoint(linkage : Cog, relative : Real3) : Real3
+    {
+        if(linkage.CapsuleCollider == null || linkage.Transform == null)
+        { throw Exception("INVALID LINKAGE COG: `linkage.Name`"); }
+        
+        // scale by the height
+        relative *= linkage.CapsuleCollider.Height;
+        
+        // grab angle from object
+        var angle = linkage.Transform.EulerAngles.Z;
+        // rotate around Z based on object rotation
+        relative = Math.RotateVector(relative, Real3(0,0,1), angle);
+        
+        // lastly, put us into world space:
+        relative += linkage.Transform.WorldTranslation;
+        
+        return relative;
+    }
+    
+    
+    // get the left point of a linkage
+    function GetLeftLinkagePoint(linkage : Cog) : Real3
+    {
+        return this.GetRelativeLinkagePoint(linkage, Real3(-0.5,0,0));
+    }
+    
+    
+    // get the right point of al inkage
+    function GetRightLinkagePoint(linkage : Cog) : Real3
+    {
+        return this.GetRelativeLinkagePoint(linkage, Real3(0.5,0,0));
+    }
+
+
+    // Place a linkage cog according to a left and a right position
+    function SetLinkagePoints(linkage : Cog, left : Real3, right : Real3)
+    {
+        // set position to midpoint of left and right
+        linkage.Transform.WorldTranslation = (left + right)/2;
+        
+        // get vector between points
+        var diff  = right - left;
+        // get angle between points
+        var angle = Math.ATan2(diff.Y, diff.X);
+        
+        // set height of capsule to match points
+        linkage.CapsuleCollider.Height = Math.Length(diff);
+        // set width of capsule to match setting
+        linkage.CapsuleCollider.Radius = this.LinkageRadius;
+        
+        // set angle of capsule to match points
+        linkage.Transform.SetEulerAnglesXYZ(0,0,angle);
+    }
+
+
+    // Helper function to just set the left point of linkage
+    function SetLeftLinkagePoint(linkage : Cog, newLeft : Real3)
+    {
+        var right = this.GetRightLinkagePoint(linkage);
+        this.SetLinkagePoints(linkage, newLeft, right);
+    }
+    
+    
+    // Helper function to just set the right point of linkage
+    function SetRightLinkagePoint(linkage : Cog, newRight : Real3)
+    {
+        var left = this.GetLeftLinkagePoint(linkage);
+        this.SetLinkagePoints(linkage, left, newRight);
+    }
+    
+    
+    ///////////////////////////
+    // JOINT + SPRING FUNCTIONS
+    ///////////////////////////
+    
+    function CreateLinkageJoint(cog1 : Cog, cog2 : Cog)
+    {
+        var link = this.Space.CreateLink(this.LinkPivotArchetype,cog1,cog2);
+        link.PositionJoint.LocalPointA = Real3(cog1.CapsuleCollider.Height/2, 0, 0);
+        link.PositionJoint.LocalPointB = Real3(-cog2.CapsuleCollider.Height/2, 0, 0);
+    }
+    
+    
+    function CreateLinkageSpring(cog1 : Cog, cog2 : Cog)
+    {
+        var link = this.Space.CreateLink(this.LinkSpringArchetype,cog1,cog2);
+        
+        var pos1 = this.GetLeftLinkagePoint(cog1);
+        var pos2 = this.GetLeftLinkagePoint(cog2);
+        var len  = Math.Length(pos2 - pos1);
+        
+        //len += Random().Range(-1, 1);
+        
+        link.StickJoint.LocalPointA = Real3( cog1.CapsuleCollider.Height/2, 0, 0);
+        link.StickJoint.LocalPointB = Real3(-cog2.CapsuleCollider.Height/2, 0, 0);
+        
+        link.JointSpring.FrequencyHz = this.SpringStiffness;
+        link.JointSpring.DampRatio   = this.SpringDampness;
+        
+        link.StickJoint.Length = len;
+        // store the length so we can apply forces to it later without risk of floating point error.
+        link.SpringData.BaseLength = len;
+        
+        this.Springs.Add(link);
+    }
+    
+    
+    function ApplySpringForce(cog : Cog)
+    {
+        var targetDir = Real3(this.TargetDirection, 1, 0);
+        var force = Math.Abs(this.TargetDirection);
+        
+        // direction the spring is facing in
+        var springDir = Math.Normalize(cog.StickJoint.WorldPointA - cog.StickJoint.WorldPointB);        
+        // how much our spring is facing in the 'desired' direction.
+        var factor = Math.Dot(springDir, Math.Normalize(targetDir));
+        // pointing towards or away from the target direction should count the same.
+        factor = Math.Abs(factor);
+        
+        factor = (factor);
+        
+        // interpolate factor towards 0.5 if we have less than full force
+        if(force < 1.0)
+        {
+            factor = Math.Lerp(0.5, factor, force);
+        }
+        
+        cog.SpringData.CurFactor = factor;
+        
+        // grab the base length we stored
+        var len = cog.SpringData.BaseLength;
+        
+        // use linear interpolation to figure out the length of springs
+        len = Math.Lerp(len * this.SpringPullFactor, len * this.SpringPushFactor, factor);
+        cog.StickJoint.Length = len;
+    }
+    
+
+
+    ///////////////////////////
+    // MISCELANEOUS FUNCTIONS
+    ///////////////////////////
+    
+    
+    // Helper function for wrapping an input to a given range
+    function Wrap(range : Integer, index : Integer) : Integer
+    {
+        // output value will range from range_offset to range_offset + range
+        var range_offset = 0;
+        
+        var wrapped = ((index - range_offset) % range) + range_offset;
+        if(wrapped < range_offset-1)
+        {
+            wrapped += range;
+        }
+        return wrapped;
+    }
+    
+    
+    function CreateCirclePath(edgeCount : Integer, radius : Real) : Array[Real3]
+    {
+        var path = Array[Real3]();
+        
+        for(var i = 0; i < edgeCount; ++i)
+        {
+            var factor : Real = i as Real / edgeCount;
+            var angle : Real = factor * Math.Pi*2;
+            
+            path { Real3(Math.Cos(angle) * radius, Math.Sin(angle) * radius, 0) };
+        }
+        
+        return path;
+    }
+    
+    
+}

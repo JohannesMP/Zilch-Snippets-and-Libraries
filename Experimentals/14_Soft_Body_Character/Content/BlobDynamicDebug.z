@@ -1,0 +1,98 @@
+class BlobDynamicDebug : ZilchComponent
+{
+    [Dependency] var Sim : BlobDynamicSimulation;
+    [Dependency] var Mesh : BlobDynamicMesh;
+    [Dependency] var DynamicMesh : DynamicMesh;
+    
+    [Property] var Disable             : Boolean = false;
+    [Property] var ShowNormals         : Boolean = false;
+    [Property] var ShowTriangles       : Boolean = false;
+    [Property] var ShowVertices        : Boolean = false;
+    [Property] var ShowLinkages        : Boolean = false;
+    [Property] var ShowSprings         : Boolean = false;
+    [Property] var ShowCenter          : Boolean = false;
+    [Property] var ShowTargetDirection : Boolean = false;
+    [Property] var ShowColliders       : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+
+    function Pressed(key : Keys) : Boolean { return Zero.Keyboard.KeyIsPressed(key); }
+    function Down(key : Keys) : Boolean { return Zero.Keyboard.KeyIsDown(key); }
+
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        if(this.Disable) { return; }
+        
+        // handle keyboard input
+        if(this.Pressed(Keys.One)   || this.Pressed(Keys.NumPad1)) { this.ShowLinkages = !this.ShowLinkages; this.ShowCenter = !this.ShowCenter; this.ShowTargetDirection = !this.ShowTargetDirection; }
+        if(this.Pressed(Keys.Two)   || this.Pressed(Keys.NumPad2)) { this.ShowSprings = !this.ShowSprings; }
+        if(this.Pressed(Keys.Three) || this.Pressed(Keys.NumPad3)) { this.ShowColliders = !this.ShowColliders; }
+        if(this.Pressed(Keys.Four)  || this.Pressed(Keys.NumPad4)) { this.ShowNormals = !this.ShowNormals; this.ShowVertices = !this.ShowVertices; }
+        if(this.Pressed(Keys.Five)  || this.Pressed(Keys.NumPad5)) { this.ShowTriangles = !this.ShowTriangles; }
+        
+        
+        // handle debug drawing
+
+        
+        var drawDynamic = false;
+        
+        if(this.ShowNormals)
+        {
+            drawDynamic = true;
+            this.DynamicMesh.DrawNormals = true;
+        }
+        
+        if(this.ShowTriangles)
+        {
+            drawDynamic = true;
+            this.DynamicMesh.DrawTriangles = true;
+        }
+        
+        if(this.ShowVertices)
+        {
+            drawDynamic = true;
+            this.DynamicMesh.DrawVertices = true;
+        }
+        
+        
+        if(drawDynamic)
+        {
+            this.DynamicMesh.DebugDraw();
+        }
+        
+        if(this.ShowLinkages)
+        {
+            this.Sim.RunOnCogs(this.Sim.Linkages, this.Sim.DrawLinkage);
+        }
+        
+        if(this.ShowSprings)
+        {
+            foreach(var spring in this.Sim.Springs)
+            {
+                var color = Math.Lerp(this.Sim.SpringPullColor, this.Sim.SpringPushColor, spring.SpringData.CurFactor);
+                DebugVector(spring.StickJoint.WorldPointA, spring.StickJoint.WorldPointB, color);
+            }
+        }
+        
+        if(this.ShowCenter)
+        {
+            DebugPoint(this.Sim.GroupCenter);
+        }
+        
+        if(this.ShowTargetDirection)
+        {
+            DebugVector(this.Sim.GroupCenter, this.Sim.GroupCenter + Real3(this.Sim.TargetDirection*3,0,0), Real4(1,1,1,1));
+        }
+        
+        if(this.ShowColliders)
+        {
+            foreach(var linkage in this.Sim.Linkages)
+            {
+                linkage.Collider.DebugDraw();
+            }
+        }
+    }
+}

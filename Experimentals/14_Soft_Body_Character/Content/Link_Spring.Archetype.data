@@ -1,0 +1,76 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Archetyped = 
+	{
+		string Name = "56c3a756e4d21b95:Link_Spring",
+	},
+	ObjectLink = 
+	{
+		CogPath ObjectA = 
+		{
+			string Path = "Main:/Linkage",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 4294967293,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+		CogPath ObjectB = 
+		{
+			string Path = "Main:/Linkage",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 4294967293,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+		Vec3 BodyPointA = [0.32918942, 0, 0],
+		Vec3 BodyPointB = [-0.329188973, 0, 0],
+	},
+	StickJoint = 
+	{
+		bool Active = true,
+		bool SendsEvents = false,
+		bool AutoSnaps = false,
+		bool CollideConnected = true,
+		float MaxForce = 0,
+		float Length = 3.34866595,
+		Vec3 BodyPointA = [0.32918942, 0, 0],
+		Vec3 BodyPointB = [-0.329188973, 0, 0],
+	},
+	JointConfigOverride = 
+	{
+		float Slop = 0.100000001,
+		float LinearBaumgarte = 1,
+		float AngularBaumgarte = 4.5,
+		float LinearErrorCorrection = 10,
+		float AngularErrorCorrection = 0.200000003,
+		ConstraintPositionCorrection PositionCorrectionType = Inherit,
+	},
+	JointSpring = 
+	{
+		bool Active = true,
+		uint AtomIds = 1,
+		float DampRatio = 0.699999988,
+		float FrequencyHz = 1.5,
+	},
+	SpringData = 
+	{
+	},
+},
