@@ -9,7 +9,8 @@ As of this writing, Zero is only available to DigiPen students.
 ###<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals>Experimentals</a>
   * Somewhat complete, possibly buggy projects, generally designed to explore a single idea, concept or feature.
   * May be largely uncommented and rough.
-  * **NOTE**: Experimentals are posted and numbered in the order they were created.
+  * Experimentals are posted and numbered in the order they were created.
+  * Have Questions? Shoot me an email (j.peter at digipen) or find me in person (Floor 3, Tesla, row N). I love sharing this stuff :)
 
 |  |  |
 |---|---|
