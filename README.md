@@ -10,7 +10,7 @@ As of this writing, Zero is only available to DigiPen students.
   * Somewhat complete, possibly buggy projects, generally designed to explore a single idea, concept or feature.
   * May be largely uncommented and rough.
   * Experimentals are posted and numbered in the order they were created.
-  * Have Questions? Shoot me an email (j.peter at digipen) or find me in person (Floor 3, Tesla, row N). I love sharing this stuff :)
+  * Have Questions? Shoot me an email (j.peter at digipen) or creat an Issue.
 
 |  |  |
 |---|---|
