@@ -6,7 +6,7 @@ Most of the code is designed to be used with DigiPen's *<a href=http://zero.digi
 As of this writing, Zero is only available to DigiPen students.
 
 ----
-###<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals>Experimentals</a>
+### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals>Experimentals</a>
   * Somewhat complete, possibly buggy projects, generally designed to explore a single idea, concept or feature.
   * May be largely uncommented and rough.
   * Experimentals are posted and numbered in the order they were created.
@@ -23,12 +23,12 @@ As of this writing, Zero is only available to DigiPen students.
 | <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/13_Player_Controller_Input>**13. Player Controller Input**</a> - <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries-Files/raw/master/Downloads/Experimentals/13_Player_Controller_Input.v1.0.zip>Download Zip</a> <br /> <img src=https://raw.githubusercontent.com/JohannesMP/Zilch-Snippets-and-Libraries-Files/master/Screenshots/Experimentals/13_Player_Controller_Input.png /> | <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Experimentals/14_Soft_Body_Character>**14. Soft Body Character**</a> - <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries-Files/raw/master/Downloads/Experimentals/14_Soft_Body_Character.v1.0.zip>Download Zip</a> <br /> <img src=https://raw.githubusercontent.com/JohannesMP/Zilch-Snippets-and-Libraries-Files/master/Screenshots/Experimentals/14_Soft_Body_Character.gif /> | 
 
 ----
-###<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Libraries>Libraries</a>
+### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Libraries>Libraries</a>
   * Complete and (mostly) bug-free libraries that I've cleaned up and commented for general use.
   * <img height=100 src=https://camo.githubusercontent.com/0cfa5f0812d49488c8a28c8e3f18d40d5a38b300/687474703a2f2f692e696d6775722e636f6d2f6b48524572724c2e706e672f /> <img height=100 src=https://camo.githubusercontent.com/ece0fd0eed3dffa48e7c2a5ea831307bfdd67a3b/687474703a2f2f692e696d6775722e636f6d2f747241323650482e706e67 />
 
 ----
-###<a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Snippets>Snippets</a>
+### <a href=https://github.com/JohannesMP/Zilch-Snippets-and-Libraries/tree/master/Snippets>Snippets</a>
   * Single snippets of re-usable code
 
 ----
